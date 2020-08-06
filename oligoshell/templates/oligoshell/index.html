@@ -2,5 +2,8 @@
 
 {% block content %}
 
+    {% for seq in sequences %}
+      <p>{{ seq.seq_name }} {{ seq.sequence }} {{ seq.scale }} </p>
+    {% endfor %}
 
 {% endblock %}
