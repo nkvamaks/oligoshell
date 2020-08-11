@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('oligoshell/', include('oligoshell.urls', namespace='oligoshell')),
+    path('', include('oligoshell.urls', namespace='oligoshell')),
+    path('authent/', include('authent.urls', namespace='')),
     path('admin/', admin.site.urls),
 ]

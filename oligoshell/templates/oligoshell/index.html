@@ -3,7 +3,9 @@
 {% block content %}
 
     {% for seq in sequences %}
-      <p>{{ seq.seq_name }} {{ seq.sequence }} {{ seq.scale }} </p>
+      <h1>{{ seq.seq_name }}</h1>
+      <h2>{{ seq.sequence }}</h2>
+      <h3>{{ seq.scale }}</h3>
     {% endfor %}
 
 {% endblock %}
