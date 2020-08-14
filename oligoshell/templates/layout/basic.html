@@ -10,6 +10,17 @@
     </header>
     <nav>
       <a href="{% url 'oligoshell:index' %}">Home</a>
+
+
+         {% if request.user.is_authenticated %}
+        Hi {{ request.user.first_name }}
+        <a href="{% url "logout" %}">logout</a>
+                 <a href="{% url "password_change" %}">pass change</a>
+
+    {% else %}
+         <a href="{% url "login" %}">login</a>
+    {% endif %}
+
     </nav>
     <section>
       {% block content %}

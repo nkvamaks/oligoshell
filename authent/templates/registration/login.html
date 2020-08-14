@@ -1,0 +1,18 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}LOGIN {% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    {% if form.errors %}
+        BAD CREDENTIALS
+    {% endif %}
+     <form action="." method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="submit" value="Login">
+    </form>
+    <br>
+    <a href="{% url "password_reset" %}">forgot password?</a>
+{% endblock %}
