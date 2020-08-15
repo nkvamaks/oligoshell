@@ -1,0 +1,17 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}
+   Orders
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ order.pk }}</p>
+    <p>{{ order.created }}</p>
+    <p>{{ order.customer }}</p>
+    {% for seq in order.sequences.all %}
+           <p>{{ seq.pk }}<a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+           {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }}</p>
+    {% endfor %}
+
+{% endblock %}

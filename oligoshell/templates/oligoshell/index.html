@@ -1,11 +1,24 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
+    {% for order in orders %}
+        <a href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }}</a>
+        by {{ order.customer }}
 
-    {% for seq in sequences %}
-      <h1>{{ seq.seq_name }}</h1>
-      <h2>{{ seq.sequence }}</h2>
-      <h3>{{ seq.scale }}</h3>
+        {% for seq in order.sequences.all %}
+               <p>{{ seq.pk }}<a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+               {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }}</p>
+        {% endfor %}
+
     {% endfor %}
+{##}
+{#    {% for every_order in orders %}#}
+{#          <a href="{% url 'oligoshell:by_order' every_order.pk %}">Order # {{every_order.pk}},#}
+{#            ordered by {{every_order.customer}} on {{every_order.order_date|date:"d.m.Y"}}</a>#}
+{#      {% for every_sequence in every_order.sequence_set.all %}#}
+{#          <td><a href="{% url 'oligoshell:by_seq' every_order.pk every_sequence.pk %}">{{every_sequence.seq_name}}</a></td>#}
+{#          <td>{{every_sequence.sequence}}</td>#}
+{#      {% endfor %}#}
+{#    {% endfor %}#}
 
 {% endblock %}

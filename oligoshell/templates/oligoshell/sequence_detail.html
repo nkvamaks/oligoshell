@@ -1,0 +1,16 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}
+   Sequence details
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ sequence.seq_name }}</p>
+    <p>{{ sequence.sequence }}</p>
+    <p>{{ sequence.scale }}</p>
+    <p>{{ sequence.appearance_requested }}</p>
+    <p>{{ sequence.created }}</p>
+    <p>{{ sequence.updated }}</p>
+
+{% endblock %}
