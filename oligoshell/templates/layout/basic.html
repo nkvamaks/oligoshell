@@ -10,6 +10,8 @@
     </header>
     <nav>
       <a href="{% url 'oligoshell:index' %}">Home</a>
+      <a href="{% url 'oligoshell:sequence_create' %}">New Sequence</a>
+      <a href="{% url 'oligoshell:order_create' %}">New Order</a>
 
 
          {% if request.user.is_authenticated %}

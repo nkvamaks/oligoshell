@@ -14,4 +14,7 @@ class SequenceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('created',)
+    list_display = ('id', 'customer', 'created',)
+    search_fields = ('customer', 'email')
+    list_filter = ('created',)
+    ordering = ('created',)

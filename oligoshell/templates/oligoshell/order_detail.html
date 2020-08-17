@@ -7,8 +7,11 @@
 {% block content %}
 
     <p>{{ order.pk }}</p>
-    <p>{{ order.created }}</p>
+    <p>{{ order.created|date:"d M Y, H:i" }}</p>
+    <p>{{ order.updated|date:"d M Y, H:i" }}</p>
     <p>{{ order.customer }}</p>
+    <p>{{ order.email }}</p>
+    <p>{{ order.comments }}</p>
     {% for seq in order.sequences.all %}
            <p>{{ seq.pk }}<a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
            {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }}</p>

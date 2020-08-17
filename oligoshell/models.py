@@ -5,6 +5,8 @@ from django.core import validators
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
                                 max_length=50)
+    comments = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     created = models.DateTimeField(verbose_name='Date Ordered',
                                    auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -14,8 +16,8 @@ class Order(models.Model):
         verbose_name = 'Order number'
         ordering = ['pk']
 
-    # def __str__(self):
-    #     return '# ' + str(self.pk) + ' of ' + str(self.created) + ', ' + str(self.customer)
+    def __str__(self):
+        return '# ' + str(self.pk) + ' by ' + str(self.customer)
 
 
 class Sequence(models.Model):

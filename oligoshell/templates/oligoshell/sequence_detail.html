@@ -10,7 +10,7 @@
     <p>{{ sequence.sequence }}</p>
     <p>{{ sequence.scale }}</p>
     <p>{{ sequence.appearance_requested }}</p>
-    <p>{{ sequence.created }}</p>
-    <p>{{ sequence.updated }}</p>
+    <p>{{ sequence.created|date:"d M Y, H:i" }}</p>
+    <p>{{ sequence.updated|date:"d M Y, H:i" }}</p>
 
 {% endblock %}
