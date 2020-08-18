@@ -2,7 +2,9 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 from . import models
 from . import forms
@@ -27,18 +29,18 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     model = models.Order
 
 
-class SequenceCreateView(CreateView):
+class SequenceCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/sequence_create.html'
     form_class = forms.SequenceForm
     success_url = reverse_lazy('oligoshell:index')
 
-#    def get_context_data(self, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context['orders'] = Order.objects.all()
-#        return context
 
-
-class OrderCreateView(CreateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/order_create.html'
     form_class = forms.OrderForm
     success_url = reverse_lazy('oligoshell:index')
+
+
+@login_required
+def view_profile(request):
+    return render(request, 'oligoshell/profile.html', {'user': request.user})

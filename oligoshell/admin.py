@@ -3,6 +3,11 @@ from django.contrib import admin
 from . import models
 
 
+@admin.register(models.Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'birthday')
+
+
 @admin.register(models.Sequence)
 class SequenceAdmin(admin.ModelAdmin):
     list_display = ('seq_name', 'sequence', 'scale', 'appearance_requested')

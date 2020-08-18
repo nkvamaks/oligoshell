@@ -1,6 +1,7 @@
 from django.db import models
 from django.core import validators
 
+from django.conf import settings
 
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
@@ -72,3 +73,7 @@ class Sequence(models.Model):
         verbose_name = 'Sequence'
         ordering = ['pk']
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    birthday = models.DateTimeField(blank=True, null=True)

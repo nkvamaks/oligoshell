@@ -10,4 +10,5 @@ urlpatterns = [
     path('order<int:pk>/', views.OrderDetailView.as_view(), name='order_detail'),
     path('seq_add/', views.SequenceCreateView.as_view(), name='sequence_create'),
     path('order_add/', views.OrderCreateView.as_view(), name='order_create'),
+    path('profile/', views.view_profile, name='profile'),
 ]

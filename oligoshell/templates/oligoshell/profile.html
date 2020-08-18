@@ -1,0 +1,9 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Person profile {% endblock %}
+
+{% block content %}
+{#    <p> <a href="{% url "" %}">Edit profile</a></p>#}
+    <p>Date of birth: {{ user.profile.birthday }}</p>
+    <p>name: {{ user.first_name }} {{ user.last_name }}</p>
+{% endblock %}
