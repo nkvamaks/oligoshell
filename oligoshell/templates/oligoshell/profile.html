@@ -6,4 +6,6 @@
 {#    <p> <a href="{% url "" %}">Edit profile</a></p>#}
     <p>Date of birth: {{ user.profile.birthday }}</p>
     <p>name: {{ user.first_name }} {{ user.last_name }}</p>
+    <p><img src="{{ user.profile.photo.url }}" alt="Users' Photo"></p>
+
 {% endblock %}

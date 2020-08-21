@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from . import views
 
@@ -12,3 +14,7 @@ urlpatterns = [
     path('order_add/', views.OrderCreateView.as_view(), name='order_create'),
     path('profile/', views.view_profile, name='profile'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

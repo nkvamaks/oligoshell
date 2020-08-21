@@ -30,6 +30,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
 
 class SequenceCreateView(LoginRequiredMixin, CreateView):
+    model = models.Sequence
     template_name = 'oligoshell/sequence_create.html'
     form_class = forms.SequenceForm
     success_url = reverse_lazy('oligoshell:index')
@@ -38,8 +39,7 @@ class SequenceCreateView(LoginRequiredMixin, CreateView):
 class OrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/order_create.html'
     form_class = forms.OrderForm
-    success_url = reverse_lazy('oligoshell:index')
-
+    success_url = reverse_lazy('oligoshell:sequence_create')
 
 @login_required
 def view_profile(request):

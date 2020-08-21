@@ -1,7 +1,11 @@
 from django.db import models
-from django.core import validators
+from django.contrib.auth.models import User
 
 from django.conf import settings
+
+from . import validators
+from . import utils
+
 
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
@@ -42,17 +46,12 @@ class Sequence(models.Model):
 
     seq_name = models.CharField(verbose_name='Name',
                                 max_length=50,
-                                validators=[validators.RegexValidator(
-                                    regex='^[-a-zA-Z0-9_()]+$',
-                                    message="Name should contain letters, numbers and special characters  _ ( )"
-                                )])
+                                validators=[validators.validate_seq_name_regex])
 
     sequence = models.CharField(verbose_name="Sequence, 5'->3'",
                                 max_length=300,
-                                validators=[validators.RegexValidator(
-                                    regex='^(((\[[-\._a-zA-Z0-9]+\])*?[aAcCgGtTwWsSmMkKrRyYbBdDhHvVnN]*?)*?)$',
-                                    message="Sequence should contain A/C/G/T, degenerated bases W/S/M/K/R/Y/B/D/H/V/N, and modifications e.g. [FAM], [BHQ1] etc."
-                                )])
+                                validators=[validators.validate_sequence_regex,
+                                            validators.validate_modifications])
 
     scale = models.CharField(max_length=20,
                              choices=SCALES_CHOICES,
@@ -64,9 +63,19 @@ class Sequence(models.Model):
                                             default=APPEARANCE_20mM
                                             )
 
+    epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient')
+
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='sequences')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        """Save extinction coefficient to the model"""
+        unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
+        self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
+                           sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
+                           sum((utils.modification_extinction_260[item] for item in modification_list)))
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Sequences'
@@ -77,3 +86,4 @@ class Sequence(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     birthday = models.DateTimeField(blank=True, null=True)
+    photo = models.ImageField(upload_to="user/%Y/%m/%d/", blank=True)

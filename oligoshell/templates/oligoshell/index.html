@@ -6,8 +6,8 @@
         by {{ order.customer }}
 
         {% for seq in order.sequences.all %}
-               <p>{{ seq.pk }}<a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-               {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }}</p>
+               <p><a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+               {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }} {{ seq.epsilon260 }}</p>
         {% endfor %}
 
     {% endfor %}
