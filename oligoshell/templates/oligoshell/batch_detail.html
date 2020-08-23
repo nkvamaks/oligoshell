@@ -1,0 +1,27 @@
+{% extends "layout/basic.html" %}
+
+{% block title %} {{ batch.title }} {% endblock %}
+
+{% block content %}
+
+    <h2>{{ batch.title }}</h2>
+    <p>
+        {{ batch.notes}}
+    </p>
+    <h4>Sequences:</h4>
+    {% for sequence in batch.sequences2synthesis.all %}
+        <a href="{{ sequence.get_absolute_url }}">{{ sequence.seq_name }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block menu %}
+<a href="{% url "oligoshell:index" %}">All materials</a>
+<h4>Batches:</h4>
+    {% for batch_iter in batches %}
+        {% if batch_iter == batch %}
+             <a class="nav-link disabled" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+        {% else %}
+            <a class="nav-link active" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

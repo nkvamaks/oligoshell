@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 from . import models
 from . import forms
@@ -41,6 +42,25 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     form_class = forms.OrderForm
     success_url = reverse_lazy('oligoshell:sequence_create')
 
+
 @login_required
 def view_profile(request):
     return render(request, 'oligoshell/profile.html', {'user': request.user})
+
+
+@login_required
+def all_batches(request):
+    batches = models.Batch.objects.all()
+    return render(request,
+                  'oligoshell/batch.html',
+                  {"batches": batches})
+
+
+@login_required
+def batch_details(request, pk):
+    batch = get_object_or_404(models.Batch, pk=pk)
+    batches = models.Batch.objects.all()
+    return render(request,
+                  'oligoshell/batch_detail.html',
+                  {'batch': batch,
+                   'batches': batches})

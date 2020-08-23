@@ -23,3 +23,11 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('customer', 'email')
     list_filter = ('created',)
     ordering = ('created',)
+
+
+@admin.register(models.Batch)
+class BatchAdmin(admin.ModelAdmin):
+    list_display = ('title', 'created', 'notes')
+    search_fields = ('title', )
+    list_filter = ('created',)
+    ordering = ('created',)

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.urls import reverse
 from django.conf import settings
 
 from . import validators
@@ -66,16 +66,20 @@ class Sequence(models.Model):
     epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient')
 
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='sequences')
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        """Save extinction coefficient to the model"""
+        """Save including extinction coefficient to the model"""
         unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
         self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
                            sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
                            sum((utils.modification_extinction_260[item] for item in modification_list)))
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.seq_name
 
     class Meta:
         verbose_name_plural = 'Sequences'
@@ -87,3 +91,19 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     birthday = models.DateTimeField(blank=True, null=True)
     photo = models.ImageField(upload_to="user/%Y/%m/%d/", blank=True)
+
+
+class Batch(models.Model):
+    title = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    sequences2synthesis = models.ManyToManyField(Sequence,
+                                                 related_name='batches')
+    notes = models.TextField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('oligoshell:batch_details', args=[self.pk])
+
+    class Meta:
+        verbose_name_plural = 'Batches'
+        verbose_name = 'Batch'
+        ordering = ['pk']

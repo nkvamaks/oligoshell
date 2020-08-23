@@ -1,0 +1,21 @@
+{% extends "layout/basic.html" %}
+
+{% block title %} Batch list {% endblock %}
+
+{% block content %}
+    <h1>Batches</h1>
+    {% for batch in batches %}
+        <p><a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a></p>
+        <p>
+            {{ batch.notes|truncatewords_html:10|linebreaks }}
+        </p>
+    {% endfor %}
+{% endblock %}
+aaa
+{% block menu %}
+    <h1>Batches</h1>
+    {% for batch in batches %}
+        <a class="nav-link active" href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+    {% endfor %}
+{% endblock %}
+aaa
