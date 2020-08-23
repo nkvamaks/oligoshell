@@ -19,6 +19,7 @@ class IndexListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IndexListView, self).get_context_data(**kwargs)
         context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
         return context
 
 

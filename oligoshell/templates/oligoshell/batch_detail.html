@@ -6,19 +6,29 @@
     <div class="p-2 mb-2 mt-2 bg-light text-dark">
         <h3>Batches for synthesis:</h3>
     </div>
+
+    <div class="table-responsive">
+<table class="table table-sm">
     {% for batch_iter in batches %}
+        <tr>
         {% if batch_iter == batch %}
-            <div class="bg-light text-dark">
+            <td>
              <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-            <p>{{ batch_iter.notes|truncatewords_html:10|linebreaks }}</p>
+            </td>
+            <td>{{ batch_iter.notes }}</td>
             </div>
         {% else %}
-            <div class="bg-light text-dark">
+            <td>
             <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-            <p>{{ batch_iter.notes|truncatewords_html:10|linebreaks }}</p>
+            </td>
+            <td>{{ batch_iter.notes }}</td>
             </div>
         {% endif %}
+        </tr>
     {% endfor %}
+</table>
+    </div>
+
 {% endblock %}
 
 {% block menu %}
@@ -27,7 +37,7 @@
 </div>
     <h5>Oligos in current batch:</h5>
     {% for sequence in batch.sequences2synthesis.all %}
-        <div class="p-0"><a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>, {{ sequence.sequence }}
+        <div class="p-0"><a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>,{{ sequence.sequence }},U,ON
         </div>
     {% endfor %}
 
