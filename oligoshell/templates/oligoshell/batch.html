@@ -3,19 +3,15 @@
 {% block title %} Batch list {% endblock %}
 
 {% block content %}
-    <h1>Batches</h1>
+    <div class="p-2 mb-2 mt-2 bg-light text-dark">
+    <h3>Batches for Synthesis:</h3>
+    </div>
     {% for batch in batches %}
+        <div class="bg-light text-dark">
         <p><a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a></p>
         <p>
             {{ batch.notes|truncatewords_html:10|linebreaks }}
         </p>
+        </div>
     {% endfor %}
 {% endblock %}
-aaa
-{% block menu %}
-    <h1>Batches</h1>
-    {% for batch in batches %}
-        <a class="nav-link active" href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
-    {% endfor %}
-{% endblock %}
-aaa

@@ -1,27 +1,35 @@
 {% extends "layout/basic.html" %}
 
-{% block title %} {{ batch.title }} {% endblock %}
+{% block title %}Batch details{{ batch.title }} {% endblock %}
 
 {% block content %}
-
-    <h2>{{ batch.title }}</h2>
-    <p>
-        {{ batch.notes}}
-    </p>
-    <h4>Sequences:</h4>
-    {% for sequence in batch.sequences2synthesis.all %}
-        <a href="{{ sequence.get_absolute_url }}">{{ sequence.seq_name }}</a>
+    <div class="p-2 mb-2 mt-2 bg-light text-dark">
+        <h3>Batches for synthesis:</h3>
+    </div>
+    {% for batch_iter in batches %}
+        {% if batch_iter == batch %}
+            <div class="bg-light text-dark">
+             <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+            <p>{{ batch_iter.notes|truncatewords_html:10|linebreaks }}</p>
+            </div>
+        {% else %}
+            <div class="bg-light text-dark">
+            <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+            <p>{{ batch_iter.notes|truncatewords_html:10|linebreaks }}</p>
+            </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}
 
 {% block menu %}
-<a href="{% url "oligoshell:index" %}">All materials</a>
-<h4>Batches:</h4>
-    {% for batch_iter in batches %}
-        {% if batch_iter == batch %}
-             <a class="nav-link disabled" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-        {% else %}
-            <a class="nav-link active" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-        {% endif %}
+<div class="p-2 mb-2 mt-2 bg-light text-dark">
+    <h3>Batch: {{ batch.title }}</h3>
+</div>
+    <h5>Oligos in current batch:</h5>
+    {% for sequence in batch.sequences2synthesis.all %}
+        <div class="p-0"><a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>, {{ sequence.sequence }}
+        </div>
     {% endfor %}
+
+
 {% endblock %}

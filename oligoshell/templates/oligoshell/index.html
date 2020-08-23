@@ -1,52 +1,27 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
-    <script>
-    function getvalues()
-    {
-        var selected = new Array();
-        var chkbox = document.getElementById("tab1");
-        var selchk = chkbox.getElementsByTagName("input");
-        for (var i=0; i<selchk.length; i++)
-        {
-            if (selchk[i].checked)
-            {
-                selected.push(selchk[i].value);
-            }
-        }
-        if (selected.length > 0)
-        {
-            alert(selected.join("\n"))
-        }
-    };
-    </script>
 
-<table id="tab1">
-
+<table>
     {% for order in orders %}
-        <div align="left">
+
+        <div class="p-2 mb-2 mt-2 bg-light text-dark">
               <a href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }}</a>
               by {{ order.customer }}
         </div>
 
-<tr>
-       <td>
+
+
            {% for seq in order.sequences.all %}
 
-                   <p><input type="checkbox" value="{{ seq.seq_name }},{{ seq.sequence }},U,ON">
-
-                   <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-               {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }} {{ seq.epsilon260 }}</p>
-
+              <p> <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+              {{ seq.sequence }}
+    {{ seq.scale }}
+  {{ seq.appearance_requested }}
+    {{ seq.epsilon260 }}</p>
            {% endfor %}
-       </td>
-</table>
+
+
     {% endfor %}
-
-{% endblock %}
-
-{% block menu %}
-    <div>
-        <input id="but1" type="button" value="SYNTHESIS" onclick="getvalues()">
-    </div>
+</table>
 {% endblock %}

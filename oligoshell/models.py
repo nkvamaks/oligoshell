@@ -71,7 +71,7 @@ class Sequence(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        """Save including extinction coefficient to the model"""
+        """Save extinction coefficient to the model"""
         unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
         self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
                            sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
@@ -96,12 +96,14 @@ class Profile(models.Model):
 class Batch(models.Model):
     title = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
-    sequences2synthesis = models.ManyToManyField(Sequence,
-                                                 related_name='batches')
+    sequences2synthesis = models.ManyToManyField(Sequence, related_name='batches')
     notes = models.TextField(blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         verbose_name_plural = 'Batches'

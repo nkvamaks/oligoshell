@@ -40,14 +40,15 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'oligoshell:batch' %}">Batches</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'oligoshell:profile' %}">Profile</a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="{% url "password_change" %}">Password change</a>
             </li>
             <li class="nav-item">
                  <b class="nav-link">Hi, {{ request.user.first_name }}</b>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'oligoshell:profile' %}">Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url "logout" %}">Logout</a>
