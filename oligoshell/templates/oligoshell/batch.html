@@ -3,23 +3,25 @@
 {% block title %} Batch list {% endblock %}
 
 {% block content %}
+    <div class="col align-self-start mt-3">
 
-    <div class="p-2 mb-2 mt-2 bg-light text-dark">
-    <h3>Batches for Synthesis:</h3>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
+              <thead class="thead-light">
+                <tr>
+                    <th>Batch Name</th>
+                    <th>Comments</th>
+                </tr>
+              </thead>
+            {% for batch in batches %}
+                <tr>
+                    <td>
+                    <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                    </td>
+                    <td>{{ batch.notes}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
     </div>
-
-    <div class="table-responsive">
-<table class="table table-sm">
-    {% for batch in batches %}
-        <tr>
-        <td>
-        <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
-        </td>
-            <td>
-            {{ batch.notes}}
-        </td>
-        </tr>
-    {% endfor %}
-</table>
-
 {% endblock %}

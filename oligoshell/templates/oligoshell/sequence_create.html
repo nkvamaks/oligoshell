@@ -1,13 +1,15 @@
 {% extends 'layout/basic.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block title %}Add Sequence{% endblock %}
 
 {% block content %}
-<h2>Add a New Sequence</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{form.as_p}}
-      <input type="submit" value="Add">
-
-    </form>
+    <div class="container-fluid">
+        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Add a New Sequence</h5>
+        <form method="post" class="uniForm">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </div>
 {% endblock %}

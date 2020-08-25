@@ -2,44 +2,50 @@
 
 {% block title %}Batch details{{ batch.title }} {% endblock %}
 
-{% block content %}
-    <div class="p-2 mb-2 mt-2 bg-light text-dark">
-        <h3>Batches for synthesis:</h3>
-    </div>
+    {% block content %}
+    <div class="col-7 align-self-start mt-3">
 
-    <div class="table-responsive">
-<table class="table table-sm">
-    {% for batch_iter in batches %}
-        <tr>
-        {% if batch_iter == batch %}
-            <td>
-             <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-            </td>
-            <td>{{ batch_iter.notes }}</td>
-            </div>
-        {% else %}
-            <td>
-            <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
-            </td>
-            <td>{{ batch_iter.notes }}</td>
-            </div>
-        {% endif %}
-        </tr>
-    {% endfor %}
-</table>
-    </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Batch Name</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                {% for batch_iter in batches %}
+                <tr>
+                    {% if batch_iter == batch %}
+                        <td>
+                            <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+                        </td>
+                        <td>{{ batch_iter.notes }}</td>
 
-{% endblock %}
+                    {% else %}
+                        <td>
+                            <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+                        </td>
+                        <td>{{ batch_iter.notes }}</td>
 
-{% block menu %}
-<div class="p-2 mb-2 mt-2 bg-light text-dark">
-    <h3>Batch: {{ batch.title }}</h3>
-</div>
-    <h5>Oligos in current batch:</h5>
-    {% for sequence in batch.sequences2synthesis.all %}
-        <div class="p-0"><a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>,{{ sequence.sequence }},U,ON
+                     {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-    {% endfor %}
 
+    </div>
+    {% endblock %}
 
-{% endblock %}
+    {% block menu %}
+    <div class="col align-self-start mt-3">
+
+        <h5>Oligos in batch: {{ batch.title }}</h5>
+
+        {% for sequence in batch.sequences2synthesis.all %}
+        <div class="p-0">
+            <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>,{{ sequence.sequence }},U,ON
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endblock %}

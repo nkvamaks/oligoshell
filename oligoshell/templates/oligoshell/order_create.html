@@ -1,13 +1,15 @@
 {% extends 'layout/basic.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}Add Order{% endblock %}
 
 {% block content %}
-<h2>Add a New Order</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{form.as_p}}
-      <input type="submit" value="Add">
+    <div class="container-fluid">
+        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Create a New Order</h5>
 
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </div>
 {% endblock %}

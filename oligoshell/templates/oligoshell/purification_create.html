@@ -1,0 +1,15 @@
+{% extends 'layout/basic.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Purification{% endblock %}
+
+{% block content %}
+
+      <div class="container-fluid">
+        <h5 class="p-1 mb-1 mt-3 mb-3">Choose Purification Method</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+      </div>
+{% endblock %}

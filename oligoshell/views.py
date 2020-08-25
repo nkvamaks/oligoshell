@@ -44,6 +44,12 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('oligoshell:sequence_create')
 
 
+class PurificationCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'oligoshell/purification_create.html'
+    form_class = forms.PurificationForm
+    success_url = reverse_lazy('oligoshell:index')
+
+
 @login_required
 def view_profile(request):
     return render(request, 'oligoshell/profile.html', {'user': request.user})

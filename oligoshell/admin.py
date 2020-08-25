@@ -26,8 +26,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Batch)
-class BatchAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created', 'notes')
-    search_fields = ('title', )
-    list_filter = ('created',)
-    ordering = ('created',)
+class BatchAdmin(admin.ModelAdmin): pass
+
+
+@admin.register(models.Purification)
+class PurificationAdmin(admin.ModelAdmin): pass

@@ -1,39 +1,41 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
+  <div class="container-fluid">
 
     {% for order in orders %}
 
-        <div class="p-2 mb-2 mt-2 bg-light text-dark">
-              <a href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }}</a>
-              by {{ order.customer }}
+        <div class="p-1 mb-1 mt-1 bg-light text-dark">
+              <a href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }}</a> by {{ order.customer }}
         </div>
 
-<div class="table-responsive">
-<table class="table table-sm">
+    <div class="table-responsive">
+        <table class="table table-sm">
+
            {% for seq in order.sequences.all %}
                <tr>
+                   <td>
+                        <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+                   </td>
+                   <td> {{ seq.sequence|truncatechars_html:30 }}</td>
+                   <td>{{ seq.scale }}</td>
+                   <td> {{ seq.appearance_requested }}</td>
+                   <td>  {{ seq.epsilon260 }}</td>
 
-       <td>
-           <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-       </td>
-    <td> {{ seq.sequence|truncatechars_html:30 }}</td>
-   <td>{{ seq.scale }}</td>
-   <td> {{ seq.appearance_requested }}</td>
-      <td>  {{ seq.epsilon260 }}</td>
-
-         <td> {% if seq.batches.all %}
-               DONE
-           {% else %}
-               SYNTHESIZE
-           {% endif %}
-</td>
+                   <td>
+                       {% if seq.batches.all %}
+                            SYNTHESIZED
+                       {% else %}
+                            -
+                       {% endif %}
+                   </td>
                </tr>
            {% endfor %}
 
-</table>
+        </table>
         </div>
 
-
     {% endfor %}
+    </div>
+
 {% endblock %}

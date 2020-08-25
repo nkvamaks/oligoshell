@@ -10,7 +10,10 @@ from . import utils
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
                                 max_length=50)
-    comments = models.TextField(blank=True, null=True)
+    comments = models.TextField(max_length=300,
+                                blank=True,
+                                null=True,
+                                )
     email = models.EmailField(blank=True, null=True)
     created = models.DateTimeField(verbose_name='Date Ordered',
                                    auto_now_add=True)
@@ -44,6 +47,21 @@ class Sequence(models.Model):
         (APPEARANCE_Freeze_dried, 'Freeze-dried'),
     ]
 
+    PURIFICATION_OPC = 'OPC'
+    PURIFICATION_RP_HPLC = 'RP-HPLC'
+    PURIFICATION_IEX_HPLC = 'IEX-HPLC'
+    PURIFICATION_PAGE = 'PAGE'
+    PURIFICATION_PAGE_HPLC = 'PAGE + HPLC'
+    PURIFICATION_RECOMMENDED = 'Company Recommended'
+    PURIFICATION_CHOICES = [
+        (PURIFICATION_OPC, 'OPC'),
+        (PURIFICATION_RP_HPLC, 'RP-HPLC'),
+        (PURIFICATION_IEX_HPLC, 'IEX-HPLC'),
+        (PURIFICATION_PAGE, 'PAGE'),
+        (PURIFICATION_PAGE_HPLC, 'PAGE + HPLC'),
+        (PURIFICATION_RECOMMENDED, 'Company Recommended'),
+    ]
+
     seq_name = models.CharField(verbose_name='Name',
                                 max_length=50,
                                 validators=[validators.validate_seq_name_regex])
@@ -53,22 +71,30 @@ class Sequence(models.Model):
                                 validators=[validators.validate_sequence_regex,
                                             validators.validate_modifications])
 
-    scale = models.CharField(max_length=20,
+    scale = models.CharField(verbose_name='Synthesis Scale',
+                             max_length=20,
                              choices=SCALES_CHOICES,
                              default=MIN_SCALE
                              )
 
-    appearance_requested = models.CharField(max_length=20,
+    appearance_requested = models.CharField(verbose_name='Appearance',
+                                            max_length=20,
                                             choices=APPEARANCE_CHOICES,
                                             default=APPEARANCE_20mM
                                             )
 
-    epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient')
+    purification_requested = models.CharField(verbose_name='Purification',
+                                              max_length=30,
+                                              choices=PURIFICATION_CHOICES,
+                                              default=PURIFICATION_OPC
+                                              )
 
-    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='sequences')
+    epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient', blank=True, null=True)
 
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='sequences')
+
+    created = models.DateTimeField(verbose_name='Sequence Created', auto_now_add=True)
+    updated = models.DateTimeField(verbose_name='Sequence Updated', auto_now=True)
 
     def save(self, *args, **kwargs):
         """Save extinction coefficient to the model"""
@@ -79,7 +105,7 @@ class Sequence(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.seq_name
+        return self.seq_name + ', ' + self.sequence
 
     class Meta:
         verbose_name_plural = 'Sequences'
@@ -94,10 +120,12 @@ class Profile(models.Model):
 
 
 class Batch(models.Model):
-    title = models.CharField(max_length=200)
-    created = models.DateTimeField(auto_now_add=True)
-    sequences2synthesis = models.ManyToManyField(Sequence, related_name='batches')
-    notes = models.TextField(blank=True, null=True)
+    title = models.CharField(verbose_name='Batch Name', max_length=200)
+    created = models.DateTimeField(verbose_name='Batch Created', auto_now_add=True)
+    sequences2synthesis = models.ManyToManyField(Sequence,
+                                                 verbose_name='Sequences to be Synthesized',
+                                                 related_name='batches')
+    notes = models.TextField(verbose_name='Notes', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])
@@ -108,4 +136,39 @@ class Batch(models.Model):
     class Meta:
         verbose_name_plural = 'Batches'
         verbose_name = 'Batch'
+        ordering = ['pk']
+
+
+class Purification(models.Model):
+    OPC = 'OPC'
+    RP_HPLC = 'RP-HPLC'
+    IEX_HPLC = 'IEX-HPLC'
+    PAGE = 'PAGE'
+    PURIFICATION_CHOICES = [
+        (OPC, 'OPC'),
+        (RP_HPLC, 'RP-HPLC'),
+        (IEX_HPLC, 'IEX-HPLC'),
+        (PAGE, 'PAGE'),
+    ]
+
+    title = models.CharField(verbose_name='Purification Method',
+                             max_length=50,
+                             choices=PURIFICATION_CHOICES,
+                             default=OPC,
+                             )
+
+    created = models.DateTimeField(verbose_name='Purification Created',
+                                   auto_now_add=True)
+
+    pur_seqs = models.ManyToManyField(Sequence,
+                                      verbose_name='Sequences for Purification',
+                                      related_name='purifications')
+
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = 'Purifications'
+        verbose_name = 'Purification'
         ordering = ['pk']
