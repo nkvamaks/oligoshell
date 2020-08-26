@@ -44,6 +44,12 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('oligoshell:sequence_create')
 
 
+class BatchCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'oligoshell/batch_create.html'
+    form_class = forms.BatchForm
+    success_url = reverse_lazy('oligoshell:index')
+
+
 class PurificationCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/purification_create.html'
     form_class = forms.PurificationForm

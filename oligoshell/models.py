@@ -10,7 +10,7 @@ from . import utils
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
                                 max_length=50)
-    comments = models.TextField(max_length=300,
+    comments = models.CharField(max_length=300,
                                 blank=True,
                                 null=True,
                                 )
@@ -102,6 +102,7 @@ class Sequence(models.Model):
         self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
                            sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
                            sum((utils.modification_extinction_260[item] for item in modification_list)))
+        self.sequence = self.sequence.upper()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -125,7 +126,7 @@ class Batch(models.Model):
     sequences2synthesis = models.ManyToManyField(Sequence,
                                                  verbose_name='Sequences to be Synthesized',
                                                  related_name='batches')
-    notes = models.TextField(verbose_name='Notes', blank=True, null=True)
+    notes = models.CharField(max_length=300, verbose_name='Notes', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])

@@ -12,6 +12,7 @@ urlpatterns = [
     path('order<int:pk>/', views.OrderDetailView.as_view(), name='order_detail'),
     path('seq_add/', views.SequenceCreateView.as_view(), name='sequence_create'),
     path('order_add/', views.OrderCreateView.as_view(), name='order_create'),
+    path('batch_add/', views.BatchCreateView.as_view(), name='batch_create'),
     path('purification_add/', views.PurificationCreateView.as_view(), name='purification_create'),
     path('profile/', views.view_profile, name='profile'),
     path('batch/', views.all_batches, name='batch'),

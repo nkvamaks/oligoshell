@@ -1,11 +1,24 @@
 {% extends "layout/basic.html" %}
 
-{% block title %}Person profile {% endblock %}
+{% block title %}Person Profile {% endblock %}
 
 {% block content %}
-{#    <p> <a href="{% url "" %}">Edit profile</a></p>#}
-    <p>Date of birth: {{ user.profile.birthday }}</p>
-    <p>name: {{ user.first_name }} {{ user.last_name }}</p>
-    <p><img src="{{ user.profile.photo.url }}" alt="Users' Photo"></p>
-
+     <div class="col align-self-start mt-3">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
+                <tr>
+                    <td>Date of birth</td>
+                    <td>{{ user.profile.birthday }}</td>
+                </tr>
+                <tr>
+                    <td>Full Name</td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <td>Photo</td>
+                    <td><img src="{{ user.profile.photo.url }}" alt="Users' Photo"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 {% endblock %}

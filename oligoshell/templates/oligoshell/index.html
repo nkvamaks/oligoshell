@@ -5,28 +5,48 @@
 
     {% for order in orders %}
 
-        <div class="p-1 mb-1 mt-1 bg-light text-dark">
-              <a href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }}</a> by {{ order.customer }}
+        <div class="p-2 mt-1 bg-secondary">
+              <a class="text-white" href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }} by {{ order.customer }}</a>
         </div>
 
     <div class="table-responsive">
-        <table class="table table-sm">
+        <table class="table table-sm table-hover">
 
-           {% for seq in order.sequences.all %}
+              <thead class="thead-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Sequence 5'->3'</th>
+                    <th>Scale</th>
+                    <th>Requested Form</th>
+                    <th>Synthesized</th>
+                    <th>Purified</th>
+                </tr>
+              </thead>
+            {% for seq in order.sequences.all %}
+
                <tr>
-                   <td>
+                   <td class="p-1 align-middle" width="10%">
                         <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
                    </td>
-                   <td> {{ seq.sequence|truncatechars_html:30 }}</td>
-                   <td>{{ seq.scale }}</td>
-                   <td> {{ seq.appearance_requested }}</td>
-                   <td>  {{ seq.epsilon260 }}</td>
+                   <td class="p-1 align-middle" width="45%"> {{ seq.sequence }}</td>
+                   <td class="p-1 align-middle" width="10%">{{ seq.scale }}</td>
+                   <td class="p-1 align-middle" width="10%"> {{ seq.appearance_requested }}</td>
 
-                   <td>
+                   <td class="p-1 align-middle" width="10%">
                        {% if seq.batches.all %}
-                            SYNTHESIZED
+                            Yes
                        {% else %}
                             -
+                       {% endif %}
+                   </td>
+                   <td class="p-1 align-middle" width="15%">
+                       {% if seq.purifications.all %}
+                           {% for purification in seq.purifications.all %}
+                                <p class="p-0 mb-0 mt-0 align-middle">{{ purification.title }}</p>
+                           {% endfor %}
+                       {% else %}
+                            -
+
                        {% endif %}
                    </td>
                </tr>

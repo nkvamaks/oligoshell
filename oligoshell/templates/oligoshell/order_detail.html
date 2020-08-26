@@ -1,20 +1,45 @@
 {% extends "layout/basic.html" %}
 
-{% block title %}
-   Orders
-{% endblock %}
+{% block title %}Orders{% endblock %}
 
 {% block content %}
 
-    <p>{{ order.pk }}</p>
-    <p>{{ order.created|date:"d M Y, H:i" }}</p>
-    <p>{{ order.updated|date:"d M Y, H:i" }}</p>
-    <p>{{ order.customer }}</p>
-    <p>{{ order.email }}</p>
-    <p>{{ order.comments }}</p>
-    {% for seq in order.sequences.all %}
-           <p>{{ seq.pk }}<a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-           {{ seq.sequence }} {{ seq.scale }} {{ seq.appearance_requested }}</p>
-    {% endfor %}
+    <div class="col-7 align-self-start mt-3">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
+                <tr>
+                    <td>Order # / Customer</td>
+                    <td>{{ order.pk }} / {{ order.customer }}</td>
+                </tr>
+                <tr>
+                    <td>Customers' Email</td>
+                    <td>{{ order.email }}</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Comments</td>
+                    <td>{{ order.comments }}</td>
+                </tr>
+                <tr>
+                    <td>Order Created</td>
+                    <td>{{ order.created|date:"d M Y, H:i" }}</td>
+                </tr>
+                <tr>
+                    <td>Order Updated</td>
+                    <td>{{ order.updated|date:"d M Y, H:i" }}</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Sequences in Current Order</td>
+                    <td>
+                         {% for seq in order.sequences.all %}
+                              <p class="p-0 mb-0 mt-0 align-middle">
+                                  <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">{{ seq.seq_name }}</a>
+                                  {{ seq.sequence }}
+                              </p>
+                         {% endfor %}
+                    </td>
+                </tr>
 
+            </table>
+         </div>
+    </div>
 {% endblock %}

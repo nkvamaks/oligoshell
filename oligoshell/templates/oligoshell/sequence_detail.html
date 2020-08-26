@@ -1,17 +1,91 @@
 {% extends "layout/basic.html" %}
 
-{% block title %}
-   Sequence details
-{% endblock %}
+{% block title %}Sequence Details{% endblock %}
 
 {% block content %}
+    <div class="col-7 align-self-start mt-3">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
+                <tr>
+                    <td>Order # / Customer</td>
+                    <td>
+                        <a href="{% url 'oligoshell:order_detail' pk=sequence.order.pk %}">{{ sequence.order.pk }}
+                        / {{ sequence.order.customer }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sequence Name</td>
+                    <td>{{ sequence.seq_name }}</td>
+                </tr>
+                <tr>
+                    <td>Sequence 5'->3'</td>
+                    <td>{{ sequence.sequence }}</td>
+                </tr>
+                <tr>
+                    <td>Scale</td>
+                    <td>{{ sequence.scale }}</td>
+                </tr>
+                <tr>
+                    <td>Requested Form</td>
+                    <td>{{ sequence.appearance_requested }}</td>
+                </tr>
+                <tr>
+                    <td>Requested Purification</td>
+                    <td>{{ sequence.purification_requested }}</td>
+                </tr>
+                <tr>
+                    <td>Extinction Coefficient at 260 nm</td>
+                    <td>{{ sequence.epsilon260 }}</td>
+                </tr>
+                <tr>
+                    <td>Sequence Created</td>
+                    <td>{{ sequence.created|date:"d M Y, H:i" }}</td>
+                </tr>
+                <tr>
+                    <td>Sequence Updated</td>
+                    <td>{{ sequence.updated|date:"d M Y, H:i" }}</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Sequence was Synthesized in Batch</td>
+                    <td>{% if  sequence.batches.all %}
+                            {% for batch in sequence.batches.all %}
+                                <p class="p-0 mb-0 mt-0 align-middle">
+                                    <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                                <p class="p-0 mb-0 mt-0 align-middle">NOT SYNTHESIZED</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Sequence was Purified by</td>
+                    <td>{% if  sequence.purifications.all %}
+                            {% for purification in sequence.purifications.all %}
+                                <p class="p-0 mb-0 mt-0 align-middle">
+                                    <a href="{{ purification.get_absolute_url }}">{{ purification.title }}</a>
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                                <p class="p-0 mb-0 mt-0 align-middle">NOT PURIFIED</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Absorption at 260 nm</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Total Volume</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Final Concentration</td>
+                    <td></td>
+                </tr>
 
-    <p>{{ sequence.seq_name }}</p>
-    <p>{{ sequence.sequence }}</p>
-    <p>{{ sequence.scale }}</p>
-    <p>{{ sequence.appearance_requested }}</p>
-    <p>{{ sequence.epsilon260 }}</p>
-    <p>{{ sequence.created|date:"d M Y, H:i" }}</p>
-    <p>{{ sequence.updated|date:"d M Y, H:i" }}</p>
 
+            </table>
+         </div>
+    </div>
 {% endblock %}

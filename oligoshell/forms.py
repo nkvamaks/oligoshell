@@ -58,6 +58,29 @@ class OrderForm(forms.ModelForm):
         )
 
 
+class BatchForm(forms.ModelForm):
+    class Meta:
+        model = models.Batch
+        fields = ('title', 'sequences2synthesis', 'notes')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for myField in self.fields:
+            self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.fields['sequences2synthesis'].widget = forms.widgets.CheckboxSelectMultiple()
+        self.fields['sequences2synthesis'].queryset = models.Sequence.objects.all()
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('title', css_class='form-group col-md-4 mb-2'),
+                Column('notes', css_class='form-group col-md-8 mb-2'),
+                css_class='form-row'
+            ),
+            'sequences2synthesis',
+            Submit('submit', 'Add Purification')
+            )
+
+
 class PurificationForm(forms.ModelForm):
     class Meta:
         model = models.Purification
@@ -72,8 +95,8 @@ class PurificationForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('pur_seqs', css_class='form-group col-md-9 mb-2'),
-                Column('title', css_class='form-group col-md-3 mb-2'),
+                Column('pur_seqs', css_class='form-group col-md-8 mb-2'),
+                Column('title', css_class='form-group col-md-4 mb-2'),
                 css_class='form-row'
             ),
             Submit('submit', 'Add Purification')
