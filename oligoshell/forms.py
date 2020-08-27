@@ -101,3 +101,20 @@ class PurificationForm(forms.ModelForm):
             ),
             Submit('submit', 'Add Purification')
             )
+
+
+class ConcentrationForm(forms.ModelForm):
+    class Meta:
+        model = models.Sequence
+        fields = ('absorbance260', 'volume')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for myField in self.fields:
+            self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'absorbance260',
+            'volume',
+            Submit('submit', 'Save Measurements')
+        )

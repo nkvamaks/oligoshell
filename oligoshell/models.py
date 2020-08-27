@@ -91,22 +91,34 @@ class Sequence(models.Model):
 
     epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient', blank=True, null=True)
 
+    absorbance260 = models.FloatField(verbose_name='Absorbance at 260 nm', blank=True, null=True)
+
+    volume = models.FloatField(verbose_name='Total Volume, mL', blank=True, null=True)
+
+    concentration = models.FloatField(verbose_name='Concentration, uM', blank=True, null=True)
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='sequences')
 
     created = models.DateTimeField(verbose_name='Sequence Created', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Sequence Updated', auto_now=True)
 
+    done = models.BooleanField(verbose_name='Sequence Complete', default=False)
+
     def save(self, *args, **kwargs):
         """Save extinction coefficient to the model"""
+        self.sequence = self.sequence.upper()
         unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
         self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
                            sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
                            sum((utils.modification_extinction_260[item] for item in modification_list)))
-        self.sequence = self.sequence.upper()
+        if self.absorbance260:
+            self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
+        if self.concentration:
+            self.done = True
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.seq_name + ', ' + self.sequence
+        return self.seq_name + ', ' + self.sequence + ', ' + self.scale
 
     class Meta:
         verbose_name_plural = 'Sequences'
@@ -164,7 +176,6 @@ class Purification(models.Model):
     pur_seqs = models.ManyToManyField(Sequence,
                                       verbose_name='Sequences for Purification',
                                       related_name='purifications')
-
 
     def __str__(self):
         return self.title

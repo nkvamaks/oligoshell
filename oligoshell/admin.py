@@ -10,7 +10,8 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(models.Sequence)
 class SequenceAdmin(admin.ModelAdmin):
-    list_display = ('seq_name', 'sequence', 'scale', 'appearance_requested', 'epsilon260')
+    list_display = ('pk', 'seq_name', 'sequence', 'scale', 'appearance_requested', 'epsilon260',
+                    'absorbance260', 'volume', 'concentration')
     list_display_links = ('seq_name',)
     search_fields = ('seq_name', 'sequence')
     list_filter = ('scale', 'created')

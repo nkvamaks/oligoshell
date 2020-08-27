@@ -20,6 +20,7 @@
                     <th>Requested Form</th>
                     <th>Synthesized</th>
                     <th>Purified</th>
+                    <th>c, uM</th>
                 </tr>
               </thead>
             {% for seq in order.sequences.all %}
@@ -39,7 +40,7 @@
                             -
                        {% endif %}
                    </td>
-                   <td class="p-1 align-middle" width="15%">
+                   <td class="p-1 align-middle" width="8%">
                        {% if seq.purifications.all %}
                            {% for purification in seq.purifications.all %}
                                 <p class="p-0 mb-0 mt-0 align-middle">{{ purification.title }}</p>
@@ -49,6 +50,14 @@
 
                        {% endif %}
                    </td>
+                  <td class="p-1 align-middle" width="7%">
+                       {% if seq.concentration %}
+                           <p class="p-0 mb-0 mt-0 align-middle">{{ seq.concentration }}</p>
+                       {% else %}
+                            -
+                       {% endif %}
+                   </td>
+
                </tr>
            {% endfor %}
 

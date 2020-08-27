@@ -1,9 +1,10 @@
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
@@ -17,14 +18,19 @@ class IndexListView(LoginRequiredMixin, ListView):
     template_name = 'oligoshell/index.html'
 
     def get_context_data(self, **kwargs):
-        context = super(IndexListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['orders'] = models.Order.objects.all()
         context['batches'] = models.Batch.objects.all()
         return context
 
 
-class SequenceDetailView(LoginRequiredMixin, DetailView):
+class SequenceUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Sequence
+    template_name = 'oligoshell/sequence_detail.html'
+    form_class = forms.ConcentrationForm
+
+    def get_success_url(self):
+        return reverse('oligoshell:sequence_detail', kwargs={'pk': self.object.id})
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
