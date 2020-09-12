@@ -46,9 +46,6 @@
             </li>
 
             <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url "password_change" %}">Password change</a>
-            </li>
-            <li class="nav-item">
                  <b class="navbar-brand nav-link">Hi, {{ request.user.first_name }}</b>
             </li>
             <li class="nav-item">
@@ -61,7 +58,7 @@
         {% else %}
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url "login" %}">Login</a>
+                <a class="navbar-brand nav-link" href="{% url "login" %}">Login</a>
             </li>
 
         {% endif %}

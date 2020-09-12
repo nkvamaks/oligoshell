@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import m2m_changed
 
 from . import validators
 from . import utils
@@ -102,7 +104,12 @@ class Sequence(models.Model):
     created = models.DateTimeField(verbose_name='Sequence Created', auto_now_add=True)
     updated = models.DateTimeField(verbose_name='Sequence Updated', auto_now=True)
 
+    synthesized = models.BooleanField(verbose_name='Sequence Synthesized', default=False)
     done = models.BooleanField(verbose_name='Sequence Complete', default=False)
+
+    def set_synthesized(self):
+        self.synthesized = True
+        self.save()
 
     def save(self, *args, **kwargs):
         """Save extinction coefficient to the model"""
@@ -143,13 +150,20 @@ class Batch(models.Model):
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         verbose_name_plural = 'Batches'
         verbose_name = 'Batch'
         ordering = ['pk']
+
+
+@receiver(m2m_changed, sender=Batch.sequences2synthesis.through)
+def sequence_synthesized(sender, **kwargs):
+    action = kwargs.pop('action', None)
+    pk_set = kwargs.pop('pk_set', None)
+    instance = kwargs.pop('instance', None)
+    if action == 'post_add':
+        for id_num in pk_set:
+            instance.sequences2synthesis.get(pk=id_num).set_synthesized()
 
 
 class Purification(models.Model):

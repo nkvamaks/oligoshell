@@ -68,7 +68,7 @@ class BatchForm(forms.ModelForm):
         for myField in self.fields:
             self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['sequences2synthesis'].widget = forms.widgets.CheckboxSelectMultiple()
-        self.fields['sequences2synthesis'].queryset = models.Sequence.objects.all()
+        self.fields['sequences2synthesis'].queryset = models.Sequence.objects.filter(synthesized=False)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
@@ -77,7 +77,7 @@ class BatchForm(forms.ModelForm):
                 css_class='form-row'
             ),
             'sequences2synthesis',
-            Submit('submit', 'Add Purification')
+            Submit('submit', 'Create Synthesis Batch')
             )
 
 
@@ -99,7 +99,7 @@ class PurificationForm(forms.ModelForm):
                 Column('title', css_class='form-group col-md-4 mb-2'),
                 css_class='form-row'
             ),
-            Submit('submit', 'Add Purification')
+            Submit('submit', 'Create Synthesis Batch')
             )
 
 

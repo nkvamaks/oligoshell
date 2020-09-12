@@ -17,7 +17,8 @@
                     <th>Name</th>
                     <th>Sequence 5'->3'</th>
                     <th>Scale</th>
-                    <th>Requested Form</th>
+                    <th>Form</th>
+                    <th>Purification</th>
                     <th>Synthesized</th>
                     <th>Purified</th>
                     <th>c, uM</th>
@@ -29,19 +30,20 @@
                    <td class="p-1 align-middle" width="10%">
                         <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
                    </td>
-                   <td class="p-1 align-middle" width="45%"> {{ seq.sequence }}</td>
-                   <td class="p-1 align-middle" width="10%">{{ seq.scale }}</td>
-                   <td class="p-1 align-middle" width="10%"> {{ seq.appearance_requested }}</td>
+                   <td class="p-1 align-middle" width="40%"> {{ seq.sequence }}</td>
+                   <td class="p-1 align-middle" width="8%">{{ seq.scale }}</td>
+                   <td class="p-1 align-middle" width="8%"> {{ seq.appearance_requested }}</td>
+                   <td class="p-1 align-middle" width="9%"> {{ seq.purification_requested }}</td>
 
                    <td class="p-1 align-middle" width="10%">
-                       {% if seq.batches.all %}
-                            Yes
+                       {% if seq.synthesized %}
+                           Yes
                        {% else %}
                             -
                        {% endif %}
                    </td>
                    <td class="p-1 align-middle" width="8%">
-                       {% if seq.purifications.all %}
+                       {% if seq.purifications.exists %}
                            {% for purification in seq.purifications.all %}
                                 <p class="p-0 mb-0 mt-0 align-middle">{{ purification.title }}</p>
                            {% endfor %}
