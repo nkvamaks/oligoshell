@@ -26,6 +26,9 @@ class Order(models.Model):
         verbose_name = 'Order number'
         ordering = ['pk']
 
+    def get_absolute_url(self):
+        return reverse('oligoshell:index')
+
     def __str__(self):
         return '# ' + str(self.pk) + ' by ' + str(self.customer)
 
@@ -64,7 +67,7 @@ class Sequence(models.Model):
         (PURIFICATION_RECOMMENDED, 'Company Recommended'),
     ]
 
-    seq_name = models.CharField(verbose_name='Name',
+    seq_name = models.CharField(verbose_name='Sequence Name',
                                 max_length=50,
                                 validators=[validators.validate_seq_name_regex])
 
@@ -112,7 +115,6 @@ class Sequence(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        """Save extinction coefficient to the model"""
         self.sequence = self.sequence.upper()
         unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
         self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +

@@ -1,6 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
+from extra_views import InlineFormSetFactory
 
 from . import models
 
@@ -35,6 +36,12 @@ class SequenceForm(forms.ModelForm):
             ),
             Submit('submit', 'Add a new Sequence')
         )
+
+
+class SequenceInline(InlineFormSetFactory):
+    model = models.Sequence
+    fields = ['seq_name', 'sequence']
+    factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': True}
 
 
 class OrderForm(forms.ModelForm):

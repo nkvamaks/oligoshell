@@ -1,15 +1,38 @@
 {% extends 'layout/basic.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Add Order{% endblock %}
+{% block title %}Create Order{% endblock %}
 
 {% block content %}
     <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3 text-center">Create a New Order</h5>
+        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Create a New Order</h5>
 
-        <form method="post">
+        <form action="." method="post">
             {% csrf_token %}
-            {% crispy form %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            {% for formset in inlines %}
+                <div id="sequence-form">
+                {% for subform in formset.forms %}
+                    <table>
+                        {{ subform.as_table }}
+                    </table>
+                {% endfor %}
+                <button id="add-form" type="button">+</button>
+                {{ formset.management_form }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Submit" class="submit"/>
         </form>
+
     </div>
+
+    <script>
+        let sequenceForm = document.querySelectorAll("#sequence-form")
+        let addButton = document.querySelectorAll("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+        let formNum = sequenceForm.length-1
+        window.alert(formNum)
+    </script>
+
 {% endblock %}

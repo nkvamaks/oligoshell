@@ -1,0 +1,14 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %}Add Sequences{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Add New Sequences</h5>
+        <form method="post" class="uniForm">
+            {% csrf_token %}
+            {{ formset }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+{% endblock %}

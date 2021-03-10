@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView
+
 
 from . import models
 from . import forms
@@ -33,10 +35,6 @@ class SequenceUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('oligoshell:sequence_detail', kwargs={'pk': self.object.id})
 
 
-class OrderDetailView(LoginRequiredMixin, DetailView):
-    model = models.Order
-
-
 class SequenceCreateView(LoginRequiredMixin, CreateView):
     model = models.Sequence
     template_name = 'oligoshell/sequence_create.html'
@@ -44,10 +42,25 @@ class SequenceCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('oligoshell:index')
 
 
-class OrderCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'oligoshell/order_create.html'
+# class OrderCreateView(LoginRequiredMixin, CreateView):
+#     template_name = 'oligoshell/order_create.html'
+#     form_class = forms.OrderForm
+#     success_url = reverse_lazy('oligoshell:sequence_create')
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = models.Order
+
+
+class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
+    model = models.Order
     form_class = forms.OrderForm
-    success_url = reverse_lazy('oligoshell:sequence_create')
+    # fields = ['customer']
+    inlines = [forms.SequenceInline]
+    template_name = 'oligoshell/order_create.html'
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
 
 class BatchCreateView(LoginRequiredMixin, CreateView):
