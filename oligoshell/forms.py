@@ -40,8 +40,8 @@ class SequenceForm(forms.ModelForm):
 
 class SequenceInline(InlineFormSetFactory):
     model = models.Sequence
-    fields = ['seq_name', 'sequence']
-    factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': True}
+    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested']
+    factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': False}
 
 
 class OrderForm(forms.ModelForm):

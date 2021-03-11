@@ -42,12 +42,6 @@ class SequenceCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('oligoshell:index')
 
 
-# class OrderCreateView(LoginRequiredMixin, CreateView):
-#     template_name = 'oligoshell/order_create.html'
-#     form_class = forms.OrderForm
-#     success_url = reverse_lazy('oligoshell:sequence_create')
-
-
 class OrderDetailView(LoginRequiredMixin, DetailView):
     model = models.Order
 
@@ -55,7 +49,6 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
     model = models.Order
     form_class = forms.OrderForm
-    # fields = ['customer']
     inlines = [forms.SequenceInline]
     template_name = 'oligoshell/order_create.html'
 
