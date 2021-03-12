@@ -43,7 +43,7 @@
 
         {% for sequence in batch.sequences2synthesis.all %}
         <div class="p-0">
-            <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>,{{ sequence.sequence }},U,ON
+            <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>, {{ sequence.sequence }}
         </div>
         {% endfor %}
 

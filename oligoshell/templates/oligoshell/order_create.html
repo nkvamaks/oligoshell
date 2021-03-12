@@ -1,5 +1,6 @@
 {% extends 'layout/basic.html' %}
 
+
 {% load crispy_forms_tags %}
 
 {% block title %}Create Order{% endblock %}
@@ -31,30 +32,22 @@
                     <div id="sequence-form">
 
                         <div class="form-row">
-                            <div class="form-group col-md-2 mb-2">
+                            <div class="form-group col-md-2 mb-0">
                                 {{ subform.seq_name|as_crispy_field }}
                             </div>
-                            <div class="form-group col-md-6 mb-2">
+                            <div class="form-group col-md-6 mb-0">
                                 {{ subform.sequence|as_crispy_field }}
                             </div>
-                            <div class="form-group col-md-1 mb-2">
+                            <div class="form-group col-md-1 mb-0">
                                 {{ subform.scale|as_crispy_field }}
                             </div>
-                            <div class="form-group col-md-1 mb-2">
+                            <div class="form-group col-md-1 mb-0">
                                 {{ subform.appearance_requested|as_crispy_field }}
                             </div>
-                            <div class="form-group col-md-2 mb-2">
+                            <div class="form-group col-md-2 mb-0">
                                 {{ subform.purification_requested|as_crispy_field }}
                             </div>
-
-
                         </div>
-
-
-
-<!--                        <table>-->
-<!--                            {{ subform | crispy }}-->
-<!--                        </table>-->
                     </div>
                 {% endfor %}
             <button id="add-form" type="button">+</button>
@@ -78,9 +71,11 @@
 
         let newForm = sequenceForm[0].cloneNode(true)       //Clone the sequence form
         let pattern = RegExp('sequences-(\\d)+-','g')       //Regex to find all instances of the form number
+<!--        let label_pattern = RegExp('(>\\n.+){2}</label>','g')-->
         formNum++                                           //Increment the form number
 
         newForm.innerHTML = newForm.innerHTML.replace(pattern, `sequences-${formNum}-`)
+<!--        newForm.innerHTML = newForm.innerHTML.replace(label_pattern, '></label>')-->
 
         container.insertBefore(newForm, addButton) //Insert the new form at the end of the list of forms
         totalForms.setAttribute('value', `${formNum+1}`) //Increment the number of total forms in the management form

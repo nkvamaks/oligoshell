@@ -59,7 +59,7 @@ class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
 class BatchCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/batch_create.html'
     form_class = forms.BatchForm
-    success_url = reverse_lazy('oligoshell:index')
+    success_url = reverse_lazy('oligoshell:batch')
 
 
 class PurificationCreateView(LoginRequiredMixin, CreateView):
