@@ -11,7 +11,8 @@ from . import utils
 
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
-                                max_length=50)
+                                max_length=50,
+                                )
     comments = models.CharField(max_length=300,
                                 blank=True,
                                 null=True,
@@ -76,7 +77,7 @@ class Sequence(models.Model):
                                 validators=[validators.validate_sequence_regex,
                                             validators.validate_modifications])
 
-    scale = models.CharField(verbose_name='Synthesis Scale',
+    scale = models.CharField(verbose_name='Scale',
                              max_length=20,
                              choices=SCALES_CHOICES,
                              default=MIN_SCALE
@@ -142,10 +143,10 @@ class Profile(models.Model):
 
 
 class Batch(models.Model):
-    title = models.CharField(verbose_name='Batch Name', max_length=200)
+    title = models.CharField(verbose_name='Batch ID', max_length=200)
     created = models.DateTimeField(verbose_name='Batch Created', auto_now_add=True)
     sequences2synthesis = models.ManyToManyField(Sequence,
-                                                 verbose_name='Sequences to be Synthesized',
+                                                 verbose_name='Sequences for Synthesis',
                                                  related_name='batches')
     notes = models.CharField(max_length=300, verbose_name='Notes', blank=True, null=True)
 

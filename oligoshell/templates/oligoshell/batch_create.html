@@ -9,7 +9,26 @@
         <h5 class="p-1 mb-1 mt-3 mb-3">Add Sequences to Synthesis Batch</h5>
             <form method="post">
                 {% csrf_token %}
-                {% crispy form %}
+                <div class="row">
+                    <div class="col-md-3">
+                       {{ form.title|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                       {{ form.notes|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                       {{ form.sequences2synthesis|as_crispy_field }}
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-primary submit" value="Create Synthesis Batch"/>
+
             </form>
       </div>
+
+
 {% endblock %}

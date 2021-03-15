@@ -48,27 +48,17 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = models.Order
         fields = 'customer', 'email', 'comments'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields[myField].widget.attrs['class'] = 'form-control'
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('customer', css_class='form-group col-md-6 mb-2'),
-                Column('email', css_class='form-group col-md-6 mb-2'),
-                css_class='form-row'
-            ),
-            'comments',
-            Submit('submit', 'Create a new Order')
-        )
+        widgets = {'customer': forms.TextInput(attrs={'placeholder': 'John Smith'}),
+                   'email': forms.EmailInput(attrs={'placeholder': 'John.Smith@fbi.com'}),
+                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here', 'rows': 3}), }
 
 
 class BatchForm(forms.ModelForm):
     class Meta:
         model = models.Batch
         fields = ('title', 'sequences2synthesis', 'notes')
+        widgets = {'title': forms.TextInput(attrs={'placeholder': 'OLIG-15032021'}),
+                   'notes': forms.Textarea(attrs={'placeholder': 'Leave Your Notes Here', 'rows': 3}), }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,16 +66,6 @@ class BatchForm(forms.ModelForm):
             self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['sequences2synthesis'].widget = forms.widgets.CheckboxSelectMultiple()
         self.fields['sequences2synthesis'].queryset = models.Sequence.objects.filter(synthesized=False)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('title', css_class='form-group col-md-4 mb-2'),
-                Column('notes', css_class='form-group col-md-8 mb-2'),
-                css_class='form-row'
-            ),
-            'sequences2synthesis',
-            Submit('submit', 'Create Synthesis Batch')
-            )
 
 
 class PurificationForm(forms.ModelForm):
