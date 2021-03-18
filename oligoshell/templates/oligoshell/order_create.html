@@ -57,12 +57,13 @@
                             </div>
                         </div>
                     </div>
+            {{subform.synthesized}}
                 {% endfor %}
-            <button id="add-form" type="button" class="btn btn-secondary">+</button>
+            <button id="add-form" type="button" class="btn btn-secondary">+ Add One More Sequence +</button>
             {% endfor %}
             <input type="submit" value="Submit" class="btn btn-primary submit"/>
-        </form>
 
+        </form>
     </div>
 
     <script>
@@ -79,11 +80,9 @@
 
         let newForm = sequenceForm[0].cloneNode(true)       //Clone the sequence form
         let pattern = RegExp('sequences-(\\d)+-','g')       //Regex to find all instances of the form number
-<!--        let label_pattern = RegExp('(>\\n.+){2}</label>','g')-->
         formNum++                                           //Increment the form number
 
         newForm.innerHTML = newForm.innerHTML.replace(pattern, `sequences-${formNum}-`)
-<!--        newForm.innerHTML = newForm.innerHTML.replace(label_pattern, '></label>')-->
 
         container.insertBefore(newForm, addButton) //Insert the new form at the end of the list of forms
         totalForms.setAttribute('value', `${formNum+1}`) //Increment the number of total forms in the management form

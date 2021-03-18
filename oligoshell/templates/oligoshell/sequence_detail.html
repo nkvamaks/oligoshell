@@ -114,7 +114,20 @@
 
        <form method="post">
             {% csrf_token %}
-            {% crispy form %}
+
+       <div class="row">
+           <div class="col-md-4">
+               {{ form.absorbance260|as_crispy_field }}
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-4">
+               {{ form.volume|as_crispy_field }}
+           </div>
+       </div>
+
+       <input type="submit" value="Save Measurements" class="btn btn-primary submit"/>
+
        </form>
 
     </div>

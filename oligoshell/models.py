@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
+from django.db.models import Q
 
 from . import validators
 from . import utils
@@ -117,23 +118,40 @@ class Sequence(models.Model):
 
     def save(self, *args, **kwargs):
         self.sequence = self.sequence.upper()
-        unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
-        self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
-                           sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
-                           sum((utils.modification_extinction_260[item] for item in modification_list)))
+        if not self.epsilon260:
+            unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
+            self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
+                               sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
+                               sum((utils.modification_extinction_260[item] for item in modification_list)))
         if self.absorbance260:
             self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
+        if self.sequence and not self.absorbance260:
+            self.concentration = 0
         if self.concentration:
             self.done = True
+        else:
+            self.done = False
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.seq_name + ', ' + self.sequence + ', ' + self.scale
+        return self.seq_name + ' (' + self.order.customer + ')' + ', ' + self.sequence + ', ' + self.scale
 
     class Meta:
         verbose_name_plural = 'Sequences'
         verbose_name = 'Sequence'
         ordering = ['pk']
+        constraints = [models.UniqueConstraint(fields=['order'], condition=Q(status='seq_name'), name='seq_name_order')]
+        # unique_together = ['seq_name', 'order']
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     print(Sequence.unique_error_message(self, ))
+
+    # def unique_error_message(self, model_class, unique_check):
+    #     if model_class == type(self) and unique_check == ('seq_name', 'order'):
+    #         return 'My custom error message'
+    #     else:
+    #         return super(Sequence, self).unique_error_message(model_class, unique_check)
 
 
 class Profile(models.Model):
@@ -192,7 +210,8 @@ class Purification(models.Model):
 
     pur_seqs = models.ManyToManyField(Sequence,
                                       verbose_name='Sequences for Purification',
-                                      related_name='purifications')
+                                      related_name='purifications',
+                                      )
 
     def __str__(self):
         return self.title

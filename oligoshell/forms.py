@@ -40,8 +40,15 @@ class SequenceForm(forms.ModelForm):
 
 class SequenceInline(InlineFormSetFactory):
     model = models.Sequence
-    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested']
+    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', ]
     factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': False}
+
+    # def get_initial(self):
+    #     return {'seq_name': self.request.seq_name}
+    #
+    # def form_valid(self, form):
+    #     form.instance.sequence = models.Sequence.objects.filter(seq_name=self.request.seq_name).order_by('sequence').last().sequence + 1
+    #     return super().form_valid(form)
 
 
 class OrderForm(forms.ModelForm):
@@ -78,16 +85,8 @@ class PurificationForm(forms.ModelForm):
         for myField in self.fields:
             self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['pur_seqs'].widget = forms.widgets.CheckboxSelectMultiple()
-        self.fields['pur_seqs'].queryset = models.Sequence.objects.all()
+        self.fields['pur_seqs'].queryset = models.Sequence.objects.filter(synthesized=True, done=False)
         self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('pur_seqs', css_class='form-group col-md-8 mb-2'),
-                Column('title', css_class='form-group col-md-4 mb-2'),
-                css_class='form-row'
-            ),
-            Submit('submit', 'Create Synthesis Batch')
-            )
 
 
 class ConcentrationForm(forms.ModelForm):

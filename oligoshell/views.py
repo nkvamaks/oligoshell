@@ -8,6 +8,8 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 
 from . import models
@@ -54,6 +56,56 @@ class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+    # def post(self, request, *args, **kwargs):
+    #     # super().post() maybe raise a ValidationError if it is failure to save
+    #     response = super().post(request, *args, **kwargs)
+    #     # the below code is optional. django has responsed another erorr message
+    #     if not self.object:
+    #         messages.info(request, 'UNIQUE constraint failed.')
+    #     return response
+
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Handles POST requests, instantiating a form and formset instances with the
+    #     passed POST variables and then checked for validity.
+    #     """
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #
+    #     initial_object = self.object
+    #     if form.is_valid():
+    #         self.object = form.save(commit=False)
+    #         form_validated = True
+    #     else:
+    #         form_validated = False
+    #
+    #     inlines = self.construct_inlines()
+    #
+    #     if all_valid(inlines) and form_validated:
+    #         return self.forms_valid(form, inlines)
+    #     self.object = initial_object
+    #     return self.forms_invalid(form, inlines)
+    #
+    # # PUT is a valid HTTP verb for creating (with a known URL) or editing an
+    # # object, note that browsers only support POST for now.
+    # def put(self, *args, **kwargs):
+    #     return self.post(*args, **kwargs)
+
+    # def get(self, request, *args, **kwargs):
+    #     form = self.form_class(initial=self.initial)
+    #     return render(request, self.template_name, {'form': form})
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.form_class(request.POST)
+    #     if form.is_valid():
+    #         print(form.cleaned_data)
+    #     else:
+    #         print(form.errors)
+    #         # <process form cleaned data>
+    #         return HttpResponseRedirect('index')
+    #
+    #     return render(request, self.template_name, {'form': form})
 
 
 class BatchCreateView(LoginRequiredMixin, CreateView):
