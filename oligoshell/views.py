@@ -3,17 +3,23 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
+from extra_views import InlineFormSetFactory
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
+
+
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 
 
 from . import models
 from . import forms
+from . import validators
 
 
 class IndexListView(LoginRequiredMixin, ListView):
@@ -48,64 +54,59 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     model = models.Order
 
 
-class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
-    model = models.Order
-    form_class = forms.OrderForm
-    inlines = [forms.SequenceInline]
+# class SequenceInline(InlineFormSetFactory):
+#     model = models.Sequence
+#     fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', ]
+#     factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': False}
+
+
+# class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
+#     model = models.Order
+#     form_class = forms.OrderForm
+#     inlines = [SequenceInline]
+#     template_name = 'oligoshell/order_create.html'
+#
+#
+#     def get_success_url(self):
+#         return self.object.get_absolute_url()
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['orders'] = models.Order.objects.all()
+    #     # context['batches'] = models.Batch.objects.all()
+    #     return context
+
+
+@login_required
+def order_create(request):
     template_name = 'oligoshell/order_create.html'
-
-    def get_success_url(self):
-        return self.object.get_absolute_url()
-
-    # def post(self, request, *args, **kwargs):
-    #     # super().post() maybe raise a ValidationError if it is failure to save
-    #     response = super().post(request, *args, **kwargs)
-    #     # the below code is optional. django has responsed another erorr message
-    #     if not self.object:
-    #         messages.info(request, 'UNIQUE constraint failed.')
-    #     return response
-
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handles POST requests, instantiating a form and formset instances with the
-    #     passed POST variables and then checked for validity.
-    #     """
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #
-    #     initial_object = self.object
-    #     if form.is_valid():
-    #         self.object = form.save(commit=False)
-    #         form_validated = True
-    #     else:
-    #         form_validated = False
-    #
-    #     inlines = self.construct_inlines()
-    #
-    #     if all_valid(inlines) and form_validated:
-    #         return self.forms_valid(form, inlines)
-    #     self.object = initial_object
-    #     return self.forms_invalid(form, inlines)
-    #
-    # # PUT is a valid HTTP verb for creating (with a known URL) or editing an
-    # # object, note that browsers only support POST for now.
-    # def put(self, *args, **kwargs):
-    #     return self.post(*args, **kwargs)
-
-    # def get(self, request, *args, **kwargs):
-    #     form = self.form_class(initial=self.initial)
-    #     return render(request, self.template_name, {'form': form})
-
-    # def post(self, request, *args, **kwargs):
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         print(form.cleaned_data)
-    #     else:
-    #         print(form.errors)
-    #         # <process form cleaned data>
-    #         return HttpResponseRedirect('index')
-    #
-    #     return render(request, self.template_name, {'form': form})
+    if request.method == 'GET':
+        order_form = forms.OrderForm(request.GET or None)
+        formset = forms.SequenceFormset(queryset=models.Sequence.objects.none())
+    elif request.method == 'POST':
+        order_form = forms.OrderForm(request.POST)
+        formset = forms.SequenceFormset(request.POST)
+        # if formset.is_valid():
+        #     cd = formset.cleaned_data
+        #     if len(set([x['seq_name'] for x in cd])) < len(cd):
+        #         raise ValidationError('UUUUUUUUUUUUUUUUUUUUUUU')
+        #
+        # print(formset.cleaned_data)
+        if order_form.is_valid() and formset.is_valid():
+            order = order_form.save()
+            for form in formset:
+                validators.validate_sequence_regex(form.instance.sequence)
+                #
+                # if form.cleaned_data.get('seq_name') and form.cleaned_data.get('sequence'):
+                #     seq = form.save(commit=False)
+                #     seq.order = order
+                #     seq.save()
+                        # raise ValidationError('Lalala')
+            # return render(request,
+            #               template_name,
+            #               {'form': order_form, 'formset': formset})
+            return redirect(models.Sequence())
+    return render(request, template_name, {'form': order_form, 'formset': formset})
 
 
 class BatchCreateView(LoginRequiredMixin, CreateView):

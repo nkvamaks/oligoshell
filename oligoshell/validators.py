@@ -33,3 +33,8 @@ def validate_modifications(sequence):
             raise ValidationError(message.format(', '.join(modification_not_exist)))
     else:
         return sequence
+
+
+# def validate_seq_name_unique_within_order(seq_name):
+#     message = 'Something went wrong'
+#     raise ValidationError(message)

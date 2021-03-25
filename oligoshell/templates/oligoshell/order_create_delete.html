@@ -1,15 +1,17 @@
 {% extends 'layout/basic.html' %}
+
+
 {% load crispy_forms_tags %}
 
 {% block title %}Create Order{% endblock %}
 
 {% block content %}
-
-   <div class="container-fluid">
+    <div class="container-fluid">
         <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Create a New Order</h5>
 
         <form id="form-container" action="." method="post">
             {% csrf_token %}
+
         <div class="form-group row">
 
             <div class="col-md-3">
@@ -29,41 +31,44 @@
             </div>
 
         </div>
-            {{ formset.management_form }}
 
-            {% for subform in formset %}
-                <div id="sequence-form">
+            {% for formset in inlines %}
+                {{ formset.management_form }}
 
-                    <div class="form-row">
-                        <div class="form-group col-md-2 mb-0">
-                            {{ subform.seq_name|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-4 mb-0">
-                            {{ subform.sequence|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-2 mb-0">
-                            {{ subform.scale|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-2 mb-0">
-                            {{ subform.appearance_requested|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-2 mb-0">
-                            {{ subform.purification_requested|as_crispy_field }}
+                {% for subform in formset.forms %}
+                    <div id="sequence-form">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-2 mb-0">
+                                {{ subform.seq_name|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-4 mb-0">
+                                {{ subform.sequence|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-2 mb-0">
+                                {{ subform.scale|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-2 mb-0">
+                                {{ subform.appearance_requested|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-2 mb-0">
+                                {{ subform.purification_requested|as_crispy_field }}
+                            </div>
                         </div>
                     </div>
-                </div>
 
+                {% endfor %}
             <button id="add-form" type="button" class="btn btn-secondary">+ Add One More Sequence +</button>
-            {{subform.error_messages}}
-
             {% endfor %}
             <input type="submit" value="Submit" class="btn btn-primary submit"/>
+
         </form>
+    </div>
 
    <script>
         let sequenceForm = document.querySelectorAll("#sequence-form")
         let addButton = document.querySelector("#add-form")
-        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+        let totalForms = document.querySelector("#id_sequences-TOTAL_FORMS")
         let container = document.querySelector("#form-container")
         let formNum = sequenceForm.length-1
 
@@ -82,7 +87,5 @@
         totalForms.setAttribute('value', `${formNum+1}`) //Increment the number of total forms in the management form
 }
     </script>
-
-    </div>
 
 {% endblock %}

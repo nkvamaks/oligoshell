@@ -5,6 +5,8 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from . import validators
 from . import utils
@@ -136,12 +138,15 @@ class Sequence(models.Model):
     def __str__(self):
         return self.seq_name + ' (' + self.order.customer + ')' + ', ' + self.sequence + ', ' + self.scale
 
+    def get_absolute_url(self):
+        return reverse('oligoshell:index')
+
     class Meta:
         verbose_name_plural = 'Sequences'
         verbose_name = 'Sequence'
         ordering = ['pk']
-        constraints = [models.UniqueConstraint(fields=['order'], condition=Q(status='seq_name'), name='seq_name_order')]
-        # unique_together = ['seq_name', 'order']
+        # constraints = [models.UniqueConstraint(fields=['seq_name', 'order'], name='seq_name_order')]
+        # unique_together = ['seq_name', 'sequence']
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -152,6 +157,8 @@ class Sequence(models.Model):
     #         return 'My custom error message'
     #     else:
     #         return super(Sequence, self).unique_error_message(model_class, unique_check)
+
+
 
 
 class Profile(models.Model):
