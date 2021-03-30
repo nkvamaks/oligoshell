@@ -41,11 +41,9 @@ class SequenceForm(forms.ModelForm):
 class SequenceInline(InlineFormSetFactory):
     model = models.Sequence
     fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', ]
-    factory_kwargs = {'extra': 1, 'max_num': None, 'can_delete': False}
+    factory_kwargs = {'extra': 1, 'max_num': None, 'can_order': False, 'can_delete': False}
+    # formset_kwargs = {'form_kwargs': {'initial': {'seq_name': 'example'}}}
 
-    # def get_initial(self):
-    #     return {'seq_name': self.request.seq_name}
-    #
     # def form_valid(self, form):
     #     form.instance.sequence = models.Sequence.objects.filter(seq_name=self.request.seq_name).order_by('sequence').last().sequence + 1
     #     return super().form_valid(form)

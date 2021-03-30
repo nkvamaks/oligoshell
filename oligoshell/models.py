@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
-from django.db.models import Q
+from django.db.models import Q, F
 
 from . import validators
 from . import utils
@@ -140,7 +140,7 @@ class Sequence(models.Model):
         verbose_name_plural = 'Sequences'
         verbose_name = 'Sequence'
         ordering = ['pk']
-        constraints = [models.UniqueConstraint(fields=['order'], condition=Q(status='seq_name'), name='seq_name_order')]
+        constraints = [models.UniqueConstraint(fields=['order', 'seq_name'], condition=Q(order=F('order')), name='seq_name_order')]
         # unique_together = ['seq_name', 'order']
 
     # def __init__(self, *args, **kwargs):
