@@ -1,55 +1,47 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
+from crispy_forms.layout import Layout, Submit
+from django.forms import BaseModelFormSet, BaseInlineFormSet, modelformset_factory, inlineformset_factory
 from extra_views import InlineFormSetFactory
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 from . import models
+from . import validators
 
 
 class SequenceForm(forms.ModelForm):
+    seq_name = forms.CharField(validators=[validators.validate_seq_name_regex])
+
+    sequence = forms.CharField(validators=[validators.validate_sequence_regex,
+                                           validators.validate_modifications])
+
     class Meta:
         model = models.Sequence
-        fields = ('seq_name',
-                  'sequence',
-                  'scale',
-                  'appearance_requested',
-                  'purification_requested',
-                  'order')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields[myField].widget.attrs['class'] = 'form-control'
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Row(
-                Column('seq_name', css_class='form-group col-md-4 mb-2'),
-                Column('sequence', css_class='form-group col-md-8 mb-2'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('scale', css_class='form-group col-md-3 mb-0'),
-                Column('appearance_requested', css_class='form-group col-md-3 mb-0'),
-                Column('purification_requested', css_class='form-group col-md-3 mb-0'),
-                Column('order', css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
-            ),
-            Submit('submit', 'Add a new Sequence')
-        )
+        fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested']
 
 
-class SequenceInline(InlineFormSetFactory):
-    model = models.Sequence
-    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', ]
-    factory_kwargs = {'extra': 1, 'max_num': None, 'can_order': False, 'can_delete': False}
-    # formset_kwargs = {'form_kwargs': {'initial': {'seq_name': 'example'}}}
+class BaseSequenceFormSet(BaseInlineFormSet):
 
-    # def form_valid(self, form):
-    #     form.instance.sequence = models.Sequence.objects.filter(seq_name=self.request.seq_name).order_by('sequence').last().sequence + 1
-    #     return super().form_valid(form)
+    def clean(self):
+        seq_names = []
+        for form in self.forms:
+            if form.cleaned_data.get('seq_name') in seq_names:
+                form.add_error('seq_name', 'The Name Already Exists')
+            elif form.cleaned_data.get('seq_name'):
+                seq_names.append(form.cleaned_data.get('seq_name'))
+
+
+SequenceFormset = inlineformset_factory(models.Order, models.Sequence,
+                                        form=SequenceForm,
+                                        formset=BaseSequenceFormSet,
+                                        extra=0,
+                                        min_num=1,
+                                        can_delete=False,
+                                        can_order=False)
 
 
 class OrderForm(forms.ModelForm):
+
     class Meta:
         model = models.Order
         fields = 'customer', 'email', 'comments'

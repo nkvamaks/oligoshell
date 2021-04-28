@@ -140,18 +140,6 @@ class Sequence(models.Model):
         verbose_name_plural = 'Sequences'
         verbose_name = 'Sequence'
         ordering = ['pk']
-        constraints = [models.UniqueConstraint(fields=['order', 'seq_name'], condition=Q(order=F('order')), name='seq_name_order')]
-        # unique_together = ['seq_name', 'order']
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     print(Sequence.unique_error_message(self, ))
-
-    # def unique_error_message(self, model_class, unique_check):
-    #     if model_class == type(self) and unique_check == ('seq_name', 'order'):
-    #         return 'My custom error message'
-    #     else:
-    #         return super(Sequence, self).unique_error_message(model_class, unique_check)
 
 
 class Profile(models.Model):

@@ -3,14 +3,14 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 from . import models
 from . import forms
@@ -40,72 +40,34 @@ class SequenceUpdateView(LoginRequiredMixin, UpdateView):
 class SequenceCreateView(LoginRequiredMixin, CreateView):
     model = models.Sequence
     template_name = 'oligoshell/sequence_create.html'
-    form_class = forms.SequenceForm
     success_url = reverse_lazy('oligoshell:index')
+    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', 'order']
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     model = models.Order
 
 
-class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = models.Order
     form_class = forms.OrderForm
-    inlines = [forms.SequenceInline]
     template_name = 'oligoshell/order_create.html'
+    success_url = '/'
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
+    def get_context_data(self, **kwargs):
+        context = super(OrderCreateView, self).get_context_data(**kwargs)
+        context['formset'] = forms.SequenceFormset(queryset=models.Sequence.objects.none())
+        return context
 
-    # def post(self, request, *args, **kwargs):
-    #     # super().post() maybe raise a ValidationError if it is failure to save
-    #     response = super().post(request, *args, **kwargs)
-    #     # the below code is optional. django has responsed another erorr message
-    #     if not self.object:
-    #         messages.info(request, 'UNIQUE constraint failed.')
-    #     return response
-
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handles POST requests, instantiating a form and formset instances with the
-    #     passed POST variables and then checked for validity.
-    #     """
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #
-    #     initial_object = self.object
-    #     if form.is_valid():
-    #         self.object = form.save(commit=False)
-    #         form_validated = True
-    #     else:
-    #         form_validated = False
-    #
-    #     inlines = self.construct_inlines()
-    #
-    #     if all_valid(inlines) and form_validated:
-    #         return self.forms_valid(form, inlines)
-    #     self.object = initial_object
-    #     return self.forms_invalid(form, inlines)
-    #
-    # # PUT is a valid HTTP verb for creating (with a known URL) or editing an
-    # # object, note that browsers only support POST for now.
-    # def put(self, *args, **kwargs):
-    #     return self.post(*args, **kwargs)
-
-    # def get(self, request, *args, **kwargs):
-    #     form = self.form_class(initial=self.initial)
-    #     return render(request, self.template_name, {'form': form})
-
-    # def post(self, request, *args, **kwargs):
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         print(form.cleaned_data)
-    #     else:
-    #         print(form.errors)
-    #         # <process form cleaned data>
-    #         return HttpResponseRedirect('index')
-    #
-    #     return render(request, self.template_name, {'form': form})
+    def post(self, request, *args, **kwargs):
+        form = forms.OrderForm(request.POST)
+        formset = forms.SequenceFormset(request.POST)
+        if form.is_valid() and formset.is_valid():
+            new_form = form.save()
+            formset = forms.SequenceFormset(request.POST, instance=new_form)
+            formset.save()
+            return redirect('/')
+        return render(request, 'oligoshell/order_create.html', {'form': form, 'formset': formset})
 
 
 class BatchCreateView(LoginRequiredMixin, CreateView):
