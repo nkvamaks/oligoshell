@@ -52,13 +52,14 @@
                 <a class="navbar-brand nav-link" href="{% url 'oligoshell:profile' %}">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url "logout" %}">Logout</a>
+                <a class="navbar-brand nav-link" href="{% url 'logout' %}">Logout</a>
             </li>
 
         {% else %}
 
             <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url "login" %}">Login</a>
+                <a class="navbar-brand nav-link" href="{% url 'login' %}">Login</a>
+                <a class="navbar-brand nav-link" href="{% url 'oligoshell:register' %}">Register</a>
             </li>
 
         {% endif %}

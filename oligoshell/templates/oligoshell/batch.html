@@ -10,6 +10,7 @@
               <thead class="thead-light">
                 <tr>
                     <th>Batch Name</th>
+                    <th>Date</th>
                     <th>Comments</th>
                 </tr>
               </thead>
@@ -18,7 +19,8 @@
                     <td>
                     <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
                     </td>
-                    <td>{{ batch.notes}}</td>
+                    <td>{{ batch.created }}</td>
+                    <td>{{ batch.comments }}</td>
                 </tr>
             {% endfor %}
             </table>

@@ -1,0 +1,9 @@
+{% extends 'layout/basic.html' %}
+
+{% block title %} User successfully created {% endblock %}
+
+{% block content %}
+<p>
+Hi, {{ new_user.first_name }}. Now you can <a href="{% url 'login' %}">Login</a>
+</p>
+{% endblock %}

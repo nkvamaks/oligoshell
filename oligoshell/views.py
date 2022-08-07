@@ -2,15 +2,17 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Group
 from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from extra_views import CreateWithInlinesView, UpdateWithInlinesView
-from django.http import HttpResponseRedirect
-from django.contrib import messages
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.contrib.auth.models import User
+#from extra_views import CreateWithInlinesView, UpdateWithInlinesView
+#from django.http import HttpResponseRedirect
+#from django.contrib import messages
+#from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 from . import models
 from . import forms
@@ -41,7 +43,7 @@ class SequenceCreateView(LoginRequiredMixin, CreateView):
     model = models.Sequence
     template_name = 'oligoshell/sequence_create.html'
     success_url = reverse_lazy('oligoshell:index')
-    fields = ['seq_name', 'sequence', 'scale', 'appearance_requested', 'purification_requested', 'order']
+    fields = ['seq_name', 'sequence', 'scale', 'format_requested', 'purification_requested', 'order']
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
@@ -77,6 +79,7 @@ class BatchCreateView(LoginRequiredMixin, CreateView):
 
 
 class PurificationCreateView(LoginRequiredMixin, CreateView):
+    model = models.Batch
     template_name = 'oligoshell/purification_create.html'
     form_class = forms.PurificationForm
     success_url = reverse_lazy('oligoshell:index')
@@ -103,3 +106,24 @@ def batch_details(request, pk):
                   'oligoshell/batch_detail.html',
                   {'batch': batch,
                    'batches': batches})
+
+
+def register(request):
+    if request.method == "POST":
+        user_form = forms.UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(
+                user_form.cleaned_data['password']
+            )
+            new_user.save()
+            group = Group.objects.get(name='customer')
+            new_user.groups.add(group)
+            models.Profile.objects.create(user=new_user,
+                                          photo='unknown.jpeg')
+            return render(request, 'oligoshell/complete_registration.html',
+                          {'new_user': new_user})
+    else:
+        user_form = forms.UserRegistrationForm()
+    return render(request, 'oligoshell/register.html', {'form': user_form})
+

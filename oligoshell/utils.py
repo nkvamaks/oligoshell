@@ -26,14 +26,14 @@ dinucleotide_extinction = {'AA': 27400, 'AC': 21200, 'AG': 25000, 'AT': 22800,
 
 # Extinction coefficients of popular modifications:
 modification_extinction_260 = {
-    '[FAM]': 21000, '[5FAM]': 21000, '[6FAM]': 21000,
-    '[TET]': 16300, '[5TET]': 16300, '[6TET]': 16300,
-    '[HEX]': 31600, '[5HEX]': 31600, '[6HEX]': 31600,
-    '[JOE]': 12000, '[5JOE]': 12000, '[6JOE]': 12000,
-    '[TAMRA]': 32300, '[5TAMRA]': 32300, '[6TAMRA]': 32300,
-    '[R6G]': 18000, '[5R6G]': 18000, '[6R6G]': 18000,
-    '[CY3]': 4930, '[CY3.5]': 24000, '[CY5]': 10000, '[CY5.5]': 28800,
-    '[ROX]': 22600, '[5ROX]': 22600, '[6ROX]': 22600,
+    '[FAM]': 21000, '[5FAM]': 21000, '[6FAM]': 21000, '[56FAM]': 21000,
+    '[TET]': 16300, '[5TET]': 16300, '[6TET]': 16300, '[56TET]': 16300,
+    '[HEX]': 31600, '[5HEX]': 31600, '[6HEX]': 31600, '[56HEX]': 31600,
+    '[JOE]': 12000, '[5JOE]': 12000, '[6JOE]': 12000, '[56JOE]': 12000,
+    '[TAMRA]': 32300, '[5TAMRA]': 32300, '[6TAMRA]': 32300, '[56TAMRA]': 32300,
+    '[R6G]': 18000, '[5R6G]': 18000, '[6R6G]': 18000, '[56R6G]': 18000,
+    '[CY3]': 4930, '[CY3.5]': 24000, '[CY35]': 24000, '[CY5]': 10000, '[CY5.5]': 28800, '[CY55]': 28800,
+    '[ROX]': 22600, '[5ROX]': 22600, '[6ROX]': 22600, '[56ROX]': 22600,
     '[BHQ1]': 8000, '[BHQ2]': 8000,
     '[YAKIMAYELLOW]': 23700, '[TEXASRED]': 14400, '[IOWABLACKRQ]': 44510,
     '[+A]': 15400, '[+C]': 7400, '[+G]': 11500, '[+T]': 8700,
@@ -45,7 +45,7 @@ def sequence2lists(sequence):
     """The function takes raw sequence as a string and converts it into three lists:
     e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
     unmodified_list: ['TTACGTC', 'TT']
-    unmodified_degenerated_list: ['AT', 'NN', 'AACTNRG']
+    unmodified_degenerated_list: ['NN', 'AACTNRG']
     modification_list: ['[6FAM]', '[BHQ1dT]', '[DABCYL]']
     """
     modification_list = [item.upper() for item in re.findall(modification_pattern, sequence)]
@@ -56,6 +56,28 @@ def sequence2lists(sequence):
                        if len(item) >= 2 and not re.search(degeneration_pattern, item)]
 
     return unmodified_list, unmodified_degenerated_list, modification_list
+
+
+def sequence2tuple(sequence):
+    """The function takes raw sequence as a string and converts it into a tuple:
+        e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
+        ('N','N','[6FAM], ... ,'[DABCYL]','T','T')
+        """
+    sequence_tuple = ()
+    mod_str = ''
+    mod = False
+
+    for nt in sequence.upper():
+        if nt == '[' or mod == True:
+            mod = True
+            mod_str += nt
+            if nt == ']':
+                sequence_tuple += (mod_str,)
+                mod = False
+                mod_str = ''
+            continue
+        sequence_tuple += (nt,)
+    return sequence_tuple
 
 
 def extinction_dna_nn(sequence):

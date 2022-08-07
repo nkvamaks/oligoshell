@@ -1,17 +1,20 @@
 {% extends 'layout/basic.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %}Create Order{% endblock %}
 
 {% block content %}
     <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Create a New Order</h5>
+        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Custom DNA Oligos - Oligo Entry</h5>
+
+
 
         <form id="form-container" action="" method="post">
 
         {% csrf_token %}
 
-        <div class="form-group row">
+        <div class="form-group row" hidden="true">
 
             <div class="col-md-3">
                 {{ form.customer|as_crispy_field }}
@@ -30,7 +33,6 @@
             </div>
 
         </div>
-
                 {{ formset.management_form }}
 
                 {% for subform in formset %}
@@ -48,7 +50,7 @@
                                 {{ subform.scale|as_crispy_field }}
                             </div>
                             <div class="form-group col-md-2 mb-0">
-                                {{ subform.appearance_requested|as_crispy_field }}
+                                {{ subform.format_requested|as_crispy_field }}
                             </div>
                             <div class="form-group col-md-2 mb-0">
                                 {{ subform.purification_requested|as_crispy_field }}
@@ -62,29 +64,11 @@
             <input type="submit" value="Submit" class="btn btn-primary submit"/>
 
         </form>
+
+        <script src="{% static 'js/script.js' %}"></script>
+
     </div>
 
-    <script>
-        let sequenceForm = document.querySelectorAll("#sequence-form")
-        let addButton = document.querySelector("#add-form")
-        let totalForms = document.querySelector("#id_sequences-TOTAL_FORMS")
-        let container = document.querySelector("#form-container")
-        let formNum = sequenceForm.length-1
 
-        addButton.addEventListener('click', addForm)
-
-        function addForm(e) {
-        e.preventDefault()
-
-        let newForm = sequenceForm[0].cloneNode(true)       //Clone the sequence form
-        let pattern = RegExp('sequences-(\\d)+-','g')            //Regex to find all instances of the form number
-        formNum++                                           //Increment the form number
-
-        newForm.innerHTML = newForm.innerHTML.replace(pattern, `sequences-${formNum}-`)
-
-        container.insertBefore(newForm, addButton) //Insert the new form at the end of the list of forms
-        totalForms.setAttribute('value', `${formNum+1}`) //Increment the number of total forms in the management form
-}
-    </script>
 
 {% endblock %}

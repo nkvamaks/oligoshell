@@ -4,12 +4,21 @@
 {% block title %}Sequence Details{% endblock %}
 
 {% block content %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      table td {
+        word-wrap: break-word;
+      }
+    </style>
+
     <div class="col-7 align-self-start mt-3">
         <div class="table-responsive">
             <table class="table table-sm table-striped table-borderless">
                 <tr>
-                    <td>Order # / Customer</td>
-                    <td>
+                    <td width="30%">Order # / Customer</td>
+                    <td width="70%">
                         <a href="{% url 'oligoshell:order_detail' pk=sequence.order.pk %}">{{ sequence.order.pk }}
                         / {{ sequence.order.customer }}</a>
                     </td>
@@ -23,12 +32,16 @@
                     <td>{{ sequence.sequence }}</td>
                 </tr>
                 <tr>
+                    <td>Sequence Length</td>
+                    <td>{{ sequence.length }}!!!!!!!!!!!</td>
+                </tr>
+                <tr>
                     <td>Scale</td>
                     <td>{{ sequence.scale }}</td>
                 </tr>
                 <tr>
-                    <td>Requested Form</td>
-                    <td>{{ sequence.appearance_requested }}</td>
+                    <td>Requested Format</td>
+                    <td>{{ sequence.format_requested }}</td>
                 </tr>
                 <tr>
                     <td>Requested Purification</td>

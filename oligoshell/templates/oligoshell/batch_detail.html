@@ -3,14 +3,24 @@
 {% block title %}Batch details{{ batch.title }} {% endblock %}
 
     {% block content %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      table td {
+        word-wrap: break-word;
+      }
+    </style>
+
     <div class="col-7 align-self-start mt-3">
 
         <div class="table-responsive">
             <table class="table table-sm table-striped table-borderless">
                 <thead class="thead-light">
                     <tr>
-                        <th>Batch Name</th>
-                        <th>Comments</th>
+                        <th width="30%">Batch Name</th>
+                        <th width="30%">Date</th>
+                        <th width="40%">Comments</th>
                     </tr>
                 </thead>
                 {% for batch_iter in batches %}
@@ -19,13 +29,15 @@
                         <td>
                             <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
                         </td>
-                        <td>{{ batch_iter.notes }}</td>
+                        <td>{{ batch_iter.created }}</td>
+                        <td>{{ batch_iter.comments }}</td>
 
                     {% else %}
                         <td>
                             <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
                         </td>
-                        <td>{{ batch_iter.notes }}</td>
+                        <td>{{ batch_iter.created }}</td>
+                        <td>{{ batch_iter.comments }}</td>
 
                      {% endif %}
                 </tr>
@@ -37,15 +49,34 @@
     {% endblock %}
 
     {% block menu %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      table td {
+        word-wrap: break-word;
+      }
+    </style>
+
     <div class="col align-self-start mt-3">
 
-        <h5>Oligos in batch: {{ batch.title }}</h5>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-borderless">
 
-        {% for sequence in batch.sequences2synthesis.all %}
-        <div class="p-0">
-            <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>, {{ sequence.sequence }}
+                <h5>Oligos in batch: {{ batch.title }}</h5>
+
+                {% for sequence in batch.sequences2synthesis.all %}
+                <tr>
+                    <td width="30%">
+                        <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>
+                    </td>
+                    <td width="70%">
+                        {{ sequence.sequence }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-        {% endfor %}
 
     </div>
     {% endblock %}

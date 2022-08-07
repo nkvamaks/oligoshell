@@ -3,13 +3,21 @@
 {% block title %}Orders{% endblock %}
 
 {% block content %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      table td {
+        word-wrap: break-word;
+      }
+    </style>
 
     <div class="col-7 align-self-start mt-3">
         <div class="table-responsive">
             <table class="table table-sm table-striped table-borderless">
                 <tr>
-                    <td>Order # / Customer</td>
-                    <td>{{ order.pk }} / {{ order.customer }}</td>
+                    <td width="30%">Order # / Customer</td>
+                    <td width="70%">{{ order.pk }} / {{ order.customer }}</td>
                 </tr>
                 <tr>
                     <td>Customers' Email</td>

@@ -17,6 +17,7 @@ urlpatterns = [
     path('batch_add/', views.BatchCreateView.as_view(), name='batch_create'),
     path('purification_add/', views.PurificationCreateView.as_view(), name='purification_create'),
     path('profile/', views.view_profile, name='profile'),
+    path('register/', views.register, name='register'),
     path('batch/', views.all_batches, name='batch'),
     path('batch/<int:pk>/', views.batch_details, name='batch_details'),
 ]

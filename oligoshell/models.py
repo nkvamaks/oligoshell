@@ -1,10 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
-from django.db.models import Q, F
+# from datetime import datetime
+# from django.utils.timezone import now
+# from django.contrib.auth.models import User
+
 
 from . import validators
 from . import utils
@@ -36,36 +38,38 @@ class Order(models.Model):
 
 
 class Sequence(models.Model):
-    MIN_SCALE = '50 nmol'
-    MED_SCALE = '200 nmol'
-    MAX_SCALE = '1 umol'
+    MIN_SCALE = '50 nmole'
+    MED_SCALE = '200 nmole'
+    MAX_SCALE = '1 umole'
+    X_SCALE = '2 umole'
+    XX_SCALE = '5 umole'
+    XXX_SCALE = '10 umole'
     SCALES_CHOICES = [
-        (MIN_SCALE, '50 nmol'),
-        (MED_SCALE, '200 nmol'),
-        (MAX_SCALE, '1 umol'),
+        (MIN_SCALE, '50 nmole DNA oligo'),
+        (MED_SCALE, '200 nmole DNA oligo'),
+        (MAX_SCALE, '1 \xb5mole DNA oligo'),
+        (X_SCALE, '2 \xb5mole DNA oligo'),
+        (XX_SCALE, '5 \xb5mole DNA oligo'),
+        (XXX_SCALE, '10 \xb5mole DNA oligo'),
     ]
 
-    APPEARANCE_20mM = '20 mM'
-    APPEARANCE_100mM = '100 mM'
-    APPEARANCE_Freeze_dried = 'Freeze-dried'
-    APPEARANCE_CHOICES = [
-        (APPEARANCE_20mM, '20 mM'),
-        (APPEARANCE_100mM, '100 mM'),
-        (APPEARANCE_Freeze_dried, 'Freeze-dried'),
+    FORMAT_100uM = '100 uM'
+    FORMAT_Freeze_dry = 'Freeze-dry'
+    FORMAT_CHOICES = [
+        (FORMAT_100uM, '100 \xb5M in milli-Q'),
+        (FORMAT_Freeze_dry, 'Freeze-dry'),
     ]
 
-    PURIFICATION_OPC = 'OPC'
-    PURIFICATION_RP_HPLC = 'RP-HPLC'
-    PURIFICATION_IEX_HPLC = 'IEX-HPLC'
+    PURIFICATION_DESALT = 'Desalt'
+    PURIFICATION_CARTRIDGE = 'Cartridge'
+    PURIFICATION_HPLC = 'HPLC'
     PURIFICATION_PAGE = 'PAGE'
-    PURIFICATION_PAGE_HPLC = 'PAGE + HPLC'
     PURIFICATION_RECOMMENDED = 'Company Recommended'
     PURIFICATION_CHOICES = [
-        (PURIFICATION_OPC, 'OPC'),
-        (PURIFICATION_RP_HPLC, 'RP-HPLC'),
-        (PURIFICATION_IEX_HPLC, 'IEX-HPLC'),
+        (PURIFICATION_DESALT, 'Desalt'),
+        (PURIFICATION_CARTRIDGE, 'Cartridge'),
+        (PURIFICATION_HPLC, 'HPLC'),
         (PURIFICATION_PAGE, 'PAGE'),
-        (PURIFICATION_PAGE_HPLC, 'PAGE + HPLC'),
         (PURIFICATION_RECOMMENDED, 'Company Recommended'),
     ]
 
@@ -84,16 +88,16 @@ class Sequence(models.Model):
                              default=MIN_SCALE
                              )
 
-    appearance_requested = models.CharField(verbose_name='Appearance',
-                                            max_length=20,
-                                            choices=APPEARANCE_CHOICES,
-                                            default=APPEARANCE_20mM
-                                            )
+    format_requested = models.CharField(verbose_name='Format',
+                                        max_length=20,
+                                        choices=FORMAT_CHOICES,
+                                        default=FORMAT_100uM
+                                        )
 
     purification_requested = models.CharField(verbose_name='Purification',
                                               max_length=30,
                                               choices=PURIFICATION_CHOICES,
-                                              default=PURIFICATION_OPC
+                                              default=PURIFICATION_DESALT
                                               )
 
     epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient', blank=True, null=True)
@@ -103,6 +107,8 @@ class Sequence(models.Model):
     volume = models.FloatField(verbose_name='Total Volume, mL', blank=True, null=True)
 
     concentration = models.FloatField(verbose_name='Concentration, uM', blank=True, null=True)
+
+    length = models.IntegerField(verbose_name='Sequence Length', blank=True, null=True)
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='sequences')
 
@@ -123,6 +129,12 @@ class Sequence(models.Model):
             self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
                                sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
                                sum((utils.modification_extinction_260[item] for item in modification_list)))
+            # self.length = (
+            #         len(''.join(unmodified_list)) +
+            #         len(''.join(unmodified_degenerated_list)) +
+            #         len(modification_list)
+            # )
+        print(utils.sequence2tuple(self.sequence))
         if self.absorbance260:
             self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
         if self.sequence and not self.absorbance260:
@@ -149,12 +161,12 @@ class Profile(models.Model):
 
 
 class Batch(models.Model):
-    title = models.CharField(verbose_name='Batch ID', max_length=200)
+    title = models.CharField(verbose_name='Batch ID', max_length=100)
     created = models.DateTimeField(verbose_name='Batch Created', auto_now_add=True)
     sequences2synthesis = models.ManyToManyField(Sequence,
                                                  verbose_name='Sequences for Synthesis',
                                                  related_name='batches')
-    notes = models.CharField(max_length=300, verbose_name='Notes', blank=True, null=True)
+    comments = models.CharField(max_length=300, verbose_name='Comments', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])
@@ -162,7 +174,7 @@ class Batch(models.Model):
     class Meta:
         verbose_name_plural = 'Batches'
         verbose_name = 'Batch'
-        ordering = ['pk']
+        ordering = ['-pk']
 
 
 @receiver(m2m_changed, sender=Batch.sequences2synthesis.through)
@@ -176,30 +188,34 @@ def sequence_synthesized(sender, **kwargs):
 
 
 class Purification(models.Model):
-    OPC = 'OPC'
+    DESALT = 'Desalt'
     RP_HPLC = 'RP-HPLC'
     IEX_HPLC = 'IEX-HPLC'
     PAGE = 'PAGE'
     PURIFICATION_CHOICES = [
-        (OPC, 'OPC'),
+        (DESALT, 'Desalt'),
         (RP_HPLC, 'RP-HPLC'),
         (IEX_HPLC, 'IEX-HPLC'),
         (PAGE, 'PAGE'),
     ]
 
-    title = models.CharField(verbose_name='Purification Method',
-                             max_length=50,
-                             choices=PURIFICATION_CHOICES,
-                             default=OPC,
-                             )
+    title = models.CharField(verbose_name='Purification ID', max_length=100)
+
+    pur_method = models.CharField(verbose_name='Purification Method',
+                                  max_length=50,
+                                  choices=PURIFICATION_CHOICES,
+                                  default=DESALT,
+                                  )
 
     created = models.DateTimeField(verbose_name='Purification Created',
                                    auto_now_add=True)
 
     pur_seqs = models.ManyToManyField(Sequence,
-                                      verbose_name='Sequences for Purification',
+                                      verbose_name='Sequences Available for Purification',
                                       related_name='purifications',
                                       )
+
+    comments = models.CharField(max_length=300, verbose_name='Comments', blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -207,4 +223,4 @@ class Purification(models.Model):
     class Meta:
         verbose_name_plural = 'Purifications'
         verbose_name = 'Purification'
-        ordering = ['pk']
+        ordering = ['-pk']

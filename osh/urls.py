@@ -20,4 +20,5 @@ urlpatterns = [
     path('', include('oligoshell.urls', namespace='oligoshell')),
     path('authent/', include('authent.urls', namespace='')),
     path('admin/', admin.site.urls),
+
 ]

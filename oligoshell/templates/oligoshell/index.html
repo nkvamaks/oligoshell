@@ -1,6 +1,15 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      table td {
+        word-wrap: break-word;
+      }
+    </style>
+
   <div class="container-fluid">
 
     {% for order in orders %}
@@ -14,14 +23,14 @@
 
               <thead class="thead-light">
                 <tr>
-                    <th>Name</th>
-                    <th>Sequence 5'->3'</th>
-                    <th>Scale</th>
-                    <th>Form</th>
-                    <th>Purification</th>
-                    <th>Synthesized</th>
-                    <th>Purified</th>
-                    <th>c, uM</th>
+                    <th width="10%">Name</th>
+                    <th width="40%">Sequence 5'->3'</th>
+                    <th width="8%">Scale</th>
+                    <th width="8%">Format</th>
+                    <th width="9%">Purification</th>
+                    <th width="10%">Synthesized</th>
+                    <th width="8%">Purified</th>
+                    <th width="7%">c, uM</th>
                 </tr>
               </thead>
             {% for seq in order.sequences.all %}
@@ -32,12 +41,12 @@
                    </td>
                    <td class="p-1 align-middle" width="40%"> {{ seq.sequence }}</td>
                    <td class="p-1 align-middle" width="8%">{{ seq.scale }}</td>
-                   <td class="p-1 align-middle" width="8%"> {{ seq.appearance_requested }}</td>
+                   <td class="p-1 align-middle" width="8%"> {{ seq.format_requested }}</td>
                    <td class="p-1 align-middle" width="9%"> {{ seq.purification_requested }}</td>
 
                    <td class="p-1 align-middle" width="10%">
                        {% if seq.synthesized %}
-                           Yes
+                            Yes
                        {% else %}
                             -
                        {% endif %}
@@ -45,11 +54,10 @@
                    <td class="p-1 align-middle" width="8%">
                        {% if seq.purifications.exists %}
                            {% for purification in seq.purifications.all %}
-                                <p class="p-0 mb-0 mt-0 align-middle">{{ purification.title }}</p>
+                                <p class="p-0 mb-0 mt-0 align-middle">{{ purification.pur_method }}</p>
                            {% endfor %}
                        {% else %}
                             -
-
                        {% endif %}
                    </td>
                   <td class="p-1 align-middle" width="7%">
