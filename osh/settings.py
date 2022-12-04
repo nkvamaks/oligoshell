@@ -25,7 +25,7 @@ SECRET_KEY = 'kz5@h6idu5q*zolq*r2j!t8tcn6=pq7ilbk=#icrr#k+*^rkap'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'osh.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'oligos',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
