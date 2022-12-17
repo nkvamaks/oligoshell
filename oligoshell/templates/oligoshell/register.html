@@ -1,11 +1,17 @@
 {% extends 'layout/basic.html' %}
 
+{% load crispy_forms_tags %}
 {% block title %} Create new user{% endblock %}
 
 {% block content %}
-<form action="." method="post">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <input type="submit" value="Register user">
-</form>
+<div class="container-fluid mt-5 form-group row" align="left">
+    <div class="col-md-3">
+        <form action="." method="post">
+            {{ form|crispy }}
+            {% csrf_token %}
+            <input type="submit" value="Register user">
+        </form>
+    </div>
+
+</div>
 {% endblock %}
