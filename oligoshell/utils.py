@@ -41,43 +41,52 @@ modification_extinction_260 = {
 }
 
 
-def sequence2lists(sequence):
-    """The function takes raw sequence as a string and converts it into three lists:
-    e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
-    unmodified_list: ['TTACGTC', 'TT']
-    unmodified_degenerated_list: ['NN', 'AACTNRG']
-    modification_list: ['[6FAM]', '[BHQ1dT]', '[DABCYL]']
+# def sequence2lists(sequence):
+#     """The function takes raw sequence as a string and converts it into three lists:
+#     e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
+#     unmodified_list: ['TTACGTC', 'TT']
+#     unmodified_degenerated_list: ['NN', 'AACTNRG']
+#     modification_list: ['[6FAM]', '[BHQ1dT]', '[DABCYL]']
+#     """
+#     modification_list = [item.upper() for item in re.findall(modification_pattern, sequence)]
+#     without_modifications_list = re.split(modification_pattern, sequence)
+#     unmodified_degenerated_list = [item for item in without_modifications_list
+#                                    if item and len(item) < 2 or re.search(degeneration_pattern, item)]
+#     unmodified_list = [item for item in without_modifications_list
+#                        if len(item) >= 2 and not re.search(degeneration_pattern, item)]
+#
+#     return unmodified_list, unmodified_degenerated_list, modification_list
+
+
+# def sequence2tuple(sequence):
+#     """The function takes raw sequence as a string and converts it into a tuple:
+#         e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
+#         ('N','N','[6FAM], ... ,'[DABCYL]','T','T')
+#         """
+#     sequence_tuple = ()
+#     mod_str = ''
+#     mod = False
+#
+#     for nt in sequence.upper():
+#         if nt == '[' or mod == True:
+#             mod = True
+#             mod_str += nt
+#             if nt == ']':
+#                 sequence_tuple += (mod_str,)
+#                 mod = False
+#                 mod_str = ''
+#             continue
+#         sequence_tuple += (nt,)
+#     return sequence_tuple
+
+
+def sequence_split(sequence):
     """
-    modification_list = [item.upper() for item in re.findall(modification_pattern, sequence)]
-    without_modifications_list = re.split(modification_pattern, sequence)
-    unmodified_degenerated_list = [item for item in without_modifications_list
-                                   if item and len(item) < 2 or re.search(degeneration_pattern, item)]
-    unmodified_list = [item for item in without_modifications_list
-                       if len(item) >= 2 and not re.search(degeneration_pattern, item)]
-
-    return unmodified_list, unmodified_degenerated_list, modification_list
-
-
-def sequence2tuple(sequence):
-    """The function takes raw sequence as a string and converts it into a tuple:
-        e.g. NN[6FAM]AACTNRG[BHQ1dT]TTACGTC[DABCYL]TT is converted to
-        ('N','N','[6FAM], ... ,'[DABCYL]','T','T')
-        """
-    sequence_tuple = ()
-    mod_str = ''
-    mod = False
-
-    for nt in sequence.upper():
-        if nt == '[' or mod == True:
-            mod = True
-            mod_str += nt
-            if nt == ']':
-                sequence_tuple += (mod_str,)
-                mod = False
-                mod_str = ''
-            continue
-        sequence_tuple += (nt,)
-    return sequence_tuple
+    The function takes raw sequence as a string and converts it into a tuple:
+    e.g. [VinylP-A] dC fT ps rA [Spacer-18] moeG rU lG ps [Cy3] is converted to
+    ('[VinylP-A]' 'dC' 'fT' 'ps' 'rA' '[Spacer-18]' 'moeG' 'rU' 'lG' 'ps' '[Cy3]')
+    """
+    return tuple(sequence.strip().split())
 
 
 def extinction_dna_nn(sequence):

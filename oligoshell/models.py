@@ -79,8 +79,7 @@ class Sequence(models.Model):
 
     sequence = models.CharField(verbose_name="Sequence, 5'->3'",
                                 max_length=300,
-                                validators=[validators.validate_sequence_regex,
-                                            validators.validate_modifications])
+                                validators=[validators.validate_syntax])
 
     scale = models.CharField(verbose_name='Scale',
                              max_length=20,
@@ -134,7 +133,7 @@ class Sequence(models.Model):
             #         len(''.join(unmodified_degenerated_list)) +
             #         len(modification_list)
             # )
-        print(utils.sequence2tuple(self.sequence))
+        #print(utils.sequence2tuple(self.sequence))
         if self.absorbance260:
             self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
         if self.sequence and not self.absorbance260:
