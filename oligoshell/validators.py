@@ -12,53 +12,44 @@ def validate_seq_name_regex(seq_name):
         return seq_name
 
 
-# def validate_sequence_regex(sequence):
-#         # sequence_pattern = r'^(((\[[-\._a-zA-Z0-9]+\])*?[aAcCgGtTwWsSmMkKrRyYbBdDhHvVnN]*?)*?)$'
-#     # message = ('Sequence should contain A/C/G/T, degenerated bases W/S/M/K/R/Y/B/D/H/V/N,'
-#     #            ' and modifications e.g. [FAM], [BHQ1] etc.')
-#     sequence_pattern = r''
-#     message = ('Sequence should contain A/C/G/T, degenerated bases W/S/M/K/R/Y/B/D/H/V/N,'
-#                 ' and modifications e.g. [FAM], [BHQ1] etc.')
-#     if not re.match(sequence_pattern, sequence):
-#         raise ValidationError(message)
-#     else:
-#         return sequence
-
-
-# def validate_modifications(sequence):
-#     modification_list = re.findall(utils.modification_pattern, sequence)
-#     modification_list_upper = [item.upper() for item in modification_list]
-#     message = 'Unovailable modifications: {}'
-#     if modification_list:
-#         modification_not_exist = [modification for modification in modification_list_upper
-#                                   if modification not in utils.modification_extinction_260]
-#         if modification_not_exist:
-#             raise ValidationError(message.format(', '.join(modification_not_exist)))
-#     else:
-#         return sequence
-
-
-def validate_syntax(sequence):
+def validate_seq(sequence):
     """
-        Validates a sting on a right syntax. Case-sensitive.
+        Validates a sting of sequence on a right syntax. It is case-sensitive.
         String should be presented in a format:
-        [VinylP-A] dC fT ps rA [Spacer-18] moeG rU lG ps [Cy3]
+        [VinylP-A] dC_5me fT ps rA [Spacer-18] moeG rU lG ps [Cy3]
+        where the name of common nucleotides begin with small letters that represent sugar moiety
+        followed by the capital letter representing nucleobase. After nucleobase and underscore it may be
+        a combination of numbers and small letters indicating a modification of nucleotide.
+        Other modifications are given in square brackets.
 
-        Available deoxynucleosides: dA, dC, dG, dT, dC_5me
+        Available 2'-deoxynucleosides: dA, dC, dG, dT, dC_5me
         Available ribonucleosides: rA, rC, rG, rU
         Available 2'-fluoro-2'-deoxynucleosides: fA, fC, fG, fU
         Available 2'-methoxyribonucleosides: mA, mC, mG, mU
-        Available locked nucleosides: lA, lC, lG, lT (lC is lC_5me by default)
-        Available 2'-MOE nucleosides: moeA, moeC, moeG, moeT (moeC is moeC_5me by default)
+        Available locked nucleosides: lA, lC_5me, lG, lT
+        Available 2'-MOE nucleosides: moeA, moeC_5me, moeG, moeT
 
-        Available phosphate modifications: po - phosphate, ps - phosphothyoate (po by default)
+        Available phosphate modifications: po - phosphate, ps - phosphorothyoate (po by default)
         """
 
-    sequence_spl = utils.sequence_split(sequence)
-    modification_not_exist = {index: nt for index, nt in enumerate(sequence_spl) if nt not in utils.modification_extinction_260}
+    modification_error = []
 
-    if modification_not_exist:
-        message = 'Unovailable modifications: ' + ', '.join(['{1} at position {0}'.format(index, nt) for (index, nt) in modification_not_exist.items()])
-        raise ValidationError(message)
+    sequence_spl = utils.sequence_split(sequence)
+
+    if sequence_spl[0] not in set(utils.modification_5_position + utils.nucleotide_any_position):
+        modification_error.append("5'-Modification does not exist: " + sequence_spl[0])
+    if len(sequence_spl) > 1:
+        if sequence_spl[-1] not in set(utils.modification_3_position + utils.nucleotide_any_position):
+            modification_error.append("3'-Modification does not exist: " + sequence_spl[-1])
+        for i in range(len(sequence_spl)-1):
+            if i == 0: continue
+            if sequence_spl[i] not in set( utils.modification_int_position +
+                                           utils.modification_phosphorus +
+                                           utils.nucleotide_any_position ):
+                modification_error.append("Internal modification does not exist: " + sequence_spl[i] + " at position " + str(i))
+            if (sequence_spl[i] in utils.modification_phosphorus) and (sequence_spl[i+1] in utils.modification_phosphorus):
+                modification_error.append("Two phosphate residues at positions " + str(i) + " and " + str(i+1) + " cannot be nearby")
+    if modification_error:
+        raise ValidationError(modification_error)
     else:
         return sequence

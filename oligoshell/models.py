@@ -79,7 +79,7 @@ class Sequence(models.Model):
 
     sequence = models.CharField(verbose_name="Sequence, 5'->3'",
                                 max_length=300,
-                                validators=[validators.validate_syntax])
+                                validators=[validators.validate_seq])
 
     scale = models.CharField(verbose_name='Scale',
                              max_length=20,
@@ -100,14 +100,12 @@ class Sequence(models.Model):
                                               )
 
     epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient', blank=True, null=True)
-
     absorbance260 = models.FloatField(verbose_name='Absorbance at 260 nm', blank=True, null=True)
-
     volume = models.FloatField(verbose_name='Total Volume, mL', blank=True, null=True)
-
     concentration = models.FloatField(verbose_name='Concentration, uM', blank=True, null=True)
-
     length = models.IntegerField(verbose_name='Sequence Length', blank=True, null=True)
+    mass_monoisotopic = models.FloatField(verbose_name='Monoisotopic Mass', blank=True, null=True)
+    mass_average = models.FloatField(verbose_name='Average Mass', blank=True, null=True)
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='sequences')
 
@@ -122,18 +120,16 @@ class Sequence(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        self.sequence = self.sequence.upper()
         if not self.epsilon260:
-            unmodified_list, unmodified_degenerated_list, modification_list = utils.sequence2lists(self.sequence)
-            self.epsilon260 = (sum((utils.extinction_dna_nn(item) for item in unmodified_list)) +
-                               sum((utils.extinction_dna_simple(item) for item in unmodified_degenerated_list)) +
-                               sum((utils.modification_extinction_260[item] for item in modification_list)))
-            # self.length = (
-            #         len(''.join(unmodified_list)) +
-            #         len(''.join(unmodified_degenerated_list)) +
-            #         len(modification_list)
-            # )
-        #print(utils.sequence2tuple(self.sequence))
+            self.epsilon260 = utils.extinction_dna_simple(utils.sequence_split(self.sequence))
+        if not self.length:
+            self.length = len([i for i in utils.sequence_split(self.sequence) if i not in utils.modification_phosphorus])
+        if not self.mass_average:
+            sequence_full = utils.sequence_explicit(self.sequence)
+            self.mass_average = utils.calc_mass_avg(sequence_full)
+        if not self.mass_monoisotopic and not utils.contain_degenerate_nucleotide(self.sequence):
+            sequence_full = utils.sequence_explicit(self.sequence)
+            self.mass_monoisotopic = utils.calc_mass_monoisotopic(sequence_full)
         if self.absorbance260:
             self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
         if self.sequence and not self.absorbance260:

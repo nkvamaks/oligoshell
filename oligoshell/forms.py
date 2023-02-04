@@ -12,7 +12,7 @@ from . import validators
 class SequenceForm(forms.ModelForm):
     seq_name = forms.CharField(validators=[validators.validate_seq_name_regex])
 
-    sequence = forms.CharField(validators=[validators.validate_syntax])
+    sequence = forms.CharField(validators=[validators.validate_seq])
 
     class Meta:
         model = models.Sequence
