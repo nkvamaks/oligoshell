@@ -121,15 +121,13 @@ class Sequence(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.epsilon260:
-            self.epsilon260 = utils.extinction_dna_simple(utils.sequence_split(self.sequence))
+            self.epsilon260 = utils.get_extinction(self.sequence)
         if not self.length:
-            self.length = len([i for i in utils.sequence_split(self.sequence) if i not in utils.modification_phosphorus])
+            self.length = utils.get_length(self.sequence)
         if not self.mass_average:
-            sequence_full = utils.sequence_explicit(self.sequence)
-            self.mass_average = utils.calc_mass_avg(sequence_full)
+            self.mass_average = utils.get_mass_avg(self.sequence)
         if not self.mass_monoisotopic and not utils.contain_degenerate_nucleotide(self.sequence):
-            sequence_full = utils.sequence_explicit(self.sequence)
-            self.mass_monoisotopic = utils.calc_mass_monoisotopic(sequence_full)
+            self.mass_monoisotopic = utils.get_mass_monoisotopic(self.sequence)
         if self.absorbance260:
             self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
         if self.sequence and not self.absorbance260:
