@@ -1,80 +1,71 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
-    <style>
-      table {
-        table-layout: fixed;
-      }
-      table td {
-        word-wrap: break-word;
-      }
-    </style>
 
-  <div class="container-fluid">
+<!-- Hoverable Table rows -->
 
-    {% for order in orders %}
+<div class="card">
+    <div class="table-responsive text-break">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th width="10%">Name</th>
+                <th width="40%">Sequence 5'->3'</th>
+                <th width="8%"><span class="fw-semibold d-block">Scale</span><small class="text-muted fw-light" style="text-transform: none;">nmol</small></th>
+                <th width="8%">Format</th>
+                <th width="9%">Purity</th>
+                <th width="10%">Synthesis</th>
+                <th width="8%">Purified</th>
+                <th width="7%">Conc.</th>
+              </tr>
+            </thead>
 
-        <div class="p-2 mt-1 bg-secondary">
-              <a class="text-white" href="{% url 'oligoshell:order_detail' pk=order.pk %}">Order #{{ order.pk }} by {{ order.customer }}</a>
-        </div>
+            <tbody class="table-border-bottom-0">
+                {% for seq in sequences %}
+                   <tr>
+                       <td class="p-1 align-middle" width="10%">
+                           <i class="fab fa-angular fa-lg text-danger me-1"></i>
+                           <strong>
+                               <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+                           </strong>
+                       </td>
+                       <td class="p-1 align-middle" width="40%"> {{ seq.sequence }}</td>
+                       <td class="p-1 align-middle" width="8%">{{ seq.scale }}</td>
+                       <td class="p-1 align-middle" width="8%"> {{ seq.format_requested }}</td>
+                       <td class="p-1 align-middle" width="9%"> {{ seq.purification_requested }}</td>
 
-    <div class="table-responsive">
-        <table class="table table-sm table-hover">
+                       <td class="p-1 align-middle" width="10%">
+                           {% if seq.synthesized %}
+                                <span class="badge bg-label-success me-1">Done</span>
+                           {% else %}
+                                <span class="badge bg-label-warning me-1">---</span>
+                           {% endif %}
+                       </td>
+                       <td class="p-1 align-middle" width="8%">
+                           {% if seq.purifications.exists %}
+                               {% for purification in seq.purifications.all %}
+                           <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                               <li><span class="badge bg-label-success me-1">{{ purification.pur_method }}</span></li>
+                           </ul>
+                               {% endfor %}
+                           {% else %}
+                                <span class="badge bg-label-warning me-1">---</span>
+                           {% endif %}
+                       </td>
+                       <td class="p-1 align-middle" width="7%">
+                           {% if seq.concentration %}
+                                <span class="badge bg-label-primary me-1">{{ seq.concentration }}</span></td>
+                           {% else %}
+                                <span class="badge bg-label-warning me-1">---</span>
+                           {% endif %}
+                       </td>
 
-              <thead class="thead-light">
-                <tr>
-                    <th width="10%">Name</th>
-                    <th width="40%">Sequence 5'->3'</th>
-                    <th width="8%">Scale</th>
-                    <th width="8%">Format</th>
-                    <th width="9%">Purification</th>
-                    <th width="10%">Synthesized</th>
-                    <th width="8%">Purified</th>
-                    <th width="7%">c, uM</th>
-                </tr>
-              </thead>
-            {% for seq in order.sequences.all %}
-
-               <tr>
-                   <td class="p-1 align-middle" width="10%">
-                        <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-                   </td>
-                   <td class="p-1 align-middle" width="40%"> {{ seq.sequence }}</td>
-                   <td class="p-1 align-middle" width="8%">{{ seq.scale }}</td>
-                   <td class="p-1 align-middle" width="8%"> {{ seq.format_requested }}</td>
-                   <td class="p-1 align-middle" width="9%"> {{ seq.purification_requested }}</td>
-
-                   <td class="p-1 align-middle" width="10%">
-                       {% if seq.synthesized %}
-                            Yes
-                       {% else %}
-                            -
-                       {% endif %}
-                   </td>
-                   <td class="p-1 align-middle" width="8%">
-                       {% if seq.purifications.exists %}
-                           {% for purification in seq.purifications.all %}
-                                <p class="p-0 mb-0 mt-0 align-middle">{{ purification.pur_method }}</p>
-                           {% endfor %}
-                       {% else %}
-                            -
-                       {% endif %}
-                   </td>
-                  <td class="p-1 align-middle" width="7%">
-                       {% if seq.concentration %}
-                           <p class="p-0 mb-0 mt-0 align-middle">{{ seq.concentration }}</p>
-                       {% else %}
-                            -
-                       {% endif %}
-                   </td>
-
-               </tr>
-           {% endfor %}
-
+                   </tr>
+               {% endfor %}
+            </tbody>
         </table>
-        </div>
-
-    {% endfor %}
     </div>
+</div>
+<!--/ Hoverable Table rows -->
 
 {% endblock %}

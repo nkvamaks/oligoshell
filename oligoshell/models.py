@@ -38,12 +38,12 @@ class Order(models.Model):
 
 
 class Sequence(models.Model):
-    MIN_SCALE = '50 nmole'
-    MED_SCALE = '200 nmole'
-    MAX_SCALE = '1 umole'
-    X_SCALE = '2 umole'
-    XX_SCALE = '5 umole'
-    XXX_SCALE = '10 umole'
+    MIN_SCALE = '50'
+    MED_SCALE = '200'
+    MAX_SCALE = '1000'
+    X_SCALE = '2000'
+    XX_SCALE = '5000'
+    XXX_SCALE = '10000'
     SCALES_CHOICES = [
         (MIN_SCALE, '50 nmole DNA oligo'),
         (MED_SCALE, '200 nmole DNA oligo'),
