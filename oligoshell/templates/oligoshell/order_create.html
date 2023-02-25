@@ -1,74 +1,131 @@
 {% extends 'layout/basic.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 
-{% block title %}Create Order{% endblock %}
+{% block title %} Create Oligo Entry {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Custom DNA Oligos - Oligo Entry</h5>
 
-
-
-        <form id="form-container" action="" method="post">
-
-        {% csrf_token %}
-
-        <div class="form-group row" hidden="true">
-
-            <div class="col-md-3">
-                {{ form.customer|as_crispy_field }}
-            </div>
-
-            <div class="col-md-3">
-                {{ form.email|as_crispy_field }}
-            </div>
-
+<div class="row">
+    <div class="col-xl">
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Custom Oligos - Oligo Entry</h5>
         </div>
+        <div class="card-body">
+            <form id="form-container" action="" method="post">
+                {% csrf_token %}
+                <div class="form-group row" hidden="true">
+                    <div class="col-md-3"> {{ form.customer}} </div>
+                    <div class="col-md-3"> {{ form.email }} </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {{ form.comments }}
+                    </div>
+                </div>
 
-        <div class="form-group row">
-
-            <div class="col-md-6">
-                {{ form.comments|as_crispy_field }}
-            </div>
-
-        </div>
                 {{ formset.management_form }}
 
                 {% for subform in formset %}
-
                     <div id="sequence-form">
-
-                        <div class="form-row">
-                            <div class="form-group col-md-2 mb-0">
-                                {{ subform.seq_name|as_crispy_field }}
+                      <div class="mt-1 mb-1 p-2 form-control">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="{{ subform.seq_name.id_for_label }}"><small>Sequence name</small></label>
+                                {{ subform.seq_name}}
+                                {% if subform.seq_name.errors %}
+                                    <div>
+                                        {{ subform.seq_name.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                {{ subform.sequence|as_crispy_field }}
-                            </div>
-                            <div class="form-group col-md-2 mb-0">
-                                {{ subform.scale|as_crispy_field }}
-                            </div>
-                            <div class="form-group col-md-2 mb-0">
-                                {{ subform.format_requested|as_crispy_field }}
-                            </div>
-                            <div class="form-group col-md-2 mb-0">
-                                {{ subform.purification_requested|as_crispy_field }}
+                            <div class="col-md-10">
+                                <label for="{{ subform.sequence.id_for_label }}"><small>Sequence 5'-->3'</small></label>
+                                {{ subform.sequence }}
+                                {% if subform.sequence.errors %}
+                                    <div>
+                                        {{ subform.sequence.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
+
+                        <div class="row mt-1">
+                            <div class="col-md-2">
+                                <label for="{{ subform.scale.id_for_label }}"><small>Scale</small></label>
+                                {{ subform.scale}}
+                            </div>
+                            <div class="col-md-2">
+                                <label for="{{ subform.format_requested.id_for_label }}"><small>Format</small></label>
+                                {{ subform.format_requested }}
+                            </div>
+                            <div class="col-md-2">
+                                <label for="{{ subform.purification_requested.id_for_label }}"><small>Purification</small></label>
+                                {{ subform.purification_requested }}
+                            </div>
+                            <div class="col-md-2">
+                                <button id="delete-form" type="button" class="mt-4 btn btn-sm btn-warning">Delete Oligo</button>
+                            </div>
+                        </div>
+                      </div>
                     </div>
-
                 {% endfor %}
-            <button id="add-form" type="button" class="btn btn-secondary">+ Add One More Sequences +</button>
-
-            <input type="submit" value="Submit" class="btn btn-primary submit"/>
-
-        </form>
-
-        <script src="{% static 'js/script.js' %}"></script>
-
+                    <button id="add-form" type="button" class="m-2 btn btn-sm btn-secondary">Add Another Sequence</button>
+                    <button type="submit" class="m-2 btn btn-sm btn-primary submit">Submit</button>
+            </form>
+        </div>
+      </div>
     </div>
+</div>
 
+<script src="{% static 'js/script.js' %}"></script>
 
+{%comment%}
+<!--              <label class="form-label" for="basic-default-fullname">Full Name</label>-->
+<!--              <input type="text" class="form-control" id="basic-default-fullname" placeholder="John Doe" />-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label class="form-label" for="basic-default-company">Company</label>-->
+<!--              <input type="text" class="form-control" id="basic-default-company" placeholder="ACME Inc." />-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label class="form-label" for="basic-default-email">Email</label>-->
+<!--              <div class="input-group input-group-merge">-->
+<!--                <input-->
+<!--                  type="text"-->
+<!--                  id="basic-default-email"-->
+<!--                  class="form-control"-->
+<!--                  placeholder="john.doe"-->
+<!--                  aria-label="john.doe"-->
+<!--                  aria-describedby="basic-default-email2"-->
+<!--                />-->
+<!--                <span class="input-group-text" id="basic-default-email2">@example.com</span>-->
+<!--              </div>-->
+<!--              <div class="form-text">You can use letters, numbers & periods</div>-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label class="form-label" for="basic-default-phone">Phone No</label>-->
+<!--              <input-->
+<!--                type="text"-->
+<!--                id="basic-default-phone"-->
+<!--                class="form-control phone-mask"-->
+<!--                placeholder="658 799 8941"-->
+<!--              />-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--              <label class="form-label" for="basic-default-message">Message</label>-->
+<!--              <textarea-->
+<!--                id="basic-default-message"-->
+<!--                class="form-control"-->
+<!--                placeholder="Hi, Do you have a moment to talk Joe?"-->
+<!--              ></textarea>-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-primary">Send</button>-->
+<!--          </form>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--</div>-->
+{%endcomment%}
 
 {% endblock %}

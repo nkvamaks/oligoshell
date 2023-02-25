@@ -1,5 +1,4 @@
 {% extends 'layout/basic.html' %}
-{% load crispy_forms_tags %}
 
 {% block title %}Add Purification{% endblock %}
 
@@ -12,25 +11,25 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    {{ form.title|as_crispy_field }}
+                    {{ form.title}}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-3">
-                    {{ form.pur_method|as_crispy_field }}
+                    {{ form.pur_method}}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    {{ form.pur_seqs|as_crispy_field }}
+                    {{ form.pur_seqs }}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-3">
-                    {{ form.comments|as_crispy_field }}
+                    {{ form.comments}}
                 </div>
             </div>
 

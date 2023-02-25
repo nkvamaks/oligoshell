@@ -1,7 +1,5 @@
 {% extends 'layout/basic.html' %}
 
-{% load crispy_forms_tags %}
-
 {% block title %}Add Sequence{% endblock %}
 
 {% block content %}
@@ -13,11 +11,11 @@
         <div class="form-group row">
 
             <div class="col-md-4">
-                {{ form.seq_name|as_crispy_field }}
+                {{ form.seq_name}}
             </div>
 
             <div class="col-md-8">
-                {{ form.sequence|as_crispy_field }}
+                {{ form.sequence}}
             </div>
 
         </div>
@@ -25,19 +23,19 @@
         <div class="form-group row">
 
             <div class="col-md-3">
-                {{ form.scale|as_crispy_field }}
+                {{ form.scale }}
             </div>
 
             <div class="col-md-3">
-                {{ form.format_requested|as_crispy_field }}
+                {{ form.format_requested }}
             </div>
 
             <div class="col-md-3">
-                {{ form.purification_requested|as_crispy_field }}
+                {{ form.purification_requested }}
             </div>
 
             <div class="col-md-3">
-                {{ form.order|as_crispy_field }}
+                {{ form.order }}
             </div>
 
         </div>

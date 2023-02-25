@@ -45,12 +45,12 @@ class Sequence(models.Model):
     XX_SCALE = '5000'
     XXX_SCALE = '10000'
     SCALES_CHOICES = [
-        (MIN_SCALE, '50 nmole DNA oligo'),
-        (MED_SCALE, '200 nmole DNA oligo'),
-        (MAX_SCALE, '1 \xb5mole DNA oligo'),
-        (X_SCALE, '2 \xb5mole DNA oligo'),
-        (XX_SCALE, '5 \xb5mole DNA oligo'),
-        (XXX_SCALE, '10 \xb5mole DNA oligo'),
+        (MIN_SCALE, '50 nmole oligo'),
+        (MED_SCALE, '200 nmole oligo'),
+        (MAX_SCALE, '1 \xb5mole oligo'),
+        (X_SCALE, '2 \xb5mole oligo'),
+        (XX_SCALE, '5 \xb5mole oligo'),
+        (XXX_SCALE, '10 \xb5mole oligo'),
     ]
 
     FORMAT_100uM = '100 uM'
@@ -84,7 +84,7 @@ class Sequence(models.Model):
     scale = models.CharField(verbose_name='Scale',
                              max_length=20,
                              choices=SCALES_CHOICES,
-                             default=MIN_SCALE
+                             default=MED_SCALE
                              )
 
     format_requested = models.CharField(verbose_name='Format',
@@ -154,8 +154,8 @@ class Profile(models.Model):
 
 
 class Batch(models.Model):
-    title = models.CharField(verbose_name='Batch ID', max_length=100)
-    created = models.DateTimeField(verbose_name='Batch Created', auto_now_add=True)
+    title = models.CharField(verbose_name='OligoSynthesis ID', max_length=100)
+    created = models.DateTimeField(verbose_name='Created', auto_now_add=True)
     sequences2synthesis = models.ManyToManyField(Sequence,
                                                  verbose_name='Sequences for Synthesis',
                                                  related_name='batches')
@@ -212,6 +212,9 @@ class Purification(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('oligoshell:purification_details', args=[self.pk])
 
     class Meta:
         verbose_name_plural = 'Purifications'

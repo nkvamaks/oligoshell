@@ -1,17 +1,8 @@
 {% extends "layout/basic.html" %}
-{% load crispy_forms_tags %}
 
 {% block title %}Sequence Details{% endblock %}
 
 {% block content %}
-    <style>
-      table {
-        table-layout: fixed;
-      }
-      table td {
-        word-wrap: break-word;
-      }
-    </style>
 
     <div class="col-7 align-self-start mt-3">
         <div class="table-responsive">
@@ -128,7 +119,7 @@
     </div>
 {% endblock %}
 
-{% block menu %}
+{% block r_panel %}
     <div class="col align-self-start mt-3">
 
         <h5>Enter Abs260 and Volume</h5>
@@ -138,12 +129,12 @@
 
        <div class="row">
            <div class="col-md-4">
-               {{ form.absorbance260|as_crispy_field }}
+               {{ form.absorbance260 }}
            </div>
        </div>
        <div class="row">
            <div class="col-md-4">
-               {{ form.volume|as_crispy_field }}
+               {{ form.volume }}
            </div>
        </div>
 

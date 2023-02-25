@@ -1,16 +1,8 @@
 {% extends "layout/basic.html" %}
 
-{% block title %}Batch details{{ batch.title }} {% endblock %}
+{% block title %}Purification details{{ batch.title }} {% endblock %}
 
     {% block content %}
-    <style>
-      table {
-        table-layout: fixed;
-      }
-      table td {
-        word-wrap: break-word;
-      }
-    </style>
 
     <div class="col-7 align-self-start mt-3">
 
@@ -23,21 +15,21 @@
                         <th width="40%">Comments</th>
                     </tr>
                 </thead>
-                {% for batch_iter in batches %}
+                {% for pur_iter in purifications %}
                 <tr>
-                    {% if batch_iter == batch %}
+                    {% if pur_iter == purification %}
                         <td>
-                            <a class="nav-link disabled p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+                            <a class="nav-link disabled p-0" href="{{ pur_iter.get_absolute_url }}">{{ pur_iter.title }}</a>
                         </td>
-                        <td>{{ batch_iter.created }}</td>
-                        <td>{{ batch_iter.comments }}</td>
+                        <td>{{ pur_iter.created }}</td>
+                        <td>{{ pur_iter.comments }}</td>
 
                     {% else %}
                         <td>
-                            <a class="nav-link active p-0" href="{{ batch_iter.get_absolute_url }}">{{ batch_iter.title }}</a>
+                            <a class="nav-link active p-0" href="{{ pur_iter.get_absolute_url }}">{{ pur_iter.title }}</a>
                         </td>
-                        <td>{{ batch_iter.created }}</td>
-                        <td>{{ batch_iter.comments }}</td>
+                        <td>{{ pur_iter.created }}</td>
+                        <td>{{ pur_iter.comments }}</td>
 
                      {% endif %}
                 </tr>
@@ -48,7 +40,7 @@
     </div>
     {% endblock %}
 
-    {% block r_panel %}
+    {% block menu %}
     <style>
       table {
         table-layout: fixed;
@@ -63,9 +55,9 @@
         <div class="table-responsive">
             <table class="table table-sm table-striped table-borderless">
 
-                <h5>Oligos in batch: {{ batch.title }}</h5>
+                <h5>Oligos in pur: {{ purification.title }}</h5>
 
-                {% for sequence in batch.sequences2synthesis.all %}
+                {% for sequence in purification.pur_seqs.all %}
                 <tr>
                     <td width="30%">
                         <a href="{% url 'oligoshell:sequence_detail' pk=sequence.pk%}">{{ sequence.seq_name }}</a>

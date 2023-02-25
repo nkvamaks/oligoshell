@@ -1,6 +1,4 @@
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
 from django.forms import BaseInlineFormSet, inlineformset_factory
 from django.contrib.auth.models import User
 import datetime
@@ -36,8 +34,8 @@ SequenceFormset = inlineformset_factory(models.Order, models.Sequence,
                                         extra=0,
                                         min_num=1,
                                         can_delete=False,
-                                        can_order=False)
-
+                                        can_order=False,
+                                        )
 
 class OrderForm(forms.ModelForm):
 
@@ -49,7 +47,10 @@ class OrderForm(forms.ModelForm):
                                                         User.objects.get().last_name + ' ' +
                                                         '(' + User.objects.get().username + ')')}),
                    'email': forms.EmailInput(attrs={'value': User.objects.get().email}),
-                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here', 'rows': 3}), }
+                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
+                                                     'rows': 3,
+                                                     'class': 'form-control',
+                                                    }),}
 
 
 class CustomSequences2synthesis(forms.ModelMultipleChoiceField):
@@ -94,17 +95,6 @@ class ConcentrationForm(forms.ModelForm):
     class Meta:
         model = models.Sequence
         fields = ('absorbance260', 'volume')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields[myField].widget.attrs['class'] = 'form-control'
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'absorbance260',
-            'volume',
-            Submit('submit', 'Save Measurements')
-        )
 
 
 class UserRegistrationForm(forms.ModelForm):

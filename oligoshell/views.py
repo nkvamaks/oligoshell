@@ -27,6 +27,7 @@ class IndexListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['orders'] = models.Order.objects.all()
         context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
         return context
 
 
@@ -106,6 +107,16 @@ def batch_details(request, pk):
                   'oligoshell/batch_detail.html',
                   {'batch': batch,
                    'batches': batches})
+
+@login_required
+def purification_details(request, pk):
+    purification = get_object_or_404(models.Purification, pk=pk)
+    purifications = models.Purification.objects.all()
+    return render(request,
+                  'oligoshell/purification_detail.html',
+                  {'purification': purification,
+                   'purifications': purifications})
+
 
 
 def register(request):
