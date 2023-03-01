@@ -21,21 +21,14 @@ totalForms.setAttribute('value', `${formNum+1}`); //Increment the number of tota
 };
 
 
+let deleteButtons = document.querySelector(".delete-form");
 
-//  deleteButton.addEventListener('click', () => {
-//    container.removeChild(newForm);
-//    totalForms.setAttribute('value', `${formNum}`);
-//    formNum--;
-//  });
-//
-//let deleteButton = document.querySelector("#delete-form");
-//
-//deleteButton.addEventListener('click', deleteForm);
-//function deleteForm(e) {
-//e.preventDefault();
-//
-//let newForm = sequenceForm[0].cloneNode(true);    //Clone the sequence form
-//
+deleteButtons.addEventListener('click', deleteForm);
+
+function deleteForm(e) {
+e.preventDefault();
+
+console.log(e);
 //let pattern = RegExp('sequences-(\\d)+-','g');    //Regex to find all instances of the form number
 //formNum++;                                        //Increment the form number
 //
@@ -43,4 +36,4 @@ totalForms.setAttribute('value', `${formNum+1}`); //Increment the number of tota
 //
 //container.insertBefore(newForm, addButton); //Insert the new form at the end of the list of forms
 //totalForms.setAttribute('value', `${formNum+1}`); //Increment the number of total forms in the management form
-//}
+}

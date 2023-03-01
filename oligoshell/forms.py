@@ -9,12 +9,20 @@ from . import validators
 
 class SequenceForm(forms.ModelForm):
     seq_name = forms.CharField(validators=[validators.validate_seq_name_regex])
-
     sequence = forms.CharField(validators=[validators.validate_seq])
 
     class Meta:
         model = models.Sequence
-        fields = ['seq_name', 'sequence', 'scale', 'format_requested', 'purification_requested']
+        fields = ['seq_name', 'sequence', 'scale', 'format_requested', 'purification_requested', 'order']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['seq_name'].widget.attrs.update({'class': 'form-control form-control-sm'})
+        self.fields['sequence'].widget.attrs.update({'class': 'form-control form-control-sm'})
+        self.fields['scale'].widget.attrs.update({'class': 'form-select form-select-sm'})
+        self.fields['format_requested'].widget.attrs.update({'class': 'form-select form-select-sm'})
+        self.fields['purification_requested'].widget.attrs.update({'class': 'form-select form-select-sm'})
+        self.fields['order'].widget.attrs.update({'class': 'form-select form-select-sm'})
 
 
 class BaseSequenceFormSet(BaseInlineFormSet):
@@ -53,14 +61,28 @@ class OrderForm(forms.ModelForm):
                                                     }),}
 
 
-class CustomSequences2synthesis(forms.ModelMultipleChoiceField):
+class CustomModelChoiceIterator(forms.models.ModelChoiceIterator):
+    def choice(self, obj):
+        return (self.field.prepare_value(obj),
+                self.field.label_from_instance(obj),
+                obj)
+
+
+class CustomModelChoiceField(forms.models.ModelMultipleChoiceField):
+    def _get_choices(self):
+        if hasattr(self, '_choices'):
+            return self._choices
+        return CustomModelChoiceIterator(self)
+    choices = property(_get_choices,
+                       forms.MultipleChoiceField._set_choices)
+
     def label_from_instance(self, seq):
         return seq.seq_name + ', ' + seq.sequence + ', ' + seq.scale + ', ' + seq.order.customer
 
 
-class CustomPurseqs(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, seq):
-        return seq.seq_name + ', ' + seq.sequence + ', ' + seq.scale + ', ' + seq.order.customer
+# class CustomPurseqs(forms.ModelMultipleChoiceField):
+#     def label_from_instance(self, seq):
+#         return seq.seq_name + ', ' + seq.sequence + ', ' + seq.scale + ', ' + seq.order.customer
 
 
 class BatchForm(forms.ModelForm):
@@ -68,10 +90,12 @@ class BatchForm(forms.ModelForm):
     class Meta:
         model = models.Batch
         fields = ['title', 'sequences2synthesis', 'comments']
-        widgets = {'title': forms.TextInput(attrs={'value': datetime.date.today}),
-                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here', 'rows': 2}), }
+        widgets = {'title': forms.TextInput(attrs={'class': 'form-control', 'value': datetime.date.today}),
+                   'comments': forms.Textarea(attrs={'class': 'form-control',
+                                                     'placeholder': 'Leave Your Comments Here',
+                                                     'rows': 3}), }
 
-    sequences2synthesis = CustomSequences2synthesis(
+    sequences2synthesis = CustomModelChoiceField(
         queryset=models.Sequence.objects.filter(synthesized=False),
         widget=forms.CheckboxSelectMultiple,
         label='Sequences Available for Synthesis',
@@ -84,7 +108,7 @@ class PurificationForm(forms.ModelForm):
         widgets = {'title': forms.TextInput(attrs={'value': datetime.date.today}),
                    'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here', 'rows': 2}), }
 
-    pur_seqs = CustomPurseqs(
+    pur_seqs = CustomModelChoiceField(
         queryset=models.Sequence.objects.filter(synthesized=True, done=False),
         widget=forms.CheckboxSelectMultiple,
         label='Sequences Available for Purification',

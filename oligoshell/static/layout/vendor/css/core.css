@@ -163,7 +163,7 @@ address {
 
 ol,
 ul {
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 
 ol,
@@ -340,49 +340,6 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
-}
-
-#sequence-form input {
-  display: block;
-  width: 100%;
-  padding: 0.25rem 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 1.53;
-  color: #697a8d;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #d9dee3;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  min-height: calc(1.53em + 0.5rem + 2px);
-}
-
-#sequence-form select {
- display: block;
-  width: 100%;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.625rem;
-  -moz-padding-start: calc(0.875rem - 3px);
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 1.53;
-  color: #697a8d;
-  background-color: #fff;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%2867, 89, 113, 0.6%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 0.875rem center;
-  background-size: 17px 12px;
-  border: 1px solid #d9dee3;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
 }
 
 .errorlist {

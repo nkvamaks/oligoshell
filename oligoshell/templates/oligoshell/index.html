@@ -66,39 +66,39 @@
                 {% for seq in sequences %}
                    <tr>
                        <td class="p-1 align-middle" width="10%">
-                           <i class="fab fa-angular fa-lg text-danger me-1"></i>
-                           <strong>
+                           <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                           <small>
                                <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
-                           </strong>
+                           </small>
                        </td>
-                       <td class="p-1 align-middle" width="40%"> {{ seq.sequence }}</td>
-                       <td class="p-1 align-middle" width="8%">{{ seq.scale }}</td>
-                       <td class="p-1 align-middle" width="8%"> {{ seq.format_requested }}</td>
-                       <td class="p-1 align-middle" width="9%"> {{ seq.purification_requested }}</td>
+                       <td class="p-1 align-middle" width="40%"><small> {{ seq.sequence }} </small></td>
+                       <td class="p-1 align-middle" width="8%"><small> {{ seq.scale }} </small></td>
+                       <td class="p-1 align-middle" width="8%"><small> {{ seq.format_requested }} </small></td>
+                       <td class="p-1 align-middle" width="9%"><small> {{ seq.purification_requested }} </small></td>
 
                        <td class="p-1 align-middle" width="10%">
                            {% if seq.synthesized %}
-                                <span class="badge bg-label-success me-1">Done</span>
+                                <span class="badge bg-label-success me-1"><small> Done </small></span>
                            {% else %}
-                                <span class="badge bg-label-warning me-1">---</span>
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
                            {% endif %}
                        </td>
                        <td class="p-1 align-middle" width="8%">
                            {% if seq.purifications.exists %}
                                {% for purification in seq.purifications.all %}
                            <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
-                               <li><span class="badge bg-label-success me-1">{{ purification.pur_method }}</span></li>
+                               <li><span class="badge bg-label-success me-1"><small> {{ purification.pur_method }} </small></span></li>
                            </ul>
                                {% endfor %}
                            {% else %}
-                                <span class="badge bg-label-warning me-1">---</span>
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
                            {% endif %}
                        </td>
                        <td class="p-1 align-middle" width="7%">
                            {% if seq.concentration %}
-                                <span class="badge bg-label-primary me-1">{{ seq.concentration }}</span></td>
+                                <span class="badge bg-label-primary me-1"><small> {{ seq.concentration }} </small></span></td>
                            {% else %}
-                                <span class="badge bg-label-warning me-1">---</span>
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
                            {% endif %}
                        </td>
 
