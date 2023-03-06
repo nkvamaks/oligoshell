@@ -2,12 +2,12 @@
 mass_mono = {
     'H': 1.007825035, 'Li': 7.016003, 'B': 11.0093055, 'C': 12, 'N': 14.003074, 'O': 15.99491463,
     'F': 18.99840322, 'Na': 22.9897677, 'P': 30.973762, 'S': 31.9720707, 'Cl': 34.96885272, 'K': 38.9637074,
-    'Cu': 62.9295989, 'Br': 78.9183361, 'Se': 79.9165196, 'I': 126.904473, 'H2O': 18.0105647,
+    'Cu': 62.9295989, 'Br': 78.9183361, 'Se': 79.9165196, 'I': 126.904473, 'H2O': 18.0105647, 'DMT': 303.13850493,
 }
 mass_avg = {
     'H': 1.00794, 'Li': 6.941, 'B': 10.811, 'C': 12.0107, 'N': 14.0067, 'O': 15.9994,
     'F': 18.9984032, 'Na': 22.98977, 'P': 30.973761, 'S': 32.065, 'Cl': 35.453, 'K': 39.0983,
-    'Cu': 63.546, 'Br': 79.904, 'Se': 78.96, 'I': 126.90447, 'H2O': 18.01528,
+    'Cu': 63.546, 'Br': 79.904, 'Se': 78.96, 'I': 126.90447, 'H2O': 18.01528, 'DMT': 303.37436,
 }
 
 
@@ -227,6 +227,10 @@ def get_mass_avg(sequence):
     """
     sequence_full = sequence_explicit(sequence)
     m_avg = 0
+    if get_length(sequence) == 1:
+        for atom in formula[sequence]:
+            m_avg += mass_avg[atom] * formula[sequence][atom]
+        return round(m_avg, 2)
     for nt in sequence_split(sequence_full):
         for atom in formula[nt]:
             m_avg += mass_avg[atom] * formula[nt][atom]
@@ -241,6 +245,10 @@ def get_mass_monoisotopic(sequence):
     """
     sequence_full = sequence_explicit(sequence)
     m_mono = 0
+    if get_length(sequence) == 1:
+        for atom in formula[sequence]:
+            m_mono += mass_mono[atom] * formula[sequence][atom]
+        return round(m_mono, 5)
     for nt in sequence_split(sequence_full):
         for atom in formula[nt]:
             m_mono += mass_mono[atom] * formula[nt][atom]

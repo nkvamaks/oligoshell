@@ -105,8 +105,12 @@ class PurificationForm(forms.ModelForm):
     class Meta:
         model = models.Purification
         fields = ('title', 'pur_method', 'pur_seqs', 'comments')
-        widgets = {'title': forms.TextInput(attrs={'value': datetime.date.today}),
-                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here', 'rows': 2}), }
+        widgets = {'title': forms.TextInput(attrs={'value': datetime.date.today,
+                                                   'class': 'form-control'}),
+                   'pur_method': forms.Select(attrs={'class': 'form-select'}),
+                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
+                                                     'rows': 3,
+                                                     'class': 'form-control' }), }
 
     pur_seqs = CustomModelChoiceField(
         queryset=models.Sequence.objects.filter(synthesized=True, done=False),
@@ -118,7 +122,11 @@ class PurificationForm(forms.ModelForm):
 class ConcentrationForm(forms.ModelForm):
     class Meta:
         model = models.Sequence
-        fields = ('absorbance260', 'volume')
+        fields = ('absorbance260', 'dilution_factor', 'volume')
+        widgets = {'absorbance260': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+                   'dilution_factor': forms.TextInput(attrs={'class': 'form-control form-control-sm',
+                                                             'value': 100}),
+                   'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}), }
 
 
 class UserRegistrationForm(forms.ModelForm):

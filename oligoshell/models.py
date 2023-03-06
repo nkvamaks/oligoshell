@@ -101,8 +101,9 @@ class Sequence(models.Model):
 
     epsilon260 = models.IntegerField(verbose_name='Extinction Coefficient', blank=True, null=True)
     absorbance260 = models.FloatField(verbose_name='Absorbance at 260 nm', blank=True, null=True)
-    volume = models.FloatField(verbose_name='Total Volume, mL', blank=True, null=True)
+    volume = models.FloatField(verbose_name='Volume, mL', blank=True, null=True)
     concentration = models.FloatField(verbose_name='Concentration, uM', blank=True, null=True)
+    dilution_factor = models.FloatField(verbose_name='Dilution Factor', blank=True, null=True)
     length = models.IntegerField(verbose_name='Sequence Length', blank=True, null=True)
     mass_monoisotopic = models.FloatField(verbose_name='Monoisotopic Mass', blank=True, null=True)
     mass_average = models.FloatField(verbose_name='Average Mass', blank=True, null=True)
@@ -119,6 +120,42 @@ class Sequence(models.Model):
         self.synthesized = True
         self.save()
 
+    def get_odu260(self):
+        if self.absorbance260 and self.dilution_factor and self.volume:
+            return round(self.absorbance260 * self.dilution_factor * self.volume, 2)
+        else:
+            return 0
+
+    def get_quantity(self):
+        if self.concentration and self.volume:
+            return round(self.concentration * self.volume, 1)
+        else:
+            return 0
+
+    def get_mass_average_dmt_on(self):
+        if self.mass_average:
+            return round(self.mass_average + utils.mass_avg['DMT'] - utils.mass_avg['H'], 2)
+        else:
+            return 0
+
+    def get_mass_monoisotopic_dmt_on(self):
+        if self.mass_monoisotopic:
+            return round(self.mass_monoisotopic + utils.mass_mono['DMT'] - utils.mass_mono['H'], 5)
+        else:
+            return None
+
+    def generate_esi_series(self):
+        for z in range(1, self.length):
+            esi_series_avg_dmt_off = round((self.mass_average - z * utils.mass_avg['H']) / z, 2)
+            esi_series_avg_dmt_on = round((self.get_mass_average_dmt_on() - z * utils.mass_avg['H']) / z, 2)
+            if not utils.contain_degenerate_nucleotide(self.sequence):
+                esi_series_mono_dmt_off = round((self.mass_monoisotopic - z * utils.mass_mono['H']) / z, 5)
+                esi_series_mono_dmt_on = round((self.get_mass_monoisotopic_dmt_on() - z * utils.mass_mono['H']) / z, 5)
+            else:
+                esi_series_mono_dmt_off = None
+                esi_series_mono_dmt_on = None
+            yield z, esi_series_avg_dmt_off, esi_series_avg_dmt_on, esi_series_mono_dmt_off, esi_series_mono_dmt_on
+
     def save(self, *args, **kwargs):
         if not self.epsilon260:
             self.epsilon260 = utils.get_extinction(self.sequence)
@@ -128,9 +165,9 @@ class Sequence(models.Model):
             self.mass_average = utils.get_mass_avg(self.sequence)
         if not self.mass_monoisotopic and not utils.contain_degenerate_nucleotide(self.sequence):
             self.mass_monoisotopic = utils.get_mass_monoisotopic(self.sequence)
-        if self.absorbance260:
-            self.concentration = round(self.absorbance260 / self.epsilon260 * 1000000, 2)
-        if self.sequence and not self.absorbance260:
+        if self.absorbance260 and self.dilution_factor:
+            self.concentration = round(self.absorbance260 * self.dilution_factor / self.epsilon260 * 1000000, 2)
+        if self.sequence and not (self.absorbance260 and self.dilution_factor):
             self.concentration = 0
         if self.concentration:
             self.done = True
@@ -182,11 +219,13 @@ def sequence_synthesized(sender, **kwargs):
 
 class Purification(models.Model):
     DESALT = 'Desalt'
+    CARTRIDGE = 'Cartridge'
     RP_HPLC = 'RP-HPLC'
     IEX_HPLC = 'IEX-HPLC'
     PAGE = 'PAGE'
     PURIFICATION_CHOICES = [
         (DESALT, 'Desalt'),
+        (CARTRIDGE, 'Cartridge'),
         (RP_HPLC, 'RP-HPLC'),
         (IEX_HPLC, 'IEX-HPLC'),
         (PAGE, 'PAGE'),

@@ -4,143 +4,327 @@
 
 {% block content %}
 
-    <div class="col-7 align-self-start mt-3">
-        <div class="table-responsive">
-            <table class="table table-sm table-striped table-borderless">
-                <tr>
-                    <td width="30%">Order # / Customer</td>
-                    <td width="70%">
-                        <a href="{% url 'oligoshell:order_detail' pk=sequence.order.pk %}">{{ sequence.order.pk }}
-                        / {{ sequence.order.customer }}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Sequence Name</td>
-                    <td>{{ sequence.seq_name }}</td>
-                </tr>
-                <tr>
-                    <td>Sequence 5'->3'</td>
-                    <td>{{ sequence.sequence }}</td>
-                </tr>
-                <tr>
-                    <td>Sequence Length</td>
-                    <td>{{ sequence.length }}</td>
-                </tr>
-                <tr>
-                    <td>Requested Scale</td>
-                    <td>{{ sequence.scale }}</td>
-                </tr>
-                <tr>
-                    <td>Requested Format</td>
-                    <td>{{ sequence.format_requested }}</td>
-                </tr>
-                <tr>
-                    <td>Requested Purification</td>
-                    <td>{{ sequence.purification_requested }}</td>
-                </tr>
-                <tr>
-                    <td>Average MW</td>
-                    <td>{{ sequence.mass_average }}</td>
-                </tr>
-                <tr>
-                    <td>Monoisotopic MW</td>
-                    <td>{{ sequence.mass_monoisotopic }}</td>
-                </tr>
-                <tr>
-                    <td>Sequence Created</td>
-                    <td>{{ sequence.created|date:"d M Y, H:i" }}</td>
-                </tr>
-                <tr>
-                    <td>Sequence Updated</td>
-                    <td>{{ sequence.updated|date:"d M Y, H:i" }}</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">Sequence was Synthesized in Batch</td>
-                    <td>{% if  sequence.batches.all %}
-                            {% for batch in sequence.batches.all %}
-                                <p class="p-0 mb-0 mt-0 align-middle">
-                                    <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
-                                </p>
-                            {% endfor %}
-                        {% else %}
-                                <p class="p-0 mb-0 mt-0 align-middle">NOT SYNTHESIZED</p>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="align-middle">Sequence was Purified by</td>
-                    <td>{% if  sequence.purifications.all %}
-                            {% for purification in sequence.purifications.all %}
-                                <p class="p-0 mb-0 mt-0 align-middle">
-                                    {{ purification.title }}
-                                </p>
-                            {% endfor %}
-                        {% else %}
-                                <p class="p-0 mb-0 mt-0 align-middle">NOT PURIFIED</p>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Extinction Coefficient at 260 nm</td>
-                    <td>{{ sequence.epsilon260 }} </td>
-                </tr>
+<div class="accordion" id="accordionExample">
+    <div class="card accordion-item active">
+        <h2 class="accordion-header" id="headingOne">
+            <button
+              type="button"
+              class="accordion-button collapsed"
+              data-bs-toggle="collapse"
+              data-bs-target="#accordionOne"
+              aria-expanded="false"
+              aria-controls="accordionOne"
+            >
+              Sequence Details
+            </button>
+        </h2>
 
-                <tr>
-                    <td>Absorbance at 260 nm</td>
-                    <td>{% if sequence.absorbance260 %}
+        <div
+            id="accordionOne"
+            class="accordion-collapse collapse"
+            data-bs-parent="#accordionExample"
+        >
+        <div class="accordion-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <td width="30%">Order #</td>
+                        <td width="70%">
+                            <a href="{% url 'oligoshell:order_detail' pk=sequence.order.pk %}">
+                                {{ sequence.order.pk }}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Customer</td>
+                        <td>{{ sequence.order.customer }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sequence Created</td>
+                        <td>{{ sequence.created|date:"d M Y, H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sequence Updated</td>
+                        <td>{{ sequence.updated|date:"d M Y, H:i" }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl">
+      <div class="card mb-4">
+        <div class="card-body">
+
+            <div class="table-responsive text-break">
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th width="10%"><span class="m-2 fw-semibold d-block">Name</span></th>
+                        <th width="40%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                        <th width="8%">
+                            <span class="fw-semibold d-block">
+                                Scale
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                nmol
+                            </small>
+                        </th>
+                        <th width="8%">
+                            <span class="fw-semibold d-block">
+                                Format
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                requested
+                            </small>
+                        </th>
+                        <th width="9%">
+                            <span class="fw-semibold d-block">
+                                Purity
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                requested
+                            </small>
+                        </th>
+                        <th width="10%">
+                            <span class="fw-semibold d-block">
+                                Synthesized
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                actual
+                            </small>
+                        </th>
+                        <th width="8%">
+                            <span class="fw-semibold d-block">
+                                Purified
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                actual
+                            </small>
+                        </th>
+                        <th width="7%">
+                            <span class="fw-semibold d-block">
+                                Conc.
+                            </span>
+                            <small class="text-muted fw-light" style="text-transform: none;">
+                                &mu;L
+                            </small>
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody class="table-border-bottom-0">
+                       <tr>
+                           <td class="p-1 align-middle" width="10%">
+                               <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                               <small> {{ sequence.seq_name }} </small>
+                           </td>
+                           <td class="p-1 align-middle" width="40%"><small> {{ sequence.sequence }} </small></td>
+                           <td class="p-1 align-middle" width="8%"><small> {{ sequence.scale }} </small></td>
+                           <td class="p-1 align-middle" width="8%"><small> {{ sequence.format_requested }} </small></td>
+                           <td class="p-1 align-middle" width="9%"><small> {{ sequence.purification_requested }} </small></td>
+
+                           <td class="p-1 align-middle" width="10%">
+                               {% if sequence.synthesized %}
+                                 <span class="badge bg-label-success me-1"><small>
+                                    {% for batch in sequence.batches.all %}
+                                        <p class="p-0 mb-0 mt-0 align-middle">
+                                            <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                                        </p>
+                                    {% endfor %}
+                                 </small></span>
+                               {% else %}
+                                    <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                               {% endif %}
+                           </td>
+                           <td class="p-1 align-middle" width="8%">
+                               {% if sequence.purifications.exists %}
+                                   {% for purification in sequence.purifications.all %}
+                                       <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                           <li><span class="badge bg-label-success me-1"><small> {{ purification.pur_method }} </small></span></li>
+                                       </ul>
+                                   {% endfor %}
+                               {% else %}
+                                    <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                               {% endif %}
+                           </td>
+                           <td class="p-1 align-middle" width="7%">
+                               {% if sequence.concentration %}
+                                    <span class="badge bg-label-primary me-1"><small> {{ sequence.concentration }} </small></span></td>
+                               {% else %}
+                                    <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                               {% endif %}
+                           </td>
+
+                       </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+
+      <h6 class="pb-1 mb-3 text-muted">Sequence properties</h6>
+      <div class="row">
+
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">
+                  <strong>Sequence Length:</strong> &emsp; {{ sequence.length }} <span class="text-muted">nt</span>
+              </p>
+              <p class="card-text">
+                  <strong>GC content:</strong> &emsp; TBD <span class="text-muted">%</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+                <p class="card-text">
+                    <strong>&epsilon;<sub>260</sub>: </strong> &emsp; {{ sequence.epsilon260 }}
+                    <span class="text-muted">L&middot;mol<sup>-1</sup>&middot;cm<sup>-1</sup></span>
+                </p>
+                <p>
+                    <strong>OD<sub>260</sub>:</strong> &emsp;
+                        {% if sequence.absorbance260 %}
                             {{ sequence.absorbance260 }}
+                            <span class="text-muted">(&times;{{ sequence.dilution_factor }})</span>
                         {% else %}
                             NOT MEASURED
                         {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Total Volume</td>
-                    <td>{% if sequence.volume %}
-                            {{ sequence.volume }} mL
+                </p>
+                <p>
+                    <strong>Volume:</strong> &emsp;
+                        {% if sequence.volume %}
+                            {{ sequence.volume }} <span class="text-muted">mL</span>
                         {% else %}
                             NOT MEASURED
                         {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Final Concentration, uM</td>
-                    <td>{% if sequence.concentration %}
-                            {{ sequence.concentration }} uM
+                </p>
+                <p>
+                    <strong>OD<sub>260</sub> Units:</strong> &emsp;
+                        {% if sequence.get_odu260 %}
+                            {{ sequence.get_odu260 }}
                         {% else %}
                             NOT MEASURED
                         {% endif %}
-                    </td>
-                </tr>
+                </p>
+                <p>
+                    <strong>Concentration: </strong> &emsp;
+                        {% if sequence.concentration %}
+                        {{ sequence.concentration }} <span class="text-muted">&mu;M</span>
+                        {% else %}
+                            NOT MEASURED
+                        {% endif %}
+                </p>
+                <p>
+                    <strong>Quantity:</strong> &emsp;
+                        {% if sequence.get_quantity %}
+                            {{ sequence.get_quantity }} <span class="text-muted">nmol</span>
+                        {% else %}
+                            NOT MEASURED
+                        {% endif %}
+                </p>
+            </div>
+          </div>
+        </div>
 
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Enter:</h5>
 
-            </table>
-         </div>
+              <form method="post">
+                {% csrf_token %}
+                  <label for="{{ form.absorbance260.id_for_label }}"><small>Absorbance at 260 nm</small></label>
+                  {{ form.absorbance260 }}
+                  <label class="mt-2" for="{{ form.dilution_factor.id_for_label }}"><small>Dilution Factor</small></label>
+                  {{ form.dilution_factor }}
+                  <label class="mt-2" for="{{ form.volume.id_for_label }}"><small>Volume, mL</small></label>
+                  {{ form.volume }}
+
+                  <button type="submit" class="mt-3 btn btn-sm btn-primary submit"> Update </button>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+          <div class="col-xl">
+             <div class="card">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                 <tr>
+                                    <th></th>
+                                    <th><span class="fw-semibold">Average MW (DMT-OFF)</span></th>
+                                    <th><span class="fw-semibold">Average MW (DMT-ON)</span></th>
+                                    <th><span class="fw-semibold">Monoisotopic MW (DMT-OFF)</span></th>
+                                    <th><span class="fw-semibold">Monoisotopic MW (DMT-ON)</span></th>
+                                 </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td><strong>{{sequence.mass_average}}</strong></td>
+                                    <td><strong>{{sequence.get_mass_average_dmt_on}}</strong></td>
+                                    <td><strong>
+                                        {% if sequence.mass_monoisotopic %}
+                                            {{sequence.mass_monoisotopic}}
+                                        {% else %}
+                                            ---
+                                        {% endif %}
+                                    </strong></td>
+                                    <td><strong>
+                                        {% if sequence.get_mass_monoisotopic_dmt_on %}
+                                            {{sequence.get_mass_monoisotopic_dmt_on}}
+                                        {% else %}
+                                            ---
+                                        {% endif %}
+                                    </strong></td>
+                                </tr>
+
+                                {% for z, esi_avg_off, esi_avg_on, esi_mono_off, esi_mono_on in sequence.generate_esi_series %}
+                                    <tr>
+                                        <td><strong>z-{{z}}</strong></td>
+                                        <td>{{esi_avg_off}}</td>
+                                        <td>{{esi_avg_on}}</td>
+                                        <td>
+                                            {% if esi_mono_off %}
+                                                {{esi_mono_off}}
+                                            {% else %}
+                                                ---
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if esi_mono_on %}
+                                                {{esi_mono_on}}
+                                            {% else %}
+                                                ---
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+             </div>
+          </div>
+      </div>
     </div>
-{% endblock %}
+</div>
 
-{% block r_panel %}
-    <div class="col align-self-start mt-3">
-
-        <h5>Enter Abs260 and Volume</h5>
-
-       <form method="post">
-            {% csrf_token %}
-
-       <div class="row">
-           <div class="col-md-4">
-               {{ form.absorbance260 }}
-           </div>
-       </div>
-       <div class="row">
-           <div class="col-md-4">
-               {{ form.volume }}
-           </div>
-       </div>
-
-       <input type="submit" value="Save Measurements" class="btn btn-primary submit"/>
-
-       </form>
-
-    </div>
-{% endblock %}
+          </div>
+    {% endblock %}
