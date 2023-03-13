@@ -3,90 +3,97 @@
 {% block title %}New OligoSynthesis{% endblock %}
 
 {% block content %}
+<h6 class="pb-1 mb-3 text-muted">Create a New OligoSynthesis Run:</h6>
+
+<form method="post">
+{% csrf_token %}
 
 <div class="row">
-    <div class="col-xl">
-      <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Add Sequences to a New Synthesis</h5>
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+               <p class="card-text">
+                   <label for="{{ form.title.id_for_label }}">Name of OligoSynthesis:</label>
+                   {{ form.title}}
+               </p>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="{{ form.title.id_for_label }}">Current Synthesis Name</label>
-                        {{ form.title}}
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <label for="{{ form.comments.id_for_label }}">Comments</label>
-                        {{ form.comments}}
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col">
-                        <label for="{{ form.sequences2synthesis.id_for_label }}"><h6>Sequences Available for Synthesis:</h6></label>
-
-                        <div class="table-responsive text-break">
-                            <table class="table table-hover">
-                                <thead>
-                                  <tr>
-                                    <th width="15%" colspan="2"><span class="m-2 fw-semibold d-block">Name</span></th>
-                                    <th width="55%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
-                                    <th width="10%">
-                                        <span class="fw-semibold d-block">
-                                            Scale
-                                        </span>
-                                        <small class="text-muted fw-light" style="text-transform: none;">
-                                            nmol
-                                        </small>
-                                    </th>
-                                    <th width="10%">
-                                        <span class="fw-semibold d-block">
-                                            Format
-                                        </span>
-                                        <small class="text-muted fw-light" style="text-transform: none;">
-                                            requested
-                                        </small>
-                                    </th>
-                                    <th width="10%">
-                                        <span class="fw-semibold d-block">
-                                            Purity
-                                        </span>
-                                        <small class="text-muted fw-light" style="text-transform: none;">
-                                            requested
-                                        </small>
-                                    </th>
-                                  </tr>
-                                </thead>
-
-                                <tbody class="table-border-bottom-0">
-                                    {% for value, label, seqs in form.sequences2synthesis.field.choices %}
-                                       <tr>
-                                           <td class="p-1 align-middle" width="3%">
-                                               <i class="fab fa-angular fa-lg text-danger me-2"></i>
-                                               <input class="form-check-input" type="checkbox" value="{{ value }}" name="sequences2synthesis" />
-                                           </td>
-                                           <td class="p-1 align-middle" width="12%"><small> {{ seqs.seq_name }} </small>
-                                           </td>
-                                           <td class="p-1 align-middle" width="55%"><small> {{ seqs.sequence }} </small></td>
-                                           <td class="p-1 align-middle" width="10%"><small> {{ seqs.scale }} </small></td>
-                                           <td class="p-1 align-middle" width="10%"><small> {{ seqs.format_requested }} </small></td>
-                                           <td class="p-1 align-middle" width="10%"><small> {{ seqs.purification_requested }} </small></td>
-                                       </tr>
-                                   {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary submit mt-4"> Create New Synthesis </button>
-            </form>
+    </div>
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">
+                   <label for="{{ form.comments.id_for_label }}">Comments:</label>
+                   {{ form.comments}}
+                </p>
+            </div>
         </div>
-      </div>
     </div>
 </div>
+
+<h6 class="pb-1 mb-3 text-muted">Available Sequences:</h6>
+<div class="row">
+    <div class="col-xl mb-3">
+        <div class="card">
+            <div class="card-body">
+
+                    <div class="table-responsive text-break">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th width="15%" colspan="2"><span class="m-2 fw-semibold d-block">Name</span></th>
+                                <th width="55%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                                <th width="10%">
+                                    <span class="fw-semibold d-block">
+                                        Scale
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        nmol
+                                    </small>
+                                </th>
+                                <th width="10%">
+                                    <span class="fw-semibold d-block">
+                                        Format
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        requested
+                                    </small>
+                                </th>
+                                <th width="10%">
+                                    <span class="fw-semibold d-block">
+                                        Purity
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        requested
+                                    </small>
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody class="table-border-bottom-0">
+                                {% for value, label, seqs in form.sequences2synthesis.field.choices %}
+                                   <tr>
+                                       <td class="p-1 align-middle" width="3%">
+                                           <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                                           <input class="form-check-input" type="checkbox" value="{{ value }}" name="sequences2synthesis" />
+                                       </td>
+                                       <td class="p-1 align-middle" width="12%"><small> {{ seqs.seq_name }} </small>
+                                       </td>
+                                       <td class="p-1 align-middle" width="55%"><small> {{ seqs.sequence }} </small></td>
+                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.scale }} </small></td>
+                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.format_requested }} </small></td>
+                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.purification_requested }} </small></td>
+                                   </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary submit mt-4">Create New Synthesis</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
 
 {% endblock %}

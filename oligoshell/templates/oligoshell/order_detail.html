@@ -1,53 +1,161 @@
 {% extends "layout/basic.html" %}
 
-{% block title %}Orders{% endblock %}
+{% block title %}Order Details{% endblock %}
 
 {% block content %}
-    <style>
-      table {
-        table-layout: fixed;
-      }
-      table td {
-        word-wrap: break-word;
-      }
-    </style>
 
-    <div class="col-7 align-self-start mt-3">
-        <div class="table-responsive">
-            <table class="table table-sm table-striped table-borderless">
-                <tr>
-                    <td width="30%">Order # / Customer</td>
-                    <td width="70%">{{ order.pk }} / {{ order.customer }}</td>
-                </tr>
-                <tr>
-                    <td>Customers' Email</td>
-                    <td>{{ order.email }}</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">Comments</td>
-                    <td>{{ order.comments }}</td>
-                </tr>
-                <tr>
-                    <td>Order Created</td>
-                    <td>{{ order.created|date:"d M Y, H:i" }}</td>
-                </tr>
-                <tr>
-                    <td>Order Updated</td>
-                    <td>{{ order.updated|date:"d M Y, H:i" }}</td>
-                </tr>
-                <tr>
-                    <td class="align-middle">Sequences in Current Order</td>
-                    <td>
-                         {% for seq in order.sequences.all %}
-                              <p class="p-0 mb-0 mt-0 align-middle">
-                                  <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">{{ seq.seq_name }}</a>
-                                  {{ seq.sequence }}
-                              </p>
-                         {% endfor %}
-                    </td>
-                </tr>
-
-            </table>
-         </div>
+<div class="row">
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+               <p class="card-text">
+                   <strong>Order:</strong> &emsp; {{ order.pk }}
+               </p>
+                <p class="card-text">
+                   <strong>Customer:</strong> &emsp; {{ order.customer }}
+               </p>
+                <p class="card-text">
+                   <strong>Email:</strong> &emsp; {{ order.email }}
+               </p>
+                <p class="card-text">
+                   <strong>Order Created:</strong> &emsp; {{ order.created|date:"d M Y, H:i" }}
+               </p>
+                <p class="card-text">
+                   <strong>Order Updated:</strong> &emsp; {{ order.updated|date:"d M Y, H:i" }}
+               </p>
+            </div>
+        </div>
     </div>
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+               <h6 class="card-title">Comments:</h6>
+               <form method="post">
+                  {% csrf_token %}
+                  {{ form.comments }}
+                  <button type="submit" class="mt-3 btn btn-sm btn-primary submit"> Update </button>
+               </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h6 class="pb-1 mb-3 mt-3 text-muted">Sequences in the Order: &emsp; {{ order.pk }}</h6>
+<div class="row">
+    <div class="col-xl mb-3">
+        <div class="card">
+
+                <div class="table-responsive text-break">
+                    <table class="table table-sm table-hover">
+
+                        <thead>
+                          <tr>
+                            <th width="10%"><span class="m-2 fw-semibold d-block">Name</span></th>
+                            <th width="40%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                            <th width="8%">
+                                <span class="fw-semibold d-block">
+                                    Scale
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    nmol
+                                </small>
+                            </th>
+                            <th width="8%">
+                                <span class="fw-semibold d-block">
+                                    Format
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    requested
+                                </small>
+                            </th>
+                            <th width="9%">
+                                <span class="fw-semibold d-block">
+                                    Purity
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    requested
+                                </small>
+                            </th>
+                            <th width="10%">
+                                <span class="fw-semibold d-block">
+                                    Synthesized
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    actual
+                                </small>
+                            </th>
+                            <th width="8%">
+                                <span class="fw-semibold d-block">
+                                    Purified
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    actual
+                                </small>
+                            </th>
+                            <th width="7%">
+                                <span class="fw-semibold d-block">
+                                    Conc.
+                                </span>
+                                <small class="text-muted fw-light" style="text-transform: none;">
+                                    &mu;L
+                                </small>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                        {% for seq in order.sequences.all %}
+                           <tr>
+                               <td class="p-2 align-middle" width="10%">
+                                   <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                                   <small>
+                                       <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">{{ seq.seq_name }}</a>
+                                   </small>
+                               </td>
+                               <td class="p-1 align-middle" width="40%"><small> {{ seq.sequence }} </small></td>
+                               <td class="p-1 align-middle" width="8%"><small> {{ seq.scale }} </small></td>
+                               <td class="p-1 align-middle" width="8%"><small> {{ seq.format_requested }} </small></td>
+                               <td class="p-1 align-middle" width="9%"><small> {{ seq.purification_requested }} </small></td>
+
+                               <td class="p-1 align-middle" width="10%">
+                                   {% if seq.synthesized %}
+                                     <span class="badge bg-label-success me-1">
+                                         <small>
+                                            {% for batch in seq.batches.all %}
+                                                <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                                            {% endfor %}
+                                         </small>
+                                     </span>
+                                   {% else %}
+                                        <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                                   {% endif %}
+                               </td>
+                               <td class="p-1 align-middle" width="8%">
+                                   {% if seq.purifications.exists %}
+                                       {% for purification in seq.purifications.all %}
+                                           <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                               <li><span class="badge bg-label-success me-1"><small> {{ purification.pur_method }} </small></span></li>
+                                           </ul>
+                                       {% endfor %}
+                                   {% else %}
+                                        <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                                   {% endif %}
+                               </td>
+                               <td class="p-1 align-middle" width="7%">
+                                   {% if seq.concentration %}
+                                        <span class="badge bg-label-primary me-1"><small> {{ seq.concentration }} </small></span></td>
+                                   {% else %}
+                                        <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                                   {% endif %}
+                               </td>
+
+                           </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+        </div>
+    </div>
+</div>
+
 {% endblock %}

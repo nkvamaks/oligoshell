@@ -28,7 +28,7 @@ class Order(models.Model):
     class Meta:
         verbose_name_plural = 'Orders'
         verbose_name = 'Order number'
-        ordering = ['pk']
+        ordering = ['-pk']
 
     def get_absolute_url(self):
         return reverse('oligoshell:index')

@@ -7,12 +7,6 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-# from django.contrib.auth.models import User
-#from extra_views import CreateWithInlinesView, UpdateWithInlinesView
-#from django.http import HttpResponseRedirect
-#from django.contrib import messages
-#from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 
 from . import models
 from . import forms
@@ -61,17 +55,6 @@ class SequenceCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class OrderDetailView(LoginRequiredMixin, DetailView):
-    model = models.Order
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['orders'] = models.Order.objects.all()
-        context['batches'] = models.Batch.objects.all()
-        context['purifications'] = models.Purification.objects.all()
-        return context
-
-
 class OrderCreateView(LoginRequiredMixin, CreateView):
     model = models.Order
     form_class = forms.OrderForm
@@ -86,7 +69,6 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         context['purifications'] = models.Purification.objects.all()
         return context
 
-
     def post(self, request, *args, **kwargs):
         form = forms.OrderForm(request.POST)
         formset = forms.SequenceFormset(request.POST)
@@ -98,10 +80,29 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return render(request, 'oligoshell/order_create.html', {'form': form, 'formset': formset})
 
 
+class OrderUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Order
+    template_name = 'oligoshell/order_detail.html'
+    form_class = forms.OrderCommentsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse('oligoshell:order_detail', kwargs={'pk': self.object.id})
+
+
 class BatchCreateView(LoginRequiredMixin, CreateView):
     template_name = 'oligoshell/batch_create.html'
     form_class = forms.BatchForm
-    success_url = reverse_lazy('oligoshell:batch')
+    # success_url = reverse_lazy('oligoshell:batch_details')
+
+    def get_success_url(self):
+        return reverse('oligoshell:batch_details', kwargs={'pk': self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,44 +112,52 @@ class BatchCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
+class BatchUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Batch
+    template_name = 'oligoshell/batch_detail.html'
+    form_class = forms.BatchCommentsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse('oligoshell:batch_details', kwargs={'pk': self.object.id})
+
+
 class PurificationCreateView(LoginRequiredMixin, CreateView):
     model = models.Purification
     template_name = 'oligoshell/purification_create.html'
     form_class = forms.PurificationForm
-    success_url = reverse_lazy('oligoshell:index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse('oligoshell:purification_details', kwargs={'pk': self.object.id})
 
 
-@login_required
-def view_profile(request):
-    return render(request, 'oligoshell/profile.html', {'user': request.user})
+class PurificationDetailView(LoginRequiredMixin, DetailView):
+    model = models.Purification
+    template_name = 'oligoshell/purification_detail.html'
+    # form_class = forms.PurificationCommentsForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
+        return context
 
-@login_required
-def all_batches(request):
-    batches = models.Batch.objects.all()
-    return render(request,
-                  'oligoshell/batch.html',
-                  {"batches": batches})
-
-
-@login_required
-def batch_details(request, pk):
-    batch = get_object_or_404(models.Batch, pk=pk)
-    batches = models.Batch.objects.all()
-    return render(request,
-                  'oligoshell/batch_detail.html',
-                  {'batch': batch,
-                   'batches': batches})
-
-@login_required
-def purification_details(request, pk):
-    purification = get_object_or_404(models.Purification, pk=pk)
-    purifications = models.Purification.objects.all()
-    return render(request,
-                  'oligoshell/purification_detail.html',
-                  {'purification': purification,
-                   'purifications': purifications})
-
+    def get_success_url(self):
+        return reverse('oligoshell:purification_details', kwargs={'pk': self.object.id})
 
 
 def register(request):
@@ -170,3 +179,7 @@ def register(request):
         user_form = forms.UserRegistrationForm()
     return render(request, 'oligoshell/register.html', {'form': user_form})
 
+
+@login_required
+def view_profile(request):
+    return render(request, 'oligoshell/profile.html', {'user': request.user})

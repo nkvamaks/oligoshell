@@ -131,9 +131,7 @@
                                {% if sequence.synthesized %}
                                  <span class="badge bg-label-success me-1"><small>
                                     {% for batch in sequence.batches.all %}
-                                        <p class="p-0 mb-0 mt-0 align-middle">
-                                            <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
-                                        </p>
+                                        <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
                                     {% endfor %}
                                  </small></span>
                                {% else %}

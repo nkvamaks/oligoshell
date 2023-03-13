@@ -128,6 +128,22 @@ class ConcentrationForm(forms.ModelForm):
                                                              'value': 100}),
                    'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}), }
 
+class OrderCommentsForm(forms.ModelForm):
+    class Meta:
+        model = models.Order
+        fields = ('comments',)
+        widgets = {'comments': forms.Textarea(attrs={'value': models.Order.comments,
+                                                     'rows': 4,
+                                                     'class': 'form-control'}), }
+
+class BatchCommentsForm(forms.ModelForm):
+    class Meta:
+        model = models.Batch
+        fields = ('comments',)
+        widgets = {'comments': forms.Textarea(attrs={'value': models.Batch.comments,
+                                                     'rows': 4,
+                                                     'class': 'form-control'}), }
+
 
 class UserRegistrationForm(forms.ModelForm):
 
