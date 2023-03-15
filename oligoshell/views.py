@@ -144,10 +144,10 @@ class PurificationCreateView(LoginRequiredMixin, CreateView):
         return reverse('oligoshell:purification_details', kwargs={'pk': self.object.id})
 
 
-class PurificationDetailView(LoginRequiredMixin, DetailView):
+class PurificationUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Purification
     template_name = 'oligoshell/purification_detail.html'
-    # form_class = forms.PurificationCommentsForm
+    form_class = forms.PurificationCommentsForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

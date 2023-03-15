@@ -78,7 +78,11 @@
 
                        <td class="p-1 align-middle" width="10%">
                            {% if seq.synthesized %}
-                                <span class="badge bg-label-success me-1"><small> Done </small></span>
+                                <span class="badge bg-label-success me-1"><small>
+                                    {% for batch in seq.batches.all %}
+                                        <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                                    {% endfor %}
+                                </small></span>
                            {% else %}
                                 <span class="badge bg-label-warning me-1"><small> --- </small></span>
                            {% endif %}
@@ -86,9 +90,11 @@
                        <td class="p-1 align-middle" width="8%">
                            {% if seq.purifications.exists %}
                                {% for purification in seq.purifications.all %}
-                           <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
-                               <li><span class="badge bg-label-success me-1"><small> {{ purification.pur_method }} </small></span></li>
-                           </ul>
+                                   <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                       <li><span class="badge bg-label-success me-1"><small>
+                                           <a href="{{ purification.get_absolute_url }}">{{ purification.pur_method }}</a>
+                                       </small></span></li>
+                                   </ul>
                                {% endfor %}
                            {% else %}
                                 <span class="badge bg-label-warning me-1"><small> --- </small></span>

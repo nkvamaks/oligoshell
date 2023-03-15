@@ -133,7 +133,9 @@
                                    {% if seq.purifications.exists %}
                                        {% for purification in seq.purifications.all %}
                                            <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
-                                               <li><span class="badge bg-label-success me-1"><small> {{ purification.pur_method }} </small></span></li>
+                                               <li><span class="badge bg-label-success me-1"><small>
+                                                   <a href="{{ purification.get_absolute_url }}">{{ purification.pur_method }}</a>
+                                               </small></span></li>
                                            </ul>
                                        {% endfor %}
                                    {% else %}

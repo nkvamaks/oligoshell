@@ -140,7 +140,7 @@ class Sequence(models.Model):
 
     def get_mass_monoisotopic_dmt_on(self):
         if self.mass_monoisotopic:
-            return round(self.mass_monoisotopic + utils.mass_mono['DMT'] - utils.mass_mono['H'], 5)
+            return round(self.mass_monoisotopic + utils.mass_mono['DMT'] - utils.mass_mono['H'], 4)
         else:
             return None
 
@@ -149,8 +149,8 @@ class Sequence(models.Model):
             esi_series_avg_dmt_off = round((self.mass_average - z * utils.mass_avg['H']) / z, 2)
             esi_series_avg_dmt_on = round((self.get_mass_average_dmt_on() - z * utils.mass_avg['H']) / z, 2)
             if not utils.contain_degenerate_nucleotide(self.sequence):
-                esi_series_mono_dmt_off = round((self.mass_monoisotopic - z * utils.mass_mono['H']) / z, 5)
-                esi_series_mono_dmt_on = round((self.get_mass_monoisotopic_dmt_on() - z * utils.mass_mono['H']) / z, 5)
+                esi_series_mono_dmt_off = round((self.mass_monoisotopic - z * utils.mass_mono['H']) / z, 4)
+                esi_series_mono_dmt_on = round((self.get_mass_monoisotopic_dmt_on() - z * utils.mass_mono['H']) / z, 4)
             else:
                 esi_series_mono_dmt_off = None
                 esi_series_mono_dmt_on = None

@@ -20,7 +20,7 @@ nucleotide_extinction_260 = {'dA': 15400, 'dC': 7400,  'dG': 11500, 'dT': 8700,
                              'rA': 15400, 'rC': 7200,  'rG': 11500, 'rU': 9900,
                              'fA': 15400, 'fC': 7200, 'fG': 11500, 'fU': 9900,
                              'mA': 15400, 'mC': 7200, 'mG': 11500, 'mU': 9900,
-                             'lA': 15400, 'lC5m': 7200, 'lG': 11500, 'lT': 8700,
+                             '+A': 15400, '+C5m': 7200, '+G': 11500, '+T': 8700,
                              'moeA': 15400, 'moeC5m': 7200, 'moeG': 11500, 'moeT': 8700,
                              'A': 15400, 'C': 7400, 'G': 11500, 'T': 8700, 'U': 9900,
                              }
@@ -48,7 +48,7 @@ modification_extinction_260 = {
     'BHQ1': 8000, 'BHQ2': 8000,
     'YakYel': 23700, 'TexRd': 14400, 'IaBk': 44510,
 
-    'po': 0, 'ps': 0,
+    'po': 0, 'ps': 0, '*': 0,
 }
 
 map_nucleoside = {
@@ -56,7 +56,7 @@ map_nucleoside = {
     'rA': 'A', 'rC': 'C', 'rG': 'G', 'rU': 'U',
     'fA': 'A', 'fC': 'C', 'fG': 'G', 'fU': 'U',
     'mA': 'A', 'mC': 'C', 'mG': 'G', 'mU': 'U',
-    'lA': 'A', 'lC5m': 'C', 'lG': 'G', 'lT': 'T',
+    '+A': 'A', '+C5m': 'C', '+G': 'G', '+T': 'T',
     'moeA': 'A', 'moeC5m': 'C', 'moeG': 'G', 'moeT': 'T',
 }
 
@@ -66,7 +66,7 @@ map_nucleoside = {
 # r -     ribo
 # f -     2'-fluoro
 # m -     2'-methoxy
-# l -     LNA
+# + -     LNA
 # moe -   2-MOE
 nucleotide_any_position = (
     'dA', 'dC', 'dG', 'dT', 'dC5m', 'dU',
@@ -74,7 +74,7 @@ nucleotide_any_position = (
     'rA', 'rC', 'rG', 'rU',
     'fA', 'fC', 'fG', 'fU',
     'mA', 'mC', 'mG', 'mU',
-    'lA', 'lC5m', 'lG', 'lT',
+    '+A', '+C5m', '+G', '+T',
     'moeA', 'moeC5m', 'moeG', 'moeT',
 )
 
@@ -90,7 +90,7 @@ modification_int_position = ()
 all_nucleotide = nucleotide_any_position + modification_5_position + modification_3_position + modification_int_position
 
 # Modifications available on phosphate
-modification_phosphorus = ('po', 'ps',)
+modification_phosphorus = ('po', 'ps', '*')
 
 degenerate_nucleotide = ('dW', 'dS', 'dM', 'dK', 'dR', 'dY', 'dB', 'dD', 'dH', 'dV', 'dN',)
 
@@ -124,10 +124,10 @@ formula = {
     'mC': {'C': 10, 'H': 15, 'N': 3, 'O': 5},
     'mG': {'C': 11, 'H': 15, 'N': 5, 'O': 5},
     'mU': {'C': 10, 'H': 14, 'N': 2, 'O': 6},
-    'lA': {'C': 11, 'H': 13, 'N': 5, 'O': 4},
-    'lC5m': {'C': 11, 'H': 15, 'N': 3, 'O': 5},
-    'lG': {'C': 11, 'H': 13, 'N': 5, 'O': 5},
-    'lT': {'C': 11, 'H': 14, 'N': 2, 'O': 6},
+    '+A': {'C': 11, 'H': 13, 'N': 5, 'O': 4},
+    '+C5m': {'C': 11, 'H': 15, 'N': 3, 'O': 5},
+    '+G': {'C': 11, 'H': 13, 'N': 5, 'O': 5},
+    '+T': {'C': 11, 'H': 14, 'N': 2, 'O': 6},
     'moeA': {'C': 13, 'H': 19, 'N': 5, 'O': 5},
     'moeC5m': {'C': 13, 'H': 21, 'N': 3, 'O': 6},
     'moeG': {'C': 13, 'H': 19, 'N': 5, 'O': 6},
@@ -141,6 +141,7 @@ formula = {
 
     'po': {'H': 3, 'O': 4, 'P': 1},
     'ps': {'H': 3, 'O': 3, 'P': 1, 'S': 1},
+    '*': {'H': 3, 'O': 3, 'P': 1, 'S': 1},
 }
 
 
@@ -253,7 +254,7 @@ def get_mass_monoisotopic(sequence):
         for atom in formula[nt]:
             m_mono += mass_mono[atom] * formula[nt][atom]
     m_mono -= mass_mono['H2O'] * (len(sequence_split(sequence_full))-1)
-    return round(m_mono, 5)
+    return round(m_mono, 4)
 
 
 def contain_degenerate_nucleotide(sequence):

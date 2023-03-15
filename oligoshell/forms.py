@@ -144,6 +144,14 @@ class BatchCommentsForm(forms.ModelForm):
                                                      'rows': 4,
                                                      'class': 'form-control'}), }
 
+class PurificationCommentsForm(forms.ModelForm):
+    class Meta:
+        model = models.Purification
+        fields = ('comments',)
+        widgets = {'comments': forms.Textarea(attrs={'value': models.Purification.comments,
+                                                     'rows': 4,
+                                                     'class': 'form-control'}), }
+
 
 class UserRegistrationForm(forms.ModelForm):
 
