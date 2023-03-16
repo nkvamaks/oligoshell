@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-from django.views.generic.detail import DetailView
+#from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from . import models
 from . import forms
@@ -183,3 +184,22 @@ def register(request):
 @login_required
 def view_profile(request):
     return render(request, 'oligoshell/profile.html', {'user': request.user})
+
+
+class SearchResultsListView(LoginRequiredMixin, ListView):
+    model = models.Sequence
+    context_object_name = 'sequences'
+    template_name = 'oligoshell/search_results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = models.Order.objects.all()
+        context['batches'] = models.Batch.objects.all()
+        context['purifications'] = models.Purification.objects.all()
+        return context
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return models.Sequence.objects.filter(
+            Q(seq_name__icontains=query) | Q(sequence__icontains=query)
+        )

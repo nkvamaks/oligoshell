@@ -3,10 +3,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
-# from datetime import datetime
-# from django.utils.timezone import now
-# from django.contrib.auth.models import User
-
 
 from . import validators
 from . import utils
@@ -53,7 +49,7 @@ class Sequence(models.Model):
         (XXX_SCALE, '10 \xb5mole oligo'),
     ]
 
-    FORMAT_100uM = '100 uM'
+    FORMAT_100uM = '100 \xb5M'
     FORMAT_Freeze_dry = 'Freeze-dry'
     FORMAT_CHOICES = [
         (FORMAT_100uM, '100 \xb5M in milli-Q'),
