@@ -19,6 +19,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('batch/<int:pk>/', views.BatchUpdateView.as_view(), name='batch_details'),
     path('search/', views.SearchResultsListView.as_view(), name='search_results'),
+    path('calculator/', views.calc_view, name='calculator'),
 
 ]
 

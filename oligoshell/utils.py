@@ -14,14 +14,14 @@ mass_avg = {
 # Extinction coefficients of single nucleotides:
 # https://www.sigmaaldrich.com/technical-documents/articles/biology/quantitation-of-oligos.html
 # https://en.wikipedia.org/wiki/Nucleic_acid_notation for degenerate base symbols.
-nucleotide_extinction_260 = {'dA': 15400, 'dC': 7400,  'dG': 11500, 'dT': 8700,
+nucleotide_extinction_260 = {'dA': 15400, 'dC': 7400,  'dG': 11500, 'dT': 8700, 'dCm': 7400, 'dU': 9900,
                              'dW': 12050, 'dS': 9450,  'dM': 11400, 'dK': 10050, 'dR': 13450, 'dY': 8050,
                              'dB': 9200,  'dD': 11867, 'dH': 10500, 'dV': 11433, 'dN': 10750,
                              'rA': 15400, 'rC': 7200,  'rG': 11500, 'rU': 9900,
                              'fA': 15400, 'fC': 7200, 'fG': 11500, 'fU': 9900,
                              'mA': 15400, 'mC': 7200, 'mG': 11500, 'mU': 9900,
-                             '+A': 15400, '+C5m': 7200, '+G': 11500, '+T': 8700,
-                             'moeA': 15400, 'moeC5m': 7200, 'moeG': 11500, 'moeT': 8700,
+                             '+A': 15400, '+Cm': 7200, '+G': 11500, '+T': 8700,
+                             'moeA': 15400, 'moeCm': 7200, 'moeG': 11500, 'moeT': 8700,
                              'A': 15400, 'C': 7400, 'G': 11500, 'T': 8700, 'U': 9900,
                              }
 
@@ -52,12 +52,12 @@ modification_extinction_260 = {
 }
 
 map_nucleoside = {
-    'dA': 'A', 'dC': 'C', 'dG': 'G', 'dT': 'T', 'dC5m': 'C', 'dU': 'U',
+    'dA': 'A', 'dC': 'C', 'dG': 'G', 'dT': 'T', 'dCm': 'C', 'dU': 'U',
     'rA': 'A', 'rC': 'C', 'rG': 'G', 'rU': 'U',
     'fA': 'A', 'fC': 'C', 'fG': 'G', 'fU': 'U',
     'mA': 'A', 'mC': 'C', 'mG': 'G', 'mU': 'U',
-    '+A': 'A', '+C5m': 'C', '+G': 'G', '+T': 'T',
-    'moeA': 'A', 'moeC5m': 'C', 'moeG': 'G', 'moeT': 'T',
+    '+A': 'A', '+Cm': 'C', '+G': 'G', '+T': 'T',
+    'moeA': 'A', 'moeCm': 'C', 'moeG': 'G', 'moeT': 'T',
 }
 
 
@@ -69,13 +69,13 @@ map_nucleoside = {
 # + -     LNA
 # moe -   2-MOE
 nucleotide_any_position = (
-    'dA', 'dC', 'dG', 'dT', 'dC5m', 'dU',
+    'dA', 'dC', 'dG', 'dT', 'dCm', 'dU',
     'dW', 'dS', 'dM', 'dK', 'dR', 'dY', 'dB', 'dD', 'dH', 'dV', 'dN',
     'rA', 'rC', 'rG', 'rU',
     'fA', 'fC', 'fG', 'fU',
     'mA', 'mC', 'mG', 'mU',
-    '+A', '+C5m', '+G', '+T',
-    'moeA', 'moeC5m', 'moeG', 'moeT',
+    '+A', '+Cm', '+G', '+T',
+    'moeA', 'moeCm', 'moeG', 'moeT',
 )
 
 # Modifications available only at 5'-position
@@ -99,7 +99,7 @@ formula = {
     'dC': {'C': 9, 'H': 13, 'N': 3, 'O': 4},
     'dG': {'C': 10, 'H': 13, 'N': 5, 'O': 4},
     'dT': {'C': 10, 'H': 14, 'N': 2, 'O': 5},
-    'dC5m': {'C': 10, 'H': 15, 'N': 3, 'O': 4},
+    'dCm': {'C': 10, 'H': 15, 'N': 3, 'O': 4},
     'dU': {'C': 9, 'H': 12, 'N': 2, 'O': 5},
     'dW': {'C': 10, 'H': 13.5, 'N': 3.5, 'O': 4},
     'dS': {'C': 9.5, 'H': 13, 'N': 4, 'O': 4},
@@ -125,11 +125,11 @@ formula = {
     'mG': {'C': 11, 'H': 15, 'N': 5, 'O': 5},
     'mU': {'C': 10, 'H': 14, 'N': 2, 'O': 6},
     '+A': {'C': 11, 'H': 13, 'N': 5, 'O': 4},
-    '+C5m': {'C': 11, 'H': 15, 'N': 3, 'O': 5},
+    '+Cm': {'C': 11, 'H': 15, 'N': 3, 'O': 5},
     '+G': {'C': 11, 'H': 13, 'N': 5, 'O': 5},
     '+T': {'C': 11, 'H': 14, 'N': 2, 'O': 6},
     'moeA': {'C': 13, 'H': 19, 'N': 5, 'O': 5},
-    'moeC5m': {'C': 13, 'H': 21, 'N': 3, 'O': 6},
+    'moeCm': {'C': 13, 'H': 21, 'N': 3, 'O': 6},
     'moeG': {'C': 13, 'H': 19, 'N': 5, 'O': 6},
     'moeT': {'C': 13, 'H': 20, 'N': 2, 'O': 7},
     'Alkyne': {'C': 12, 'H': 19, 'N': 1, 'O': 2},

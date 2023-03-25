@@ -266,17 +266,15 @@
                             <thead>
                                  <tr>
                                     <th></th>
-                                    <th><span class="fw-semibold">Average MW (DMT-OFF)</span></th>
-                                    <th><span class="fw-semibold">Average MW (DMT-ON)</span></th>
                                     <th><span class="fw-semibold">Monoisotopic MW (DMT-OFF)</span></th>
+                                    <th><span class="fw-semibold">Average MW (DMT-OFF)</span></th>
                                     <th><span class="fw-semibold">Monoisotopic MW (DMT-ON)</span></th>
+                                    <th><span class="fw-semibold">Average MW (DMT-ON)</span></th>
                                  </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td></td>
-                                    <td><strong>{{sequence.mass_average}}</strong></td>
-                                    <td><strong>{{sequence.get_mass_average_dmt_on}}</strong></td>
                                     <td><strong>
                                         {% if sequence.mass_monoisotopic %}
                                             {{sequence.mass_monoisotopic}}
@@ -284,6 +282,7 @@
                                             ---
                                         {% endif %}
                                     </strong></td>
+                                    <td><strong>{{sequence.mass_average}}</strong></td>
                                     <td><strong>
                                         {% if sequence.get_mass_monoisotopic_dmt_on %}
                                             {{sequence.get_mass_monoisotopic_dmt_on}}
@@ -291,13 +290,12 @@
                                             ---
                                         {% endif %}
                                     </strong></td>
+                                    <td><strong>{{sequence.get_mass_average_dmt_on}}</strong></td>
                                 </tr>
 
                                 {% for z, esi_avg_off, esi_avg_on, esi_mono_off, esi_mono_on in sequence.generate_esi_series %}
                                     <tr>
                                         <td><strong>z-{{z}}</strong></td>
-                                        <td>{{esi_avg_off}}</td>
-                                        <td>{{esi_avg_on}}</td>
                                         <td>
                                             {% if esi_mono_off %}
                                                 {{esi_mono_off}}
@@ -305,6 +303,7 @@
                                                 ---
                                             {% endif %}
                                         </td>
+                                        <td>{{esi_avg_off}}</td>
                                         <td>
                                             {% if esi_mono_on %}
                                                 {{esi_mono_on}}
@@ -312,6 +311,7 @@
                                                 ---
                                             {% endif %}
                                         </td>
+                                        <td>{{esi_avg_on}}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

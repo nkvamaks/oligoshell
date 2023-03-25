@@ -31,7 +31,6 @@ def validate_seq(sequence):
 
         Available phosphate modifications: po - phosphate, ps - phosphorothyoate (po by default)
         """
-
     modification_error = []
 
     sequence_spl = utils.sequence_split(sequence)
