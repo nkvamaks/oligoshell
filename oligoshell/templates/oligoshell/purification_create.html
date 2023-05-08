@@ -45,9 +45,11 @@
                         <table class="table table-hover">
                             <thead>
                               <tr>
-                                <th width="15%" colspan="2"><span class="m-2 fw-semibold d-block">Name</span></th>
+                                <th></th>
+                                <th><span class="m-1 fw-semibold d-block">#</span></th>
+                                <th width="10%"><span class="fw-semibold d-block">Name</span></th>
                                 <th width="55%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
-                                <th width="10%">
+                                <th>
                                     <span class="fw-semibold d-block">
                                         Scale
                                     </span>
@@ -55,20 +57,20 @@
                                         nmol
                                     </small>
                                 </th>
-                                <th width="10%">
-                                    <span class="fw-semibold d-block">
-                                        Format
-                                    </span>
-                                    <small class="text-muted fw-light" style="text-transform: none;">
-                                        requested
-                                    </small>
-                                </th>
-                                <th width="10%">
+                                <th>
                                     <span class="fw-semibold d-block">
                                         Purity
                                     </span>
                                     <small class="text-muted fw-light" style="text-transform: none;">
                                         requested
+                                    </small>
+                                </th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Purified
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        actual
                                     </small>
                                 </th>
                               </tr>
@@ -81,12 +83,24 @@
                                            <i class="fab fa-angular fa-lg text-danger me-2"></i>
                                            <input class="form-check-input" type="checkbox" value="{{ value }}" name="pur_seqs" />
                                        </td>
-                                       <td class="p-1 align-middle" width="12%"><small> {{ seqs.seq_name }} </small>
-                                       </td>
+                                       <td class="p-1 align-middle"><small> ON{{ seqs.pk }} </small></td>
+                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.seq_name }} </small></td>
                                        <td class="p-1 align-middle" width="55%"><small> {{ seqs.sequence }} </small></td>
-                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.scale }} </small></td>
-                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.format_requested }} </small></td>
-                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.purification_requested }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.scale }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.purification_requested }} </small></td>
+                                       <td class="p-1 align-middle">
+                                           {% if seqs.purifications.exists %}
+                                               {% for purification in seqs.purifications.all %}
+                                                   <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                                       <li><span class="badge bg-label-success me-1"><small>
+                                                           <a href="{{ purification.get_absolute_url }}">{{ purification.pur_method }}</a>
+                                                       </small></span></li>
+                                                   </ul>
+                                               {% endfor %}
+                                           {% else %}
+                                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                                           {% endif %}
+                                       </td>
                                    </tr>
                                {% endfor %}
                             </tbody>

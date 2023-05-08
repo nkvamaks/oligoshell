@@ -63,9 +63,10 @@
                 <table class="table table-bordered">
                     <thead>
                       <tr>
-                        <th width="10%"><span class="m-2 fw-semibold d-block">Name</span></th>
+                        <th><span class="m-2 fw-semibold d-block">#</span></th>
+                        <th width="10%"><span class="fw-semibold d-block">Name</span></th>
                         <th width="40%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
-                        <th width="8%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Scale
                             </span>
@@ -73,7 +74,7 @@
                                 nmol
                             </small>
                         </th>
-                        <th width="8%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Format
                             </span>
@@ -81,7 +82,7 @@
                                 requested
                             </small>
                         </th>
-                        <th width="9%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Purity
                             </span>
@@ -89,7 +90,7 @@
                                 requested
                             </small>
                         </th>
-                        <th width="10%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Synthesized
                             </span>
@@ -97,7 +98,7 @@
                                 actual
                             </small>
                         </th>
-                        <th width="8%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Purified
                             </span>
@@ -105,7 +106,7 @@
                                 actual
                             </small>
                         </th>
-                        <th width="7%">
+                        <th>
                             <span class="fw-semibold d-block">
                                 Conc.
                             </span>
@@ -118,16 +119,20 @@
 
                     <tbody class="table-border-bottom-0">
                        <tr>
+                           <td class="p-1 align-middle">
+                               <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                               <small>ON{{ sequence.pk }}</small>
+                           </td>
                            <td class="p-1 align-middle" width="10%">
                                <i class="fab fa-angular fa-lg text-danger me-2"></i>
-                               <small> {{ sequence.seq_name }} </small>
+                               <small>{{ sequence.seq_name }}</small>
                            </td>
-                           <td class="p-1 align-middle" width="40%"><small> {{ sequence.sequence }} </small></td>
-                           <td class="p-1 align-middle" width="8%"><small> {{ sequence.scale }} </small></td>
-                           <td class="p-1 align-middle" width="8%"><small> {{ sequence.format_requested }} </small></td>
-                           <td class="p-1 align-middle" width="9%"><small> {{ sequence.purification_requested }} </small></td>
+                           <td class="p-1 align-middle" width="40%"><small>{{ sequence.sequence }}</small></td>
+                           <td class="p-1 align-middle"><small>{{ sequence.scale }}</small></td>
+                           <td class="p-1 align-middle"><small>{{ sequence.format_requested }}</small></td>
+                           <td class="p-1 align-middle"><small>{{ sequence.purification_requested }}</small></td>
 
-                           <td class="p-1 align-middle" width="10%">
+                           <td class="p-1 align-middle">
                                {% if sequence.synthesized %}
                                  <span class="badge bg-label-success me-1"><small>
                                     {% for batch in sequence.batches.all %}
@@ -138,7 +143,7 @@
                                     <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                {% endif %}
                            </td>
-                           <td class="p-1 align-middle" width="8%">
+                           <td class="p-1 align-middle">
                                {% if sequence.purifications.exists %}
                                    {% for purification in sequence.purifications.all %}
                                        <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
@@ -151,9 +156,15 @@
                                     <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                {% endif %}
                            </td>
-                           <td class="p-1 align-middle" width="7%">
-                               {% if sequence.concentration %}
-                                    <span class="badge bg-label-primary me-1"><small> {{ sequence.concentration }} </small></span></td>
+                           <td class="p-1 align-middle">
+                               {% if sequence.fail %}
+                                    <span class="badge bg-label-warning me-1"><small> FAIL </small></span>
+                               {% elif sequence.concentration %}
+                                    {% if sequence.complete %}
+                                        <span class="badge bg-label-success me-1"><small>{{ sequence.concentration }}</small></span>
+                                    {% else %}
+                                        <span class="badge bg-label-primary me-1"><small>{{ sequence.concentration }}</small></span>
+                                    {% endif %}
                                {% else %}
                                     <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                {% endif %}
@@ -175,9 +186,11 @@
               <p class="card-text">
                   <strong>Sequence Length:</strong> &emsp; {{ sequence.length }} <span class="text-muted">nt</span>
               </p>
+            {% comment %}
               <p class="card-text">
                   <strong>GC content:</strong> &emsp; TBD <span class="text-muted">%</span>
               </p>
+            {% endcomment %}
             </div>
           </div>
         </div>
@@ -241,14 +254,27 @@
 
               <form method="post">
                 {% csrf_token %}
-                  <label for="{{ form.absorbance260.id_for_label }}"><small>Absorbance at 260 nm</small></label>
-                  {{ form.absorbance260 }}
-                  <label class="mt-2" for="{{ form.dilution_factor.id_for_label }}"><small>Dilution Factor</small></label>
-                  {{ form.dilution_factor }}
-                  <label class="mt-2" for="{{ form.volume.id_for_label }}"><small>Volume, mL</small></label>
-                  {{ form.volume }}
-
-                  <button type="submit" class="mt-3 btn btn-sm btn-primary submit"> Update </button>
+                  <p>
+                      <label for="{{ form.absorbance260.id_for_label }}"><small>Absorbance at 260 nm</small></label>
+                      {{ form.absorbance260 }}
+                  </p>
+                  <p>
+                      <label for="{{ form.dilution_factor.id_for_label }}"><small>Dilution Factor</small></label>
+                      {{ form.dilution_factor }}
+                  </p>
+                  <p>
+                      <label for="{{ form.volume.id_for_label }}"><small>Volume, mL</small></label>
+                      {{ form.volume }}
+                  </p>
+                  <p>
+                      {{ form.complete }}
+                      <label class="form-check-label" for="{{ form.complete.id_for_label }}"><small>Sequence is Ready</small></label>
+                  </p>
+                  <p>
+                      {{ form.fail }}
+                      <label class="form-check-label" for="{{ form.fail.id_for_label }}"><small>Sequence Failed</small></label>
+                  </p>
+                  <button type="submit" class="btn btn-sm btn-primary submit"> Update </button>
 
               </form>
             </div>

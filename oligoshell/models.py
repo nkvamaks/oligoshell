@@ -10,10 +10,9 @@ from . import utils
 
 class Order(models.Model):
     customer = models.CharField(verbose_name='Customer Name',
-                                max_length=50,
+                                max_length=100,
                                 )
-    comments = models.CharField(max_length=300,
-                                blank=True,
+    comments = models.TextField(blank=True,
                                 null=True,
                                 )
     email = models.EmailField(blank=True, null=True)
@@ -73,8 +72,7 @@ class Sequence(models.Model):
                                 max_length=50,
                                 validators=[validators.validate_seq_name_regex])
 
-    sequence = models.CharField(verbose_name="Sequence, 5'->3'",
-                                max_length=300,
+    sequence = models.TextField(verbose_name="Sequence, 5'->3'",
                                 validators=[validators.validate_seq])
 
     scale = models.CharField(verbose_name='Scale',
@@ -110,7 +108,8 @@ class Sequence(models.Model):
     updated = models.DateTimeField(verbose_name='Sequence Updated', auto_now=True)
 
     synthesized = models.BooleanField(verbose_name='Sequence Synthesized', default=False)
-    done = models.BooleanField(verbose_name='Sequence Complete', default=False)
+    complete = models.BooleanField(verbose_name='Sequence Complete', default=False)
+    fail = models.BooleanField(verbose_name='Sequence Fail', default=False)
 
     def set_synthesized(self):
         self.synthesized = True
@@ -165,10 +164,6 @@ class Sequence(models.Model):
             self.concentration = round(self.absorbance260 * self.dilution_factor / self.epsilon260 * 1000000, 2)
         if self.sequence and not (self.absorbance260 and self.dilution_factor):
             self.concentration = 0
-        if self.concentration:
-            self.done = True
-        else:
-            self.done = False
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -192,7 +187,7 @@ class Batch(models.Model):
     sequences2synthesis = models.ManyToManyField(Sequence,
                                                  verbose_name='Sequences for Synthesis',
                                                  related_name='batches')
-    comments = models.CharField(max_length=300, verbose_name='Comments', blank=True, null=True)
+    comments = models.TextField(verbose_name='Comments', blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('oligoshell:batch_details', args=[self.pk])
@@ -232,7 +227,6 @@ class Purification(models.Model):
     pur_method = models.CharField(verbose_name='Purification Method',
                                   max_length=50,
                                   choices=PURIFICATION_CHOICES,
-                                  default=DESALT,
                                   )
 
     created = models.DateTimeField(verbose_name='Purification Created',
@@ -243,7 +237,7 @@ class Purification(models.Model):
                                       related_name='purifications',
                                       )
 
-    comments = models.CharField(max_length=300, verbose_name='Comments', blank=True, null=True)
+    comments = models.TextField(verbose_name='Comments', blank=True, null=True)
 
     def __str__(self):
         return self.title

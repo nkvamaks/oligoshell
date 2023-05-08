@@ -56,7 +56,7 @@ class OrderForm(forms.ModelForm):
                                                         '(' + User.objects.get().username + ')')}),
                    'email': forms.EmailInput(attrs={'value': User.objects.get().email}),
                    'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
-                                                     'rows': 3,
+                                                     'rows': 4,
                                                      'class': 'form-control',
                                                     }),}
 
@@ -80,11 +80,6 @@ class CustomModelChoiceField(forms.models.ModelMultipleChoiceField):
         return seq.seq_name + ', ' + seq.sequence + ', ' + seq.scale + ', ' + seq.order.customer
 
 
-# class CustomPurseqs(forms.ModelMultipleChoiceField):
-#     def label_from_instance(self, seq):
-#         return seq.seq_name + ', ' + seq.sequence + ', ' + seq.scale + ', ' + seq.order.customer
-
-
 class BatchForm(forms.ModelForm):
 
     class Meta:
@@ -93,7 +88,7 @@ class BatchForm(forms.ModelForm):
         widgets = {'title': forms.TextInput(attrs={'class': 'form-control', 'value': datetime.date.today}),
                    'comments': forms.Textarea(attrs={'class': 'form-control',
                                                      'placeholder': 'Leave Your Comments Here',
-                                                     'rows': 3}), }
+                                                     'rows': 4}), }
 
     sequences2synthesis = CustomModelChoiceField(
         queryset=models.Sequence.objects.filter(synthesized=False),
@@ -109,11 +104,11 @@ class PurificationForm(forms.ModelForm):
                                                    'class': 'form-control'}),
                    'pur_method': forms.Select(attrs={'class': 'form-select'}),
                    'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
-                                                     'rows': 3,
+                                                     'rows': 4,
                                                      'class': 'form-control' }), }
 
     pur_seqs = CustomModelChoiceField(
-        queryset=models.Sequence.objects.filter(synthesized=True, done=False),
+        queryset=models.Sequence.objects.filter(synthesized=True, complete=False, fail=False),
         widget=forms.CheckboxSelectMultiple,
         label='Sequences Available for Purification',
     )
@@ -122,11 +117,16 @@ class PurificationForm(forms.ModelForm):
 class ConcentrationForm(forms.ModelForm):
     class Meta:
         model = models.Sequence
-        fields = ('absorbance260', 'dilution_factor', 'volume')
+        fields = ('absorbance260', 'dilution_factor', 'volume', 'complete', 'fail')
         widgets = {'absorbance260': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
                    'dilution_factor': forms.TextInput(attrs={'class': 'form-control form-control-sm',
                                                              'value': 100}),
-                   'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}), }
+                   'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+                   'complete': forms.CheckboxInput(attrs={'class': 'form-check-input',
+                                                          'value': models.Sequence.complete}),
+                   'fail': forms.CheckboxInput(attrs={'class': 'form-check-input',
+                                                      'value': models.Sequence.fail}),
+                   }
 
 class OrderCommentsForm(forms.ModelForm):
     class Meta:

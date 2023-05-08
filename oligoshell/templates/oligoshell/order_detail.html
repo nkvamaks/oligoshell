@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<h6 class="pb-1 mb-3 mt-3 text-muted">Sequences in the Order: &emsp; {{ order.pk }}</h6>
+<h6 class="pb-1 mb-3 mt-3 text-muted">Sequences ordered:</h6>
 <div class="row">
     <div class="col-xl mb-3">
         <div class="card">
@@ -50,9 +50,10 @@
 
                         <thead>
                           <tr>
-                            <th width="10%"><span class="m-2 fw-semibold d-block">Name</span></th>
+                            <th><span class="m-1 fw-semibold d-block">#</span></th>
+                            <th width="10%"><span class="fw-semibold d-block">Name</span></th>
                             <th width="40%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
-                            <th width="8%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Scale
                                 </span>
@@ -60,7 +61,7 @@
                                     nmol
                                 </small>
                             </th>
-                            <th width="8%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Format
                                 </span>
@@ -68,7 +69,7 @@
                                     requested
                                 </small>
                             </th>
-                            <th width="9%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Purity
                                 </span>
@@ -76,7 +77,7 @@
                                     requested
                                 </small>
                             </th>
-                            <th width="10%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Synthesized
                                 </span>
@@ -84,7 +85,7 @@
                                     actual
                                 </small>
                             </th>
-                            <th width="8%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Purified
                                 </span>
@@ -92,7 +93,7 @@
                                     actual
                                 </small>
                             </th>
-                            <th width="7%">
+                            <th>
                                 <span class="fw-semibold d-block">
                                     Conc.
                                 </span>
@@ -105,18 +106,24 @@
                         <tbody class="table-border-bottom-0">
                         {% for seq in order.sequences.all %}
                            <tr>
+                               <td class="p-2 align-middle">
+                                   <i class="me-1"></i>
+                                   <small>
+                                       <a class="text-muted" href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">ON{{ seq.pk }}</a>
+                                   </small>
+                               </td>
                                <td class="p-2 align-middle" width="10%">
-                                   <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                                   <i class="me-1"></i>
                                    <small>
                                        <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">{{ seq.seq_name }}</a>
                                    </small>
                                </td>
                                <td class="p-1 align-middle" width="40%"><small> {{ seq.sequence }} </small></td>
-                               <td class="p-1 align-middle" width="8%"><small> {{ seq.scale }} </small></td>
-                               <td class="p-1 align-middle" width="8%"><small> {{ seq.format_requested }} </small></td>
-                               <td class="p-1 align-middle" width="9%"><small> {{ seq.purification_requested }} </small></td>
+                               <td class="p-1 align-middle"><small> {{ seq.scale }} </small></td>
+                               <td class="p-1 align-middle"><small> {{ seq.format_requested }} </small></td>
+                               <td class="p-1 align-middle"><small> {{ seq.purification_requested }} </small></td>
 
-                               <td class="p-1 align-middle" width="10%">
+                               <td class="p-1 align-middle">
                                    {% if seq.synthesized %}
                                      <span class="badge bg-label-success me-1">
                                          <small>
@@ -129,7 +136,7 @@
                                         <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                    {% endif %}
                                </td>
-                               <td class="p-1 align-middle" width="8%">
+                               <td class="p-1 align-middle">
                                    {% if seq.purifications.exists %}
                                        {% for purification in seq.purifications.all %}
                                            <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
@@ -142,9 +149,15 @@
                                         <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                    {% endif %}
                                </td>
-                               <td class="p-1 align-middle" width="7%">
+                               <td class="p-1 align-middle">
                                    {% if seq.concentration %}
-                                        <span class="badge bg-label-primary me-1"><small> {{ seq.concentration }} </small></span></td>
+                                       {% if seq.complete %}
+                                           <span class="badge bg-label-success me-1"><small>{{ seq.concentration }}</small></span>
+                                       {% elif seq.fail %}
+                                           <span class="badge bg-label-warning me-1"><small> FAIL </small></span>
+                                       {% else %}
+                                           <span class="badge bg-label-primary me-1"><small>{{ seq.concentration }}</small></span>
+                                       {% endif %}
                                    {% else %}
                                         <span class="badge bg-label-warning me-1"><small> --- </small></span>
                                    {% endif %}
