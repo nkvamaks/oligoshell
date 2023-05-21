@@ -70,8 +70,14 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         context['purifications'] = models.Purification.objects.all()
         return context
 
+    def get_form_kwargs(self):
+        """ Passes the request object to the form class. """
+        kwargs = super(OrderCreateView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def post(self, request, *args, **kwargs):
-        form = forms.OrderForm(request.POST)
+        form = forms.OrderForm(request.POST, request=request)
         formset = forms.SequenceFormset(request.POST)
         if form.is_valid() and formset.is_valid():
             new_form = form.save()

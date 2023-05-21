@@ -46,19 +46,21 @@ SequenceFormset = inlineformset_factory(models.Order, models.Sequence,
                                         )
 
 class OrderForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['customer'].initial = (self.request.user.first_name + ' ' +
+                                           self.request.user.last_name + ' ' +
+                                           '(' + self.request.user.username + ')' )
+        self.fields['email'].initial = self.request.user.email
+        kwargs['request'] = self.request
 
     class Meta:
         model = models.Order
         fields = ['customer', 'email', 'comments']
-        widgets = {'customer': forms.TextInput(attrs={'value': str(
-                                                        User.objects.get().first_name + ' ' +
-                                                        User.objects.get().last_name + ' ' +
-                                                        '(' + User.objects.get().username + ')')}),
-                   'email': forms.EmailInput(attrs={'value': User.objects.get().email}),
-                   'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
+        widgets = {'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
                                                      'rows': 4,
-                                                     'class': 'form-control',
-                                                    }),}
+                                                     'class': 'form-control', }),}
 
 
 class CustomModelChoiceIterator(forms.models.ModelChoiceIterator):
