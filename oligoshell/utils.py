@@ -27,12 +27,12 @@ nucleotide_extinction_260 = {'dA': 15400, 'dC': 7400,  'dG': 11500, 'dT': 8700, 
 
 # Extinction coefficients of dinucleotides:
 dinucleotide_extinction_260 = {'AA': 27400, 'AC': 21200, 'AG': 25000, 'AT': 22800,
-                       'CA': 21200, 'CC': 14600, 'CG': 18000, 'CT': 15200,
-                       'GA': 25200, 'GC': 17600, 'GG': 21600, 'GT': 20000,
-                       'TA': 23400, 'TC': 16200, 'TG': 19000, 'TT': 16800,
-                       'UA': 24600, 'UC': 17200, 'UG': 20000, 'UU': 19600,
-                       'AU': 24000, 'CU': 16200, 'GU': 21200, 'UT': 18200, 'TU': 18200,
-                       }
+                               'CA': 21200, 'CC': 14600, 'CG': 18000, 'CT': 15200,
+                               'GA': 25200, 'GC': 17600, 'GG': 21600, 'GT': 20000,
+                               'TA': 23400, 'TC': 16200, 'TG': 19000, 'TT': 16800,
+                               'UA': 24600, 'UC': 17200, 'UG': 20000, 'UU': 19600,
+                               'AU': 24000, 'CU': 16200, 'GU': 21200, 'UT': 18200, 'TU': 18200,
+                               }
 # dint_extinction_RNA_260 = {'AA': 27400, 'AC': 21000, 'AG': 25000, 'AU': 24000,
 #                            'CA': 21000, 'CC': 14200, 'CG': 17800, 'CU': 16200,
 #                            'GA': 25200, 'GC': 17400, 'GG': 21600, 'GU': 21200,
@@ -41,12 +41,18 @@ dinucleotide_extinction_260 = {'AA': 27400, 'AC': 21200, 'AG': 25000, 'AT': 2280
 
 # Extinction coefficients at 260 nm of popular modifications:
 modification_extinction_260 = {
-    'FAM': 21000, 'TET': 16300, 'HEX': 31600, 'JOE': 12000,
-    'TAMRA': 32300, 'R6G': 18000, 'ROX': 22600,
-    'Cy3': 4930, 'Cy3.5': 24000, 'Cy5': 10000, 'Cy5.5': 28800,
+    'FAM': 21000, 'TET': 16300, 'HEX': 31600, 'JOE': 12000, 'VIC': 7200,
+    'TMR-ACH': 32300, 'R6G': 18000, 'R6G-ACH': 18000, 'ROX-CLK': 22600,
 
-    'BHQ1': 8000, 'BHQ2': 8000,
-    'YakYel': 23700, 'TexRd': 14400, 'IaBk': 44510,
+    'CY3': 4930, 'CY3.5': 24000, 'CY5-CLK': 10000, 'CY5.5': 28800,
+    'ALKYNE': 0,
+
+    'DABCYL': 11100, 'BHQ0': 7700, 'BHQ1': 8000, 'BHQ2': 8000, 'BHQ3': 13000,
+    'MGB': 37900, 'MGB-ECLIPSE': 44500, 'ECLIPSE': 6600,
+
+    'YAKYEL': 23700, 'TEXRD': 14400, 'IABK': 44510,
+
+    'GALNAC-PRO': 0, 'CHOL-PRO': 0,
 
     'po': 0, 'ps': 0, '*': 0,
 }
@@ -69,6 +75,7 @@ map_nucleobase = {
     'moeA': 'baseA', 'moeCm': 'baseCm', 'moeG': 'baseG', 'moeT': 'baseT',
 }
 
+
 # 'Alfabet' of nucleosides. Can be at any position
 # d -     deoxy
 # r -     ribo
@@ -87,13 +94,18 @@ nucleotide_any_position = (
 )
 
 # Modifications available only at 5'-position
-modification_5_position = ('Alkyne', 'FAM', 'TAMRA', 'Cy5',)
+modification_5_position = ('ALKYNE',
+                           'FAM', 'TET', 'HEX', 'JOE', 'VIC',
+                           'TMR-ACH', 'R6G', 'R6G-ACH', 'ROX-CLK',
+                           'CY5-CLK',
+                           'CHOL-PRO', 'GALNAC-PRO',)
 
 # Modifications available only at 3'-position
-modification_3_position = ('BHQ1', 'BHQ2',)
+modification_3_position = ('BHQ1', 'BHQ2', 'MGB', 'MGB-ECLIPSE', 'ECLIPSE',
+                           'CHOL-PRO', 'GALNAC-PRO',)
 
 # Modifications available only at internal position
-modification_int_position = ()
+modification_int_position = ('BHQ1', 'BHQ2', 'ECLIPSE', 'GALNAC-PRO')
 
 all_nucleotide = nucleotide_any_position + modification_5_position + modification_3_position + modification_int_position
 
@@ -140,12 +152,26 @@ formula = {
     'moeCm': {'C': 13, 'H': 21, 'N': 3, 'O': 6},
     'moeG': {'C': 13, 'H': 19, 'N': 5, 'O': 6},
     'moeT': {'C': 13, 'H': 20, 'N': 2, 'O': 7},
-    'Alkyne': {'C': 12, 'H': 19, 'N': 1, 'O': 2},
+    'ALKYNE': {'C': 12, 'H': 19, 'N': 1, 'O': 2},
     'FAM': {'C': 27, 'H': 25, 'N': 1, 'O': 7},
-    'TAMRA': {'C': 31, 'H': 33, 'N': 3, 'O': 5},
-    'Cy5': {'C': 47, 'H': 64, 'N': 7, 'O': 3},
+    'TMR-ACH': {'C': 31, 'H': 33, 'N': 3, 'O': 5},
+    'CY5-CLK': {'C': 47, 'H': 64, 'N': 7, 'O': 3},
+    'VIC': {'C': 33, 'H': 26, 'Cl': 3, 'N': 1, 'O': 7},
+    'TET': {'C': 27, 'H': 21, 'Cl': 4, 'N': 1, 'O': 7},
+    'HEX': {'C': 27, 'H': 19, 'Cl': 6, 'N': 1, 'O': 7},
+    'JOE': {'C': 29, 'H': 27, 'Cl': 2, 'N': 1, 'O': 9},
+    'R6G': {'C': 33, 'H': 39, 'N': 3, 'O': 5},
+    'R6G-ACH': {'C': 33, 'H': 37, 'N': 3, 'O': 5},
+    'ROX-CLK': {'C': 48, 'H': 55, 'N': 7, 'O': 6},
+
     'BHQ1': {'C': 25, 'H': 28, 'N': 6, 'O': 5},
     'BHQ2': {'C': 24, 'H': 26, 'N': 6, 'O': 6},
+    'MGB': {'C': 44, 'H': 47, 'N': 7, 'O': 6},
+    'MGB-ECLIPSE': {'C': 57, 'H': 56, 'Cl': 1, 'N': 11, 'O': 8},
+    'ECLIPSE': {'C': 22, 'H': 26, 'Cl': 1, 'N': 5, 'O': 5},
+
+    'CHOL-PRO': {'C': 39, 'H': 66, 'N': 2, 'O': 5},
+    'GALNAC-PRO': {'C': 24, 'H': 43, 'N': 3, 'O': 10},
 
     'baseA': {'C': 5, 'H': 5, 'N': 5},
     'baseC': {'C': 4, 'H': 5, 'N': 3, 'O': 1},
@@ -153,8 +179,6 @@ formula = {
     'baseG': {'C': 5, 'H': 5, 'N': 5, 'O': 1},
     'baseT': {'C': 5, 'H': 6, 'N': 2, 'O': 2},
     'baseU': {'C': 4, 'H': 4, 'N': 2, 'O': 2},
-
-    'iTest': {'C': 1, 'H': 1, 'N': 1, 'O': 1},
 
     'po': {'H': 3, 'O': 4, 'P': 1},
     'ps': {'H': 3, 'O': 3, 'P': 1, 'S': 1},
