@@ -161,9 +161,9 @@ class CalcForm(forms.ModelForm):
         fields = ('sequence', 'absorbance260', 'dilution_factor', 'volume')
         widgets = {'sequence': forms.Textarea(attrs={'rows': 3,
                                                      'class': 'form-control'}),
-                   'absorbance260': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-                   'dilution_factor': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-                   'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+                   'absorbance260': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
+                   'dilution_factor': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
+                   'volume': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
                    }
 
 
