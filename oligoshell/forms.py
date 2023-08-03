@@ -120,10 +120,10 @@ class ConcentrationForm(forms.ModelForm):
     class Meta:
         model = models.Sequence
         fields = ('absorbance260', 'dilution_factor', 'volume', 'complete', 'fail')
-        widgets = {'absorbance260': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-                   'dilution_factor': forms.TextInput(attrs={'class': 'form-control form-control-sm',
+        widgets = {'absorbance260': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
+                   'dilution_factor': forms.NumberInput(attrs={'class': 'form-control form-control-sm',
                                                              'value': 100}),
-                   'volume': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+                   'volume': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
                    'complete': forms.CheckboxInput(attrs={'class': 'form-check-input',
                                                           'value': models.Sequence.complete}),
                    'fail': forms.CheckboxInput(attrs={'class': 'form-check-input',
