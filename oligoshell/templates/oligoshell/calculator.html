@@ -170,10 +170,12 @@
                             <strong>Concentration: </strong> &emsp;
                                 {% if concentration_molar %}
                                     {{ concentration_molar }} <span class="text-muted">&mu;M</span>
+                        {% comment %}
                                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     {{ concentration_mass }} <span class="text-muted">&mu;g/mL</span></p>
+                        {% endcomment %}
                                 {% else %}
                                     -
                                 {% endif %}
