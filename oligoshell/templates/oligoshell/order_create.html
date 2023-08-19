@@ -12,7 +12,7 @@
           <h5 class="mb-0">Custom Oligos - Oligo Entry</h5>
         </div>
         <div class="card-body">
-            <form id="form-container" action="" method="post">
+            <form enctype="multipart/form-data" id="form-container" action="" method="post">
                 {% csrf_token %}
                 <div class="form-group row" hidden="true">
                     <div class="col-md-3"> {{ form.customer}} </div>
@@ -21,6 +21,10 @@
                 <div class="row mb-2">
                     <div class="col-md-6">
                         {{ form.comments }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.bulk_seqs.id_for_label }}" class="form-label">Upload sequences from file</label>
+                        {{ form.bulk_seqs }}
                     </div>
                 </div>
 
@@ -40,7 +44,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-10">
-                                <label for="{{ subform.sequence.id_for_label }}"><small>Sequence 5'-->3'</small></label>
+                                <label for="{{ subform.sequence.id_for_label }}"><small>Sequence 5'&rarr;3'</small></label>
                                 {{ subform.sequence }}
                                 {% if subform.sequence.errors %}
                                     <div>

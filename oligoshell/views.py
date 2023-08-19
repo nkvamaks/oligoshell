@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 from . import models
 from . import forms
@@ -77,11 +78,34 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        form = forms.OrderForm(request.POST, request=request)
+        form = forms.OrderForm(request.POST, request.FILES, request=request)
         formset = forms.SequenceFormset(request.POST)
+
+        if request.FILES and form.is_valid():
+            new_form = form.save()
+            # raise ValidationError('message')
+            seqlist_from_file = utils.get_seqlist_from_file(request.FILES['bulk_seqs'])
+            post = request.POST.copy()  # to make it mutable
+            post.update({'sequences-TOTAL_FORMS': 2, 'sequences-INITIAL_FORMS': 0, 'sequences-MIN_NUM_FORMS': 1, 'sequences-MAX_NUM_FORMS': 1000, 'sequences-0-seq_name': '1', 'sequences-0-sequence': 'dA dT dG dC', 'sequences-0-scale': '200', 'sequences-0-format_requested': 'Dry', 'sequences-0-purification_requested': 'HPLC', 'sequences-1-seq_name': '2', 'sequences-1-sequence': 'dA dA', 'sequences-1-scale': '50'})
+            request.POST = post
+            formset = forms.SequenceFormset(request.POST, instance=new_form)
+
+
+                # for seq_name, sequence, scale, format, purification in seqlist_from_file:
+                #     add_sequence = models.Sequence(seq_name=seq_name,
+                #                                    sequence=sequence,
+                #                                    scale=scale,
+                #                                    format_requested=format,
+                #                                    purification_requested=purification,
+                #                                    order=models.Order(id=new_form.id))
+                #     add_sequence.save()
+
+            return render(request, 'oligoshell/order_create.html', {'form': form, 'formset': formset})
+
         if form.is_valid() and formset.is_valid():
             new_form = form.save()
             formset = forms.SequenceFormset(request.POST, instance=new_form)
+            print(request.POST)
             formset.save()
             return redirect('/')
         return render(request, 'oligoshell/order_create.html', {'form': form, 'formset': formset})

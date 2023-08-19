@@ -16,6 +16,7 @@ class Order(models.Model):
                                 null=True,
                                 )
     email = models.EmailField(blank=True, null=True)
+    bulk_seqs = models.FileField(upload_to="bulk_seqs/%Y/%m/%d/", blank=True)
     created = models.DateTimeField(verbose_name='Date Ordered',
                                    auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -48,8 +49,8 @@ class Sequence(models.Model):
         (XXX_SCALE, '10 \xb5mole oligo'),
     ]
 
-    FORMAT_100uM = '100 \xb5M'
-    FORMAT_Freeze_dry = 'Freeze-dry'
+    FORMAT_100uM = '100 uM'
+    FORMAT_Freeze_dry = 'Dry'
     FORMAT_CHOICES = [
         (FORMAT_100uM, '100 \xb5M in milli-Q'),
         (FORMAT_Freeze_dry, 'Freeze-dry'),

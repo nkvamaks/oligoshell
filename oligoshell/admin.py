@@ -20,7 +20,7 @@ class SequenceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'created', 'email', 'comments')
+    list_display = ('id', 'customer', 'created', 'email', 'comments', 'bulk_seqs')
     search_fields = ('customer', 'email')
     list_filter = ('created',)
     ordering = ('created',)

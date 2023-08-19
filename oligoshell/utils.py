@@ -371,3 +371,17 @@ def get_ms_fragments_esi_series(frag_dict):
             mass_esi += (round((mass - charge_state * mass_mono['H']) / charge_state, 3), )
         frag_dict_esi[index] = mass_esi
     return frag_dict_esi
+
+
+def get_seqlist_from_file(file):
+    """
+    Receives a file object with bulk of sequences in csv format
+    Return list of sequences in a format [[name1, seq1, scale1, format1, purification1], ...]
+    """
+    with open(file.name, "r") as work_file:
+        result = []
+        for line in work_file:
+            line_list = line.strip().split(',')
+            line_list_strip = [element.strip() for element in line_list]
+            result.append(line_list_strip)
+    return result
