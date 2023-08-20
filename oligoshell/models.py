@@ -50,7 +50,7 @@ class Sequence(models.Model):
     ]
 
     FORMAT_100uM = '100 uM'
-    FORMAT_Freeze_dry = 'Dry'
+    FORMAT_Freeze_dry = 'Freeze-dry'
     FORMAT_CHOICES = [
         (FORMAT_100uM, '100 \xb5M in milli-Q'),
         (FORMAT_Freeze_dry, 'Freeze-dry'),

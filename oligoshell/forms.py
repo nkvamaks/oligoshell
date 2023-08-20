@@ -58,11 +58,11 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = models.Order
         fields = ['customer', 'email', 'comments', 'bulk_seqs']
-        widgets = {'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments Here',
-                                                     'rows': 4,
-                                                     'class': 'form-control', }),
+        widgets = {'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments About Order Here',
+                                                     'rows': 1,
+                                                     'class': 'form-control form-control-sm', }),
                    'bulk_seqs': forms.FileInput(attrs={'placeholder': 'Upload Bulk Sequences Here',
-                                                       'class': 'form-control',}),
+                                                       'class': 'form-control form-control-sm'}),
                    }
 
 
