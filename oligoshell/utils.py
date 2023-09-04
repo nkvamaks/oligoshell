@@ -373,31 +373,31 @@ def get_ms_fragments_esi_series(frag_dict):
     return frag_dict_esi
 
 
-def get_seqdict_from_file(file):
+def get_seqdict_from_file(data):
     """
-    Receives a file object with bulk of sequences in csv format. File can contain comments starting from #.
+    Receives data from file with a bulk of sequences in csv format (string). Data can contain comments starting from #.
     Return dict of sequences in a format {'sequences-0-seq_name': '1', 'sequences-0-sequence': 'dA dT dG dC', ...}
     """
-    with open(file.name, "r") as work_file:
-        result = {}
-        formset_num = 0
-        for line in work_file:
-            if line.strip() and not line.strip().startswith('#'):
-                line_values = [element.strip() for element in line.strip().split(',')]
-                line_keys = ['sequences-' + str(formset_num) + '-seq_name',
-                             'sequences-' + str(formset_num) + '-sequence',
-                             'sequences-' + str(formset_num) + '-scale',
-                             'sequences-' + str(formset_num) + '-format_requested',
-                             'sequences-' + str(formset_num) + '-purification_requested'
-                ]
-                dict_update = dict(zip(line_keys, line_values))
-                result.update(dict_update)
-                formset_num += 1
-        last_dict_update = {
-            'sequences-TOTAL_FORMS': formset_num,
-            'sequences-INITIAL_FORMS': 0,
-            'sequences-MIN_NUM_FORMS': 1,
-            'sequences-MAX_NUM_FORMS': 1000
-        }
-        result.update(last_dict_update)
-        return result
+    data_lst = data.split('\n')
+    result = {}
+    formset_num = 0
+    for entry in data_lst:
+        if entry.strip() and not entry.strip().startswith('#'):
+            line_values = [element.strip() for element in entry.strip().split(',')]
+            line_keys = ['sequences-' + str(formset_num) + '-seq_name',
+                         'sequences-' + str(formset_num) + '-sequence',
+                         'sequences-' + str(formset_num) + '-scale',
+                         'sequences-' + str(formset_num) + '-format_requested',
+                         'sequences-' + str(formset_num) + '-purification_requested'
+            ]
+            dict_update = dict(zip(line_keys, line_values))
+            result.update(dict_update)
+            formset_num += 1
+    last_dict_update = {
+        'sequences-TOTAL_FORMS': formset_num,
+        'sequences-INITIAL_FORMS': 0,
+        'sequences-MIN_NUM_FORMS': 1,
+        'sequences-MAX_NUM_FORMS': 1000
+    }
+    result.update(last_dict_update)
+    return result

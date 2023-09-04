@@ -83,7 +83,8 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
         if request.FILES and form.is_valid():
             new_form = form.save(commit=False)
-            seqdict_from_file = utils.get_seqdict_from_file(request.FILES['bulk_seqs'])
+            data = request.FILES['bulk_seqs'].read().decode()
+            seqdict_from_file = utils.get_seqdict_from_file(data)
             post = request.POST.copy()  # to make it mutable
             post.update(seqdict_from_file)
             request.POST = post  # update request.POST with the data from file
