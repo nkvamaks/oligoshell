@@ -83,10 +83,13 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
         if request.FILES and form.is_valid():
             new_form = form.save(commit=False)
-            data = request.FILES['bulk_seqs'].read().decode()
+            data = request.FILES['bulk_seqs'].read().decode('utf-8-sig')
             seqdict_from_file = utils.get_seqdict_from_file(data)
             post = request.POST.copy()  # to make it mutable
-            post.update(seqdict_from_file)
+            print(post)
+            post = post | seqdict_from_file
+            # post.update(seqdict_from_file)
+            print(post)
             request.POST = post  # update request.POST with the data from file
             formset = forms.SequenceFormset(request.POST, instance=new_form)
             return render(request, 'oligoshell/order_create.html', {'form': form, 'formset': formset})

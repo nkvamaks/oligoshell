@@ -61,7 +61,7 @@ class OrderForm(forms.ModelForm):
         widgets = {'comments': forms.Textarea(attrs={'placeholder': 'Leave Your Comments About Order Here',
                                                      'rows': 1,
                                                      'class': 'form-control form-control-sm', }),
-                   'bulk_seqs': forms.FileInput(attrs={'placeholder': 'Upload Bulk Sequences Here',
+                   'bulk_seqs': forms.FileInput(attrs={'placeholder': 'Upload Bulk Sequences here in .csv Format',
                                                        'class': 'form-control form-control-sm'}),
                    }
 
