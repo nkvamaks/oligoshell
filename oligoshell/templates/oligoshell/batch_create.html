@@ -1,32 +1,94 @@
 {% extends 'layout/basic.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Add Batch{% endblock %}
+{% block title %}New Synthesis{% endblock %}
 
 {% block content %}
+<h6 class="pb-1 mb-3 text-muted">Create a New Synthesis:</h6>
 
-      <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3">Add Sequences to Synthesis Batch</h5>
-            <form method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-3">
-                       {{ form.title|as_crispy_field }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                       {{ form.comments|as_crispy_field }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                       {{ form.sequences2synthesis|as_crispy_field }}
-                    </div>
-                </div>
-                <input type="submit" class="btn btn-primary submit" value="Create Synthesis Batch"/>
-            </form>
-      </div>
+<form method="post">
+{% csrf_token %}
 
+<div class="row">
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+               <p class="card-text">
+                   <label for="{{ form.title.id_for_label }}">Name of Synthesis:</label>
+                   {{ form.title}}
+               </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">
+                   <label for="{{ form.comments.id_for_label }}">Comments:</label>
+                   {{ form.comments}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h6 class="pb-1 mb-3 text-muted">Available Sequences:</h6>
+<div class="row">
+    <div class="col-xl mb-3">
+        <div class="card">
+            <div class="card-body">
+
+                    <div class="table-responsive text-break">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th><span class="m-1 fw-semibold d-block">#</span></th>
+                                <th width="10%"><span class="fw-semibold d-block">Name</span></th>
+                                <th width="55%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Scale
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        nmol
+                                    </small>
+                                </th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Purity
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        requested
+                                    </small>
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody class="table-border-bottom-0">
+                                {% for value, label, seqs in form.sequences2synthesis.field.choices %}
+                                   <tr>
+                                       <td class="p-1 align-middle" width="3%">
+                                           <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                                           <input class="form-check-input" type="checkbox" value="{{ value }}" name="sequences2synthesis" />
+                                       </td>
+                                       <td class="p-1 align-middle"><small> ON{{ seqs.pk }} </small>
+                                       </td>
+                                       <td class="p-1 align-middle" width="10%"><small>{{ seqs.seq_name }}</small>
+                                       </td>
+                                       <td class="p-1 align-middle" width="55%"><small> {{ seqs.sequence }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.scale }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.purification_requested }} </small></td>
+                                   </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary submit mt-4">Create New Synthesis</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
 
 {% endblock %}

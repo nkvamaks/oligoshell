@@ -1,49 +1,61 @@
 {% extends 'layout/basic.html' %}
 
-{% load crispy_forms_tags %}
-
-{% block title %}Add Sequence{% endblock %}
+{% block title %}Add Sequence to the Existing Order{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3" align="center">Add a New Sequence</h5>
-        <form method="post" action="">
-        {% csrf_token %}
-
-        <div class="form-group row">
-
-            <div class="col-md-4">
-                {{ form.seq_name|as_crispy_field }}
-            </div>
-
-            <div class="col-md-8">
-                {{ form.sequence|as_crispy_field }}
-            </div>
-
+<div class="row">
+    <div class="col-xl">
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Add Sequence to the Existing Order</h5>
         </div>
+        <div class="card-body">
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="{{ form.seq_name.id_for_label }}"><small>Sequence name</small></label>
+                        {{ form.seq_name}}
+                        {% if form.seq_name.errors %}
+                            <div>
+                                {{ form.seq_name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-10">
+                        <label for="{{ form.sequence.id_for_label }}"><small>Sequence 5'-->3'</small></label>
+                        {{ form.sequence }}
+                        {% if form.sequence.errors %}
+                            <div>
+                                {{ form.sequence.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-2">
+                        <label for="{{ form.scale.id_for_label }}"><small>Scale</small></label>
+                        {{ form.scale}}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.format_requested.id_for_label }}"><small>Format</small></label>
+                        {{ form.format_requested }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="{{ form.purification_requested.id_for_label }}"><small>Purification</small></label>
+                        {{ form.purification_requested }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.order.id_for_label }}"><small>Order</small></label>
+                        {{ form.order }}
+                    </div>
+                </div>
 
-        <div class="form-group row">
+                <button type="submit" class="m-3 btn btn-sm btn-primary submit"> Submit </button>
 
-            <div class="col-md-3">
-                {{ form.scale|as_crispy_field }}
-            </div>
-
-            <div class="col-md-3">
-                {{ form.format_requested|as_crispy_field }}
-            </div>
-
-            <div class="col-md-3">
-                {{ form.purification_requested|as_crispy_field }}
-            </div>
-
-            <div class="col-md-3">
-                {{ form.order|as_crispy_field }}
-            </div>
-
+            </form>
         </div>
-
-        <input type="submit" value="Add New Sequence" class="btn btn-primary submit"/>
-
-        </form>
+      </div>
     </div>
+</div>
 {% endblock %}

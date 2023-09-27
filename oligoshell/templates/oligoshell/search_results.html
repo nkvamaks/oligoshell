@@ -1,0 +1,134 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+
+<!-- Hoverable Table rows -->
+
+<div class="card">
+    <div class="table-responsive text-break">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><span class="m-2 fw-semibold d-block">#</span></th>
+                <th width="10%"><span class="m-2 fw-semibold d-block">Name</span></th>
+                <th width="40%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Scale
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        nmol
+                    </small>
+                </th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Format
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        requested
+                    </small>
+                </th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Purity
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        requested
+                    </small>
+                </th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Synthesized
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        actual
+                    </small>
+                </th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Purified
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        actual
+                    </small>
+                </th>
+                <th>
+                    <span class="fw-semibold d-block">
+                        Conc.
+                    </span>
+                    <small class="text-muted fw-light" style="text-transform: none;">
+                        &mu;M
+                    </small>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="table-border-bottom-0">
+                {% for seq in sequences %}
+                   <tr>
+                       <td class="p-1 align-middle">
+                           <i class="me-1"></i>
+                           <small>
+                               <a class="text-muted" href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}">ON{{ seq.pk }}</a>
+                           </small>
+                       </td>
+                       <td class="p-1 align-middle" width="10%">
+                           <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                           <small>
+                               <a href="{% url 'oligoshell:sequence_detail' pk=seq.pk %}"> {{ seq.seq_name }} </a>
+                           </small>
+                       </td>
+                       <td class="p-1 align-middle" width="40%"><small> {{ seq.sequence }} </small></td>
+                       <td class="p-1 align-middle"><small> {{ seq.scale }} </small></td>
+                       <td class="p-1 align-middle"><small> {{ seq.format_requested }} </small></td>
+                       <td class="p-1 align-middle"><small> {{ seq.purification_requested }} </small></td>
+
+                       <td class="p-1 align-middle">
+                           {% if seq.synthesized %}
+                                <span class="badge bg-label-success me-1"><small>
+                                    {% for batch in seq.batches.all %}
+                                        <a href="{{ batch.get_absolute_url }}">{{ batch.title }}</a>
+                                    {% endfor %}
+                                </small></span>
+                           {% else %}
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                           {% endif %}
+                       </td>
+                       <td class="p-1 align-middle">
+                           {% if seq.purifications.exists %}
+                               {% for purification in seq.purifications.all %}
+                                   <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                       <li><span class="badge bg-label-success me-1"><small>
+                                           <a href="{{ purification.get_absolute_url }}">{{ purification.pur_method }}</a>
+                                       </small></span></li>
+                                   </ul>
+                               {% endfor %}
+                           {% else %}
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                           {% endif %}
+                       </td>
+                       <td class="p-1 align-middle">
+                           {% if seq.fail %}
+                                <span class="badge bg-label-warning me-1"><small> FAIL </small></span>
+                           {% elif seq.concentration %}
+                                {% if seq.complete %}
+                                    <span class="badge bg-label-success me-1"><small>{{ seq.concentration }}</small></span>
+                                {% else %}
+                                    <span class="badge bg-label-primary me-1"><small>{{ seq.concentration }}</small></span>
+                                {% endif %}
+                           {% else %}
+                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                           {% endif %}
+                       </td>
+
+                   </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--/ Hoverable Table rows -->
+
+{% endblock %}

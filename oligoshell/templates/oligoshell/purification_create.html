@@ -1,41 +1,117 @@
 {% extends 'layout/basic.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Add Purification{% endblock %}
+{% block title %}New Purification{% endblock %}
 
 {% block content %}
+<h6 class="pb-1 mb-3 text-muted">Create a New Purification:</h6>
 
-      <div class="container-fluid">
-        <h5 class="p-1 mb-1 mt-3 mb-3">Add Sequences to Purification Batch</h5>
-        <form method="post">
-            {% csrf_token %}
+<form method="post">
+{% csrf_token %}
 
-            <div class="row">
-                <div class="col-md-3">
-                    {{ form.title|as_crispy_field }}
-                </div>
+<div class="row">
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+               <p class="card-text">
+                   <label for="{{ form.title.id_for_label }}">Purification Name:</label>
+                   {{ form.title}}
+               </p>
+                <p class="card-text">
+                    <label for="{{ form.pur_method.id_for_label }}">Purification Method:</label>
+                    {{ form.pur_method}}
+                </p>
             </div>
-
-            <div class="row">
-                <div class="col-md-3">
-                    {{ form.pur_method|as_crispy_field }}
-                </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">
+                   <label for="{{ form.comments.id_for_label }}">Comments:</label>
+                   {{ form.comments}}
+                </p>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="row">
-                <div class="col">
-                    {{ form.pur_seqs|as_crispy_field }}
-                </div>
+<h6 class="pb-1 mb-3 text-muted">Available Sequences:</h6>
+<div class="row">
+    <div class="col-xl mb-3">
+        <div class="card">
+            <div class="card-body">
+
+                    <div class="table-responsive text-break">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th><span class="m-1 fw-semibold d-block">#</span></th>
+                                <th width="10%"><span class="fw-semibold d-block">Name</span></th>
+                                <th width="55%"><span class="fw-semibold d-block">Sequence, 5'&rarr;3'</span></th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Scale
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        nmol
+                                    </small>
+                                </th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Purity
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        requested
+                                    </small>
+                                </th>
+                                <th>
+                                    <span class="fw-semibold d-block">
+                                        Purified
+                                    </span>
+                                    <small class="text-muted fw-light" style="text-transform: none;">
+                                        actual
+                                    </small>
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody class="table-border-bottom-0">
+                                {% for value, label, seqs in form.pur_seqs.field.choices %}
+                                   <tr>
+                                       <td class="p-1 align-middle" width="3%">
+                                           <i class="fab fa-angular fa-lg text-danger me-2"></i>
+                                           <input class="form-check-input" type="checkbox" value="{{ value }}" name="pur_seqs" />
+                                       </td>
+                                       <td class="p-1 align-middle"><small> ON{{ seqs.pk }} </small></td>
+                                       <td class="p-1 align-middle" width="10%"><small> {{ seqs.seq_name }} </small></td>
+                                       <td class="p-1 align-middle" width="55%"><small> {{ seqs.sequence }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.scale }} </small></td>
+                                       <td class="p-1 align-middle"><small> {{ seqs.purification_requested }} </small></td>
+                                       <td class="p-1 align-middle">
+                                           {% if seqs.purifications.exists %}
+                                               {% for purification in seqs.purifications.all %}
+                                                   <ul class="list-unstyled m-0 p-0 mb-0 mt-0 align-middle d-flex align-items-center">
+                                                       <li><span class="badge bg-label-success me-1"><small>
+                                                           <a href="{{ purification.get_absolute_url }}">{{ purification.pur_method }}</a>
+                                                       </small></span></li>
+                                                   </ul>
+                                               {% endfor %}
+                                           {% else %}
+                                                <span class="badge bg-label-warning me-1"><small> --- </small></span>
+                                           {% endif %}
+                                       </td>
+                                   </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary submit mt-4">Create New Purification</button>
             </div>
+        </div>
+    </div>
+</div>
+</form>
 
-            <div class="row">
-                <div class="col-md-3">
-                    {{ form.comments|as_crispy_field }}
-                </div>
-            </div>
-
-            <input type="submit" value="Create New Purification" class="btn btn-primary submit"/>
-
-        </form>
-      </div>
 {% endblock %}

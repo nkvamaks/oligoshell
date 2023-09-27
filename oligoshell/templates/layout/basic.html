@@ -1,87 +1,395 @@
 {% load static %}
-{% load bootstrap4 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
 
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>{% block title %}Oligoshell - oligonucleotide management system{% endblock %}</title>
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>{% block title %}Nucleic Acids Management System{% endblock %}</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon
+    <link rel="icon" type="image/x-icon" href="./assets/img/favicon/favicon.ico" />
+    -->
+    <!-- Fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts   -->
+    <link rel="stylesheet" href="{% static 'layout/vendor/fonts/boxicons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'layout/vendor/css/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'layout/vendor/css/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'layout/css/demo.css' %}" />
+
+    <!-- Vendors CSS    -->
+    <link rel="stylesheet" href="{% static 'layout/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'layout/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'layout/vendor/js/helpers.js'%}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'layout/js/config.js'%}"></script>
   </head>
 
   <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
 
-  <div class="container-fluid">
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="{% url 'oligoshell:index' %}" class="app-brand-link">
+              <span class="app-brand-logo demo">
 
-    <header>
-        <h3 class="p-3 bg-dark text-white text-center">Oligoshell - oligonucleotide management system</h3>
-    </header>
+              </span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">OligoShell</span>
+            </a>
 
-    <nav class="navbar sticky-top navbar-dark bg-primary">
-        <ul class="nav nav-fill">
+          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
 
-        {% if request.user.is_authenticated %}
 
-            <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url 'oligoshell:index' %}">Home</a>
+          <div class="menu-inner-shadow"></div>
+            <ul class="menu-inner py-1">
+
+{% if request.user.is_authenticated %}
+
+            <!-- Home -->
+            <li class="menu-item">
+              <a href="{% url 'oligoshell:index' %}" class="menu-link">
+                  <i class="menu-icon tf-icons bx">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h1v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7h1a1 1 0 0 0 .707-1.707l-9-9a.999.999 0 0 0-1.414 0l-9 9A1 1 0 0 0 3 13zm9-8.586l6 6V15l.001 5H6v-9.585l6-6.001z"/><path fill="currentColor" d="M12 17c2.206 0 4-1.794 4-4s-1.794-4-4-4s-4 1.794-4 4s1.794 4 4 4zm0-6c1.103 0 2 .897 2 2s-.897 2-2 2s-2-.897-2-2s.897-2 2-2z"/></svg>
+                  </i>
+                  <div data-i18n="Home">Home</div>
+              </a>
             </li>
 
-            <li class="nav-item dropdown">
-                 <a class="navbar-brand nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Create</a>
-                 <div class="dropdown-menu">
-                   <a class="dropdown-item" href="{% url 'oligoshell:order_create' %}">Create New Order</a>
-                   <a class="dropdown-item" href="{% url 'oligoshell:sequence_create' %}">Add Sequence to Existing Order</a>
-                     <div class="dropdown-divider"></div>
-                   <a class="dropdown-item" href="{% url 'oligoshell:batch_create' %}">Create New Synthesis Batch</a>
-                   <a class="dropdown-item" href="{% url 'oligoshell:purification_create' %}">Create New Purification Batch</a>
-                 </div>
+            <!-- Tools -->
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Tools</span>
             </li>
 
-            <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url 'oligoshell:batch' %}">Batches</a>
+            <li class="menu-item">
+              <a href="{% url 'oligoshell:calculator' %}" class="menu-link">
+                <i class="menu-icon tf-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256"><path fill="currentColor" d="M80 120h96a8 8 0 0 0 8-8V64a8 8 0 0 0-8-8H80a8 8 0 0 0-8 8v48a8 8 0 0 0 8 8Zm8-48h80v32H88Zm112-48H56a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h144a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm0 192H56V40h144Zm-100-68a12 12 0 1 1-12-12a12 12 0 0 1 12 12Zm40 0a12 12 0 1 1-12-12a12 12 0 0 1 12 12Zm40 0a12 12 0 1 1-12-12a12 12 0 0 1 12 12Zm-80 40a12 12 0 1 1-12-12a12 12 0 0 1 12 12Zm40 0a12 12 0 1 1-12-12a12 12 0 0 1 12 12Zm40 0a12 12 0 1 1-12-12a12 12 0 0 1 12 12Z"/></svg>
+                </i>
+                <div data-i18n="OligoCalc">OligoCalc</div>
+              </a>
             </li>
 
-            <li class="nav-item">
-                 <b class="navbar-brand nav-link">Hi, {{ request.user.first_name }}</b>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5v2H5v14h14v-5h2z"/><path fill="currentColor" d="M21 7h-4V3h-2v4h-4v2h4v4h2V9h4z"/></svg>
+                </i>
+                <div data-i18n="Create">Create</div>
+              </a>
+
+              <ul class="menu-sub">
+                     <li class="menu-item">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{% url 'oligoshell:sequence_create' %}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <div data-i18n="New Sequence"><small>New Sequence</small></div>
+                        </a>
+                     </li>
+                     <li class="menu-item">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{% url 'oligoshell:order_create' %}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <div data-i18n="New Order"><small>New Order</small></div>
+                        </a>
+                     </li>
+                     <li class="menu-item">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{% url 'oligoshell:batch_create' %}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <div data-i18n="New Synthesis"><small>New Synthesis</small></div>
+                        </a>
+                     </li>
+                     <li class="menu-item">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{% url 'oligoshell:purification_create' %}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <div data-i18n="New Purification"><small>New Purification</small></div>
+                        </a>
+                     </li>
+              </ul>
             </li>
-            <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url 'oligoshell:profile' %}">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url 'logout' %}">Logout</a>
-            </li>
 
-        {% else %}
 
-            <li class="nav-item">
-                <a class="navbar-brand nav-link" href="{% url 'login' %}">Login</a>
-                <a class="navbar-brand nav-link" href="{% url 'oligoshell:register' %}">Register</a>
+            <!-- Archive -->
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Archive</span>
             </li>
 
-        {% endif %}
-        </ul>
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="4"><rect width="30" height="36" x="9" y="8" rx="2"/><path stroke-linecap="round" d="M18 4v6m12-6v6m-14 9h16m-16 8h12m-12 8h8"/></g></svg>
+                </i>
+                <div data-i18n="Order">Order</div>
+              </a>
 
-    </nav>
+              <ul class="menu-sub">
+                  {% for order in orders %}
+                     <li class="menu-item">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{% url 'oligoshell:order_detail' pk=order.pk %}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <small>Order {{ order.pk }}</small>
+                        </a>
+                     </li>
+                  {% endfor %}
+              </ul>
+            </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M4 2h2v2c0 1.44.68 2.61 1.88 3.78c.86.83 2.01 1.63 3.21 2.42l-1.83 1.19C8.27 10.72 7.31 10 6.5 9.21C5.07 7.82 4 6.1 4 4V2m14 0h2v2c0 2.1-1.07 3.82-2.5 5.21c-1.41 1.38-3.21 2.52-4.96 3.63c-1.75 1.12-3.45 2.21-4.66 3.38C6.68 17.39 6 18.56 6 20v2H4v-2c0-2.1 1.07-3.82 2.5-5.21c1.41-1.38 3.21-2.52 4.96-3.63c1.75-1.12 3.45-2.21 4.66-3.38C17.32 6.61 18 5.44 18 4V2m-3.26 10.61c.99.67 1.95 1.39 2.76 2.18C18.93 16.18 20 17.9 20 20v2h-2v-2c0-1.44-.68-2.61-1.88-3.78c-.86-.83-2.01-1.63-3.21-2.42l1.83-1.19M7 3h10v1l-.06.5H7.06L7 4V3m.68 3h8.64c-.24.34-.52.69-.9 1.06l-.51.44H9.07l-.49-.44c-.38-.37-.66-.72-.9-1.06m1.41 10.5h5.84l.49.44c.38.37.66.72.9 1.06H7.68c.24-.34.52-.69.9-1.06l.51-.44m-2.03 3h9.88l.06.5v1H7v-1l.06-.5Z"/></svg>
+                </i>
+                <div data-i18n="OligoSynthesis">Synthesis</div>
+              </a>
+
+              <ul class="menu-sub">
+                {% for batch in batches %}
+                  <li class="menu-item text-break">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{{ batch.get_absolute_url }}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <small>{{ batch.title }}</small>
+                        </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
 
 
-      <div class="row">
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 512 512"><path fill="currentColor" d="M99.5 18.406V92.22h321.594V18.405H99.5zm24.75 92.5v288.531h18.688v-288.53H124.25zm253.406 0v288.531h18.688v-288.53h-18.688zm-216.47 58.53v230l199.033.002v-230h-43.5c-.717 8.933-8.194 15.937-17.314 15.937s-16.596-7.004-17.312-15.938H267.75c.968 3.02 1.5 6.223 1.5 9.563c0 17.317-14.058 31.344-31.375 31.344S206.53 196.317 206.53 179c0-3.34.535-6.542 1.5-9.563h-46.843zm138.095 30.845c24.18 0 43.783 19.603 43.783 43.782c0 24.18-19.602 43.782-43.782 43.782c-24.178 0-43.78-19.602-43.78-43.78c0-24.18 19.602-43.783 43.78-43.783zm-81.25 20.814c14.265 0 25.814 11.58 25.814 25.844c0 14.264-11.55 25.812-25.813 25.812c-14.263 0-25.843-11.548-25.843-25.813c0-14.264 11.58-25.843 25.844-25.843zm68.564 79.344c14.264 0 25.844 11.58 25.844 25.843c0 14.265-11.58 25.814-25.844 25.814c-14.264 0-25.813-11.55-25.813-25.813c0-14.263 11.55-25.842 25.814-25.842zM99.5 418.125v73.844h321.594v-73.845H99.5z"/></svg>
+                </i>
+                <div data-i18n="Purification">Purification</div>
+              </a>
 
-                  {% block content %}
-                  {% endblock %}
+              <ul class="menu-sub">
+                {% for pur in purifications %}
+                  <li class="menu-item text-break">
+                        <a class="menu-link"
+                           target="_self"
+                           href="{{ pur.get_absolute_url }}"
+                           style="padding-top: 0.15rem; padding-bottom: 0.15rem;"
+                        >
+                            <small>{{ pur.title }}</small>
+                        </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
 
-                  {% block menu %}
-                  {% endblock %}
+{% else %}
 
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+                <div data-i18n="Authentication">Authentication</div>
+              </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'login' %}" class="menu-link" target="_self">
+                    <div data-i18n="Basic">Login</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'oligoshell:register' %}" class="menu-link" target="_self">
+                    <div data-i18n="Basic">Register</div>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+
+{% endif %}
+
+          </ul>
+
+        </aside>
+        <!-- / Menu -->
+
+      <!-- Layout container -->
+      <div class="layout-page">
+
+{% if request.user.is_authenticated %}
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme layout-navbar-sticky-top"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                    <form class="d-flex" action="{% url 'oligoshell:search_results' %}" method="get">
+                        {% csrf_token %}
+                          <input
+                            type="search"
+                            name="q"
+                            class="form-control border-0 shadow-none"
+                            placeholder="Search..."
+                            aria-label="Search..."
+                          />
+                    </form>
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- Place this tag where you want the button to render. -->
+
+
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    Hi, {{ request.user.first_name }}
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block">{{ request.user.username }}</span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="bx bx-power-off me-2"></i>
+                        <span class="align-middle">Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+{% endif %}
+
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+              <div class="container-xxl flex-grow-1 container-p-y">
+
+                 {% block content %}
+                 {% endblock %}
+
+              </div>
+
+            <!-- / Content -->
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  Developed with
+                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                </div>
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
       </div>
-  </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!--  / Layout wrapper -->
 
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'layout/vendor/libs/jquery/jquery.js'%}"></script>
+    <script src="{% static 'layout/vendor/libs/popper/popper.js'%}"></script>
+    <script src="{% static 'layout/vendor/js/bootstrap.js'%}"></script>
+    <script src="{% static 'layout/vendor/libs/perfect-scrollbar/perfect-scrollbar.js'%}"></script>
+
+    <script src="{% static 'layout/vendor/js/menu.js'%}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'layout/vendor/libs/apex-charts/apexcharts.js'%}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'layout/js/main.js'%}"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
