@@ -170,6 +170,7 @@ class CalcForm(forms.ModelForm):
                    }
 
 
+
 class UserRegistrationForm(forms.ModelForm):
 
     password = forms.CharField(label='Password',
